@@ -1,14 +1,21 @@
-import { X } from 'lucide-react';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 export default function DistrictModal({ district, isOpen, onClose }) {
+  const [expandedSection, setExpandedSection] = useState(null);
+
   if (!district) return null;
+
+  const toggleSection = (section) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl bg-card border-border/50 text-foreground p-0 overflow-hidden">
+      <DialogContent className="max-w-5xl bg-card border-border/50 text-foreground p-0 overflow-hidden max-h-[90vh]">
         {/* Header Image */}
         <div className="relative h-64 w-full overflow-hidden">
           <img
@@ -34,91 +41,154 @@ export default function DistrictModal({ district, isOpen, onClose }) {
           </Button>
         </div>
 
-        <div className="p-8">
-          {/* Title */}
-          <DialogHeader className="mb-6">
-            <div className="flex items-center gap-4 mb-2">
-              <div className="text-5xl">{district.icon}</div>
-              <div>
-                <DialogTitle
-                  className="text-4xl uppercase tracking-wide mb-2"
-                  style={{ fontFamily: 'Bebas Neue, sans-serif' }}
+        <div className="overflow-y-auto max-h-[calc(90vh-256px)]">
+          <div className="p-8">
+            {/* Title */}
+            <DialogHeader className="mb-6">
+              <div className="flex items-center gap-4 mb-2">
+                <div className="text-5xl">{district.icon}</div>
+                <div>
+                  <DialogTitle
+                    className="text-4xl uppercase tracking-wide mb-2"
+                    style={{ fontFamily: 'Bebas Neue, sans-serif' }}
+                  >
+                    {district.name}
+                    {district.nameLocal && (
+                      <span className="text-2xl text-muted-foreground ml-3">({district.nameLocal})</span>
+                    )}
+                  </DialogTitle>
+                  <Badge className="bg-secondary/20 text-secondary border-secondary/30">
+                    {district.description}
+                  </Badge>
+                </div>
+              </div>
+            </DialogHeader>
+
+            {/* Geography & Overview - Always Visible */}
+            <div className="mb-6">
+              <p className="text-sm text-muted-foreground mb-3">
+                <strong>Geography:</strong> {district.geography}
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                {district.overview}
+              </p>
+            </div>
+
+            {/* Accordion Sections */}
+            <div className="space-y-3">
+              {/* History Section */}
+              <div className="border border-border/50 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => toggleSection('history')}
+                  className="w-full flex items-center justify-between p-4 bg-card/30 hover:bg-card/50 transition-colors"
                 >
-                  {district.name}
-                </DialogTitle>
-                <Badge className="bg-secondary/20 text-secondary border-secondary/30">
-                  {district.description}
-                </Badge>
+                  <h3
+                    className="text-xl uppercase tracking-wide text-primary"
+                    style={{ fontFamily: 'Bebas Neue, sans-serif' }}
+                  >
+                    History
+                  </h3>
+                  {expandedSection === 'history' ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
+                </button>
+                {expandedSection === 'history' && (
+                  <div className="p-4 bg-background/30">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {district.history}
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
-          </DialogHeader>
 
-          {/* Overview */}
-          <div className="mb-6">
-            <h3
-              className="text-xl uppercase tracking-wide mb-3 text-foreground/90"
-              style={{ fontFamily: 'Bebas Neue, sans-serif' }}
-            >
-              Overview
-            </h3>
-            <p className="text-muted-foreground leading-relaxed">
-              {district.overview}
-            </p>
-          </div>
+              {/* Important Places Section */}
+              {district.landmarks && (
+                <div className="border border-border/50 rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => toggleSection('places')}
+                    className="w-full flex items-center justify-between p-4 bg-card/30 hover:bg-card/50 transition-colors"
+                  >
+                    <h3
+                      className="text-xl uppercase tracking-wide text-secondary"
+                      style={{ fontFamily: 'Bebas Neue, sans-serif' }}
+                    >
+                      Important Places
+                    </h3>
+                    {expandedSection === 'places' ? (
+                      <ChevronUp className="w-5 h-5" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5" />
+                    )}
+                  </button>
+                  {expandedSection === 'places' && (
+                    <div className="p-4 bg-background/30">
+                      <ul className="space-y-2">
+                        {district.landmarks.map((landmark, index) => (
+                          <li key={index} className="flex gap-2 text-sm text-muted-foreground">
+                            <span className="text-secondary">•</span>
+                            <span>{landmark}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
 
-          {/* Key Facts - 3 Bullets */}
-          <div className="space-y-4">
-            {/* History */}
-            <div className="flex gap-4">
-              <div
-                className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-1"
-                style={{
-                  boxShadow: '0 0 20px hsl(var(--primary) / 0.2)',
-                }}
-              >
-                <span className="text-primary font-bold">H</span>
+              {/* Life Today Section */}
+              <div className="border border-border/50 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => toggleSection('today')}
+                  className="w-full flex items-center justify-between p-4 bg-card/30 hover:bg-card/50 transition-colors"
+                >
+                  <h3
+                    className="text-xl uppercase tracking-wide text-primary"
+                    style={{ fontFamily: 'Bebas Neue, sans-serif' }}
+                  >
+                    Life Today
+                  </h3>
+                  {expandedSection === 'today' ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
+                </button>
+                {expandedSection === 'today' && (
+                  <div className="p-4 bg-background/30">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {district.today}
+                    </p>
+                  </div>
+                )}
               </div>
-              <div>
-                <h4 className="font-semibold mb-1 uppercase text-sm tracking-wide" style={{ fontFamily: 'Bebas Neue, sans-serif' }}>
-                  History
-                </h4>
-                <p className="text-sm text-muted-foreground">{district.history}</p>
-              </div>
-            </div>
 
-            {/* Culture */}
-            <div className="flex gap-4">
-              <div
-                className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0 mt-1"
-                style={{
-                  boxShadow: '0 0 20px hsl(var(--secondary) / 0.2)',
-                }}
-              >
-                <span className="text-secondary font-bold">C</span>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1 uppercase text-sm tracking-wide" style={{ fontFamily: 'Bebas Neue, sans-serif' }}>
-                  Culture
-                </h4>
-                <p className="text-sm text-muted-foreground">{district.culture}</p>
-              </div>
-            </div>
-
-            {/* Today */}
-            <div className="flex gap-4">
-              <div
-                className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1"
-                style={{
-                  boxShadow: '0 0 20px hsl(var(--accent) / 0.2)',
-                }}
-              >
-                <span className="text-accent font-bold">T</span>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1 uppercase text-sm tracking-wide" style={{ fontFamily: 'Bebas Neue, sans-serif' }}>
-                  Today
-                </h4>
-                <p className="text-sm text-muted-foreground">{district.today}</p>
+              {/* Culture Section */}
+              <div className="border border-border/50 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => toggleSection('culture')}
+                  className="w-full flex items-center justify-between p-4 bg-card/30 hover:bg-card/50 transition-colors"
+                >
+                  <h3
+                    className="text-xl uppercase tracking-wide text-secondary"
+                    style={{ fontFamily: 'Bebas Neue, sans-serif' }}
+                  >
+                    What This District Is Known For
+                  </h3>
+                  {expandedSection === 'culture' ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
+                </button>
+                {expandedSection === 'culture' && (
+                  <div className="p-4 bg-background/30">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {district.culture}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
