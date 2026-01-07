@@ -42,13 +42,13 @@ export const galleryData = [
   },
   {
     id: 5,
-    title: 'Le Morne Brabant',
-    category: 'Colonial Era',
-    image: 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=1200',
-    description: 'Le Morne Brabant mountain (556m), refuge for maroons (escaped slaves) during French and early British periods. UNESCO World Heritage Site symbolizing resistance to slavery. Legend says maroons jumped to their deaths in 1835 misunderstanding abolition.',
-    source: 'UNESCO World Heritage Centre',
-    era: 'French/British Colonial',
-    tags: ['le morne', 'unesco', 'slavery', 'maroons', 'resistance', 'mountain'],
+    title: 'Le Morne Brabant - UNESCO Heritage Site',
+    category: 'Natural Heritage',
+    image: 'https://customer-assets.emergentagent.com/job_dodo-remake/artifacts/dj6890ap_image.png',
+    description: 'Aerial view of Le Morne Brabant mountain (556m), a UNESCO World Heritage Site. This dramatic basaltic monolith served as refuge for maroons (escaped slaves) during 18th-19th centuries. The peninsula symbolizes resistance to slavery and freedom.',
+    source: 'UNESCO World Heritage Centre / Contemporary Photography',
+    era: 'Natural/Historical Landmark',
+    tags: ['le morne', 'unesco', 'slavery', 'maroons', 'resistance', 'mountain', 'heritage'],
   },
   {
     id: 6,
@@ -103,9 +103,29 @@ export const galleryData = [
     tags: ['dodo', 'etching', 'scientific illustration', '19th century'],
   },
 
-  // Cultural Moments
+  // Cultural Moments - NEW AUTHENTIC MAURITIAN IMAGES
   {
     id: 11,
+    title: 'Mauritian Elder in Port Louis',
+    category: 'Daily Life',
+    image: 'https://customer-assets.emergentagent.com/job_dodo-remake/artifacts/gi1t2eyy_image.png',
+    description: 'Portrait of a Mauritian elder near the waterfront. Straw hats and light clothing are typical daily wear in the tropical climate. Port Louis harbor visible in background, representing the multicultural crossroads where Indian, African, Chinese, and European descendants live side by side.',
+    source: 'Contemporary Mauritian Photography',
+    era: 'Modern (21st century)',
+    tags: ['daily life', 'port louis', 'people', 'elder', 'culture', 'contemporary'],
+  },
+  {
+    id: 12,
+    title: 'Sega Dance Performance - Traditional Attire',
+    category: 'Cultural Heritage',
+    image: 'https://customer-assets.emergentagent.com/job_dodo-remake/artifacts/s6jb7j8f_image.png',
+    description: 'Young women in vibrant performance costumes featuring floral patterns and flowing skirts typical of Mauritian cultural celebrations. The colorful attire represents the joyful fusion of African, Indian, and Creole influences in Mauritian dance traditions. Sega performances often feature such elaborate costumes during festivals.',
+    source: 'Mauritian Cultural Documentation',
+    era: 'Modern (Contemporary performance)',
+    tags: ['sega', 'dance', 'performance', 'culture', 'costumes', 'creole', 'festival'],
+  },
+  {
+    id: 13,
     title: 'Maha Shivaratri Pilgrimage',
     category: 'Cultural Heritage',
     image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1200',
@@ -115,8 +135,8 @@ export const galleryData = [
     tags: ['festival', 'hindu', 'maha shivaratri', 'pilgrimage', 'grand bassin', 'culture'],
   },
   {
-    id: 12,
-    title: 'Sega Dance Performance',
+    id: 14,
+    title: 'Sega Music Performance',
     category: 'Cultural Heritage',
     image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=1200',
     description: 'Traditional sega music and dance performance. Sega originated among enslaved Africans, featuring the ravanne (goat-skin drum), maravanne (shaker), and sensual hip-swaying dances. UNESCO Intangible Cultural Heritage (2014).',
@@ -127,7 +147,7 @@ export const galleryData = [
 
   // Modern Mauritius
   {
-    id: 13,
+    id: 15,
     title: 'Modern Port Louis Skyline',
     category: 'Modern Mauritius',
     image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1200',
@@ -137,7 +157,7 @@ export const galleryData = [
     tags: ['port louis', 'modern', 'economy', 'development', 'city'],
   },
   {
-    id: 14,
+    id: 16,
     title: 'Black River Gorges National Park',
     category: 'Natural Heritage',
     image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200',
@@ -147,7 +167,7 @@ export const galleryData = [
     tags: ['national park', 'conservation', 'endemic species', 'forest', 'nature'],
   },
   {
-    id: 15,
+    id: 17,
     title: 'Pamplemousses Botanical Garden',
     category: 'Natural Heritage',
     image: 'https://images.unsplash.com/photo-1584813539111-9c5f06f65eb2?w=1200',
