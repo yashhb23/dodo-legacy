@@ -90,14 +90,15 @@ export default function HistorySection() {
             </p>
           </div>
 
-          {/* Facts Grid */}
+          {/* Facts Grid - Now Clickable */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {facts.map((fact, index) => {
               const Icon = fact.icon;
               return (
                 <Card
                   key={index}
-                  className="group p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
+                  onClick={() => handleFactClick(fact)}
+                  className="group p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 cursor-pointer"
                 >
                   <div className="flex flex-col items-center text-center space-y-4">
                     <div
