@@ -89,6 +89,8 @@ export const cultureData = [
     title: 'Music & Dance',
     icon: '🎵',
     summary: 'Sega music and dance, born from African slave heritage and recognized by UNESCO, represents the soul of Mauritius—a rhythmic expression of joy, resilience, and Creole identity that evolved into modern fusion genres.',
+    microStory: 'Why Sega Was Banned and How It Survived',
+    microStoryContent: 'During slavery and early colonial periods, French and British authorities viewed sega as dangerous—a gathering point for enslaved Africans that could spark resistance. Sega performances were restricted or banned outright. Yet enslaved communities continued performing secretly on beaches at night, preserving it as an act of cultural defiance. After independence, sega was reclaimed as a symbol of Creole identity and pride. UNESCO recognition in 2014 completed its journey from forbidden music to national heritage.',
     image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800',
     content: [
       'Sega is the national music and dance, recognized by UNESCO as Intangible Cultural Heritage (2014). Originating among enslaved Africans during French colonial rule, sega was a form of expression, resistance, and community bonding. Performed traditionally on beaches around bonfires, it features the ravanne (goat-skin drum), maravane (shaker), and triangle.',
