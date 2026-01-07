@@ -1,0 +1,92 @@
+export const cultureData = [
+  {
+    id: 'languages',
+    title: 'Languages',
+    icon: '🗣️',
+    summary: 'Mauritius is a multilingual society where Mauritian Creole, French, English, and Asian languages coexist, reflecting centuries of migration and cultural blending.',
+    image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800',
+    content: [
+      'Mauritian Creole (Morisyen) is the lingua franca, spoken by 90% of the population in daily life. It evolved from French with influences from African, Malagasy, and Indian languages.',
+      'English is the official language of parliament and education, while French dominates media, literature, and business. This trilingual reality creates a unique linguistic landscape.',
+      'Bhojpuri, Hindi, Tamil, Urdu, Hakka, and Mandarin are spoken within respective communities, preserving ancestral heritage while contributing to the island\'s cultural richness.',
+    ],
+    highlights: [
+      'Mauritian Creole: National lingua franca',
+      'English: Official parliamentary language',
+      'French: Dominant in media and culture',
+      'Asian languages: Preserved by diaspora communities',
+    ],
+  },
+  {
+    id: 'food',
+    title: 'Food',
+    icon: '🍛',
+    summary: 'Mauritian cuisine is a fusion of Indian, Chinese, African, and French culinary traditions, creating unique flavors found nowhere else in the world.',
+    image: 'https://images.unsplash.com/photo-1585937421612-70e008356f35?w=800',
+    content: [
+      'Street food culture thrives with dholl puri (flatbread with yellow split peas), gateaux piments (chili cakes), and samosas sold from colorful roadside stalls across the island.',
+      'Curries reflect Indian influence with Mauritian twists—using local seafood, palmiste (palm heart), and unique spice blends. Rice is the staple, served with rougaille (tomato-based sauce).',
+      'Chinese influence brings fried noodles (mine frite) and fried rice, while French heritage appears in baguettes, pastries, and the beloved pain maison (house bread).',
+    ],
+    highlights: [
+      'Dholl puri: National street food icon',
+      'Vindaye: Mustard-based fish curry',
+      'Gateaux piments: Fried chili lentil cakes',
+      'Alouda: Sweet milk drink with basil seeds',
+    ],
+  },
+  {
+    id: 'religion',
+    title: 'Religion',
+    icon: '🕉️',
+    summary: 'Religious harmony defines Mauritius, where Hindu, Christian, Muslim, and Buddhist communities coexist peacefully, celebrating each other\'s festivals.',
+    image: 'https://images.unsplash.com/photo-1604608672516-f1b9b1f4a159?w=800',
+    content: [
+      'Hinduism is practiced by about 48% of the population, brought by Indian indentured laborers. Colorful temples dot the landscape, and Maha Shivaratri sees thousands pilgrimage to Grand Bassin lake.',
+      'Christianity (about 32%) includes Catholics and various Protestant denominations, a legacy of French and British colonization. Historic churches stand in every village.',
+      'Islam (about 17%) is practiced by descendants of Indian Muslim traders and laborers. Mosques blend into the multicultural fabric, with Friday prayers and Eid celebrations widely observed.',
+    ],
+    highlights: [
+      'Public holidays for all major religions',
+      'Grand Bassin: Sacred Hindu pilgrimage site',
+      'Pere Laval: Catholic saint venerated by all communities',
+      'Religious tolerance enshrined in constitution',
+    ],
+  },
+  {
+    id: 'festivals',
+    title: 'Festivals',
+    icon: '🎊',
+    summary: 'Mauritius celebrates an extraordinary number of festivals year-round, honoring Hindu, Muslim, Christian, Chinese, and secular traditions with equal enthusiasm.',
+    image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800',
+    content: [
+      'Maha Shivaratri sees hundreds of thousands of white-clad pilgrims walking to Grand Bassin carrying kanwars (wooden structures). It\'s the largest Hindu festival outside India.',
+      'Cavadee (Thaipoosam Cavadee) features Tamil devotees piercing their bodies and carrying cavadees in honor of Lord Muruga, demonstrating faith through physical devotion.',
+      'Diwali lights up homes across the island. Eid-ul-Fitr brings communal prayers and feasts. Christmas and Chinese Spring Festival are public holidays, celebrated by all communities regardless of faith.',
+    ],
+    highlights: [
+      'Maha Shivaratri: Largest Hindu gathering',
+      'Diwali: Festival of lights',
+      'Eid, Christmas, Spring Festival: All public holidays',
+      'Secular celebrations unite all communities',
+    ],
+  },
+  {
+    id: 'music',
+    title: 'Music & Dance',
+    icon: '🎵',
+    summary: 'Sega music and dance, born from African slave heritage, represents the soul of Mauritius—a rhythmic, joyful expression of resilience and identity.',
+    image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800',
+    content: [
+      'Sega, recognized by UNESCO, originated among enslaved Africans as a form of resistance and expression. Performed to the ravanne (goat-skin drum), maravanne (shaker), and triangle.',
+      'Traditional sega features hip-swaying dances, often performed on beaches at night around bonfires. Lyrics tell stories of love, hardship, and daily life in Creole language.',
+      'Modern seggae fuses sega with reggae, while other genres reflect Indian film music, Western pop, and electronic influences, creating a vibrant contemporary music scene.',
+    ],
+    highlights: [
+      'Sega: UNESCO Intangible Cultural Heritage',
+      'Ravanne drum: Heartbeat of sega music',
+      'Ti Frere: Legendary sega musician',
+      'Seggae: Modern fusion genre',
+    ],
+  },
+];
