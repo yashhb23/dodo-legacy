@@ -133,9 +133,10 @@ export default function HeroSection({ onBadgeClick }) {
               The Iconic Symbol of Mauritius
             </h2>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              An extinct flightless bird that once roamed the paradise island. 
-              The Dodo became a symbol of human-caused extinction and remains 
-              an eternal emblem of Mauritius' rich natural heritage.
+              The dodo (Raphus cucullatus), a flightless bird endemic to Mauritius, became extinct circa 1662-1690—less 
+              than a century after human arrival. Habitat destruction, hunting, and invasive species (rats, pigs, monkeys) 
+              introduced by Dutch settlers caused its demise. Today, the dodo symbolizes human-caused extinction and 
+              remains Mauritius' most recognizable icon, appearing on the national coat of arms.
             </p>
           </div>
 
