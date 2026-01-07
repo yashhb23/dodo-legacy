@@ -1,5 +1,7 @@
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import CreditsModal from '@/components/CreditsModal';
 
 const footerLinks = [
   {
@@ -21,6 +23,7 @@ const footerLinks = [
 ];
 
 export default function Footer() {
+  const [isCreditsOpen, setIsCreditsOpen] = useState(false);
   return (
     <footer className="relative bg-gradient-to-b from-muted/20 to-background border-t border-border/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
