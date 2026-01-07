@@ -10,7 +10,7 @@ const districts = [
   { name: 'GRAND BAIE', position: 'bottom-right' },
 ];
 
-export default function HeroSection() {
+export default function HeroSection({ onBadgeClick }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20">
       {/* Background gradient spotlight */}
