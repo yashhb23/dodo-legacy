@@ -5,8 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { useEffect } from 'react';
 
 export default function GalleryViewer({ image, isOpen, onClose }) {
-  if (!image) return null;
-
   // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;
@@ -19,6 +17,8 @@ export default function GalleryViewer({ image, isOpen, onClose }) {
     window.addEventListener('keydown', handleKeyboard);
     return () => window.removeEventListener('keydown', handleKeyboard);
   }, [isOpen, onClose]);
+
+  if (!image) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
