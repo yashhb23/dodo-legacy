@@ -94,16 +94,18 @@ export default function DodoModal({ isOpen, onClose }) {
                 Legacy and Symbolism
               </h3>
               <p className="text-muted-foreground leading-relaxed">
-                The dodo became a symbol of human-caused extinction and the fragility of island ecosystems. 
-                The phrase "dead as a dodo" entered language as a metaphor for obsolescence. Today, the dodo 
-                represents Mauritius's unique heritage and serves as a reminder of the importance of conservation. 
-                It appears on the Mauritian coat of arms and remains the island's most recognizable symbol worldwide.
+                The dodo became the archetypal symbol of human-caused extinction. The phrase "dead as a dodo" entered 
+                English language as a metaphor for obsolescence. Lewis Carroll immortalized the dodo in <em>Alice's Adventures 
+                in Wonderland</em> (1865). Today, the dodo represents conservation awareness and the fragility of island 
+                ecosystems. It appears on Mauritius' coat of arms alongside the extinct Rodrigues solitaire (another Mascarene 
+                bird), symbolizing the nation's unique but vulnerable natural heritage. Scientists continue studying dodo 
+                remains to understand its biology and extinction mechanics.
               </p>
             </div>
 
             <div className="pt-4 border-t border-border/50">
               <p className="text-xs text-muted-foreground">
-                <strong>Last confirmed sighting:</strong> 1662 | <strong>Extinction confirmed:</strong> Late 17th century
+                <strong>Last confirmed sighting:</strong> 1662 | <strong>Extinction confirmed:</strong> circa 1690 | <strong>Scientific classification:</strong> Raphus cucullatus (Columbidae family)
               </p>
             </div>
           </div>
