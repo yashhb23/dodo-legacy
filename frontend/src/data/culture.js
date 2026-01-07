@@ -25,6 +25,8 @@ export const cultureData = [
     title: 'Cuisine',
     icon: '🍛',
     summary: 'Mauritian cuisine is a unique fusion reflecting Indian, African, Chinese, and French influences, creating flavors found nowhere else. Street food culture thrives alongside family recipes passed through generations.',
+    microStory: 'How Dholl Puri Became the National Soul Food',
+    microStoryContent: 'Dholl puri—yellow split pea flatbread—originated with Indian indentured laborers who adapted roti using local ingredients. What made it uniquely Mauritian was its evolution: Creole rougaille (tomato chutney), Chinese pickles, and French butter bean curry were added. Sold from roadside stalls for pennies, it became the equalizer—eaten by everyone regardless of class or ethnicity. Today, no food better represents Mauritius' fusion identity.',
     image: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800',
     content: [
       'Street food defines Mauritian culinary culture. Dholl puri—yellow split pea flatbread served with butter bean curry, chutney, and rougaille—is the national street food icon. Gateaux piments (fried chili lentil cakes), samosas, boulettes (steamed dumplings), and bara (lentil fritters) are sold from colorful mobile stalls across the island.',
