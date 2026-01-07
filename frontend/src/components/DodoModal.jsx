@@ -66,21 +66,22 @@ export default function DodoModal({ isOpen, onClose }) {
                 Why Did It Go Extinct?
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                The dodo became extinct less than a century after humans discovered Mauritius. Multiple factors 
-                led to its rapid demise:
+                The dodo became extinct within approximately 60-80 years of human arrival (Dutch settlement 1638; extinction 
+                circa 1662-1690). No complete specimens exist today—only sub-fossil bones and contemporary descriptions/drawings. 
+                Multiple factors caused its rapid extinction:
               </p>
               <ul className="space-y-2 text-muted-foreground">
                 <li className="flex gap-3">
                   <span className="text-primary font-bold">•</span>
-                  <span><strong>Human hunting:</strong> Dutch sailors and settlers hunted dodos for food, finding them easy prey due to their fearlessness.</span>
+                  <span><strong>Direct hunting by humans:</strong> Dutch sailors and settlers hunted dodos for fresh meat. The birds' fearlessness and inability to fly made them easy prey. However, dodo meat was reportedly unpalatable, so overhunting was not the primary cause.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary font-bold">•</span>
-                  <span><strong>Introduced species:</strong> Rats, pigs, dogs, cats, and monkeys brought by ships destroyed dodo eggs and competed for food.</span>
+                  <span><strong>Invasive species:</strong> Rats, pigs, dogs, cats, and monkeys introduced by Dutch ships destroyed dodo eggs and competed for food. Dodos nested on the ground, making eggs vulnerable. Rats likely had the most devastating impact on reproduction.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary font-bold">•</span>
-                  <span><strong>Habitat destruction:</strong> Deforestation for settlements and agriculture eliminated the dodo's natural forest habitat.</span>
+                  <span><strong>Habitat destruction:</strong> Dutch deforestation for timber and settlements eliminated the dodo's native ebony forest habitat. Loss of food sources (fruits, seeds) compounded population decline.</span>
                 </li>
               </ul>
             </div>
