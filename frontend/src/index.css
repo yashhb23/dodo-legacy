@@ -93,6 +93,14 @@ code {
     font-weight: 400;
 }
 
+/* Mobile-specific hero title with better readability */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: clamp(3rem, 12vw, 5rem);
+        line-height: 1;
+    }
+}
+
 .section-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(2.5rem, 8vw, 6rem);
@@ -104,6 +112,17 @@ code {
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;
+}
+
+/* Scroll offset for fixed nav */
+html {
+    scroll-padding-top: 80px;
+}
+
+@media (max-width: 768px) {
+    html {
+        scroll-padding-top: 60px;
+    }
 }
 
 /* Hide scrollbar but keep functionality */
@@ -190,6 +209,130 @@ html {
 
 .animate-rotate {
     animation: rotateCircle 60s linear infinite;
+}
+
+/* Mobile: Reduce animation intensity */
+@media (max-width: 768px) {
+    .animate-rotate {
+        animation: rotateCircle 120s linear infinite;
+        opacity: 0.3;
+    }
+    
+    .animate-float {
+        animation: float 4s ease-in-out infinite;
+    }
+}
+
+/* Text readability enhancement on mobile */
+@media (max-width: 768px) {
+    .hero-text-overlay {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+    }
+}
+
+/* Responsive spacing */
+.section-spacing {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+@media (max-width: 768px) {
+    .section-spacing {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+}
+
+/* District cards responsive grid */
+.district-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 1199px) {
+    .district-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .district-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Modal responsive sizing */
+.modal-content {
+    max-width: 900px;
+    width: 100%;
+}
+
+@media (max-width: 1199px) and (min-width: 768px) {
+    .modal-content {
+        max-width: 650px;
+    }
+}
+
+@media (max-width: 767px) {
+    .modal-content {
+        max-width: 90%;
+        width: 90%;
+    }
+}
+
+/* Accordion touch targets */
+.accordion-header {
+    min-height: 44px;
+    touch-action: manipulation;
+}
+
+/* Footer responsive */
+@media (max-width: 768px) {
+    .footer-content {
+        text-align: center;
+    }
+    
+    .footer-links {
+        justify-content: center;
+    }
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+    overflow-x: hidden;
+}
+
+/* Gallery masonry responsive */
+@media (max-width: 767px) {
+    .gallery-masonry {
+        column-count: 1;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .gallery-masonry {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 1200px) {
+    .gallery-masonry {
+        column-count: 3;
+    }
+}
+
+/* Discovery widget responsive positioning */
+@media (max-width: 768px) {
+    .discovery-widget {
+        bottom: 1rem;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+    }
 }
 
 @layer base {
