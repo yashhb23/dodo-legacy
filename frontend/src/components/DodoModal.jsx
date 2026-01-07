@@ -50,9 +50,11 @@ export default function DodoModal({ isOpen, onClose }) {
                 What Was the Dodo?
               </h3>
               <p className="text-muted-foreground leading-relaxed">
-                The dodo (Raphus cucullatus) was a flightless bird endemic to Mauritius. Standing about 1 meter tall 
-                and weighing 10-18 kg, it evolved in isolation without natural predators, losing its ability to fly. 
-                It had a large hooked beak, small wings, and a plump body covered in grayish plumage.
+                The dodo (Raphus cucullatus) was a flightless bird endemic only to Mauritius. Standing approximately 
+                1 meter (3 feet) tall and weighing 10-18 kg (22-40 lbs), it evolved in isolation for millions of years 
+                without natural predators. This lack of threat caused it to lose the ability to fly and develop fearlessness 
+                toward humans—traits that would prove fatal. The dodo had a large hooked beak, small vestigial wings, 
+                a plump body, and grayish-brown plumage.
               </p>
             </div>
 
