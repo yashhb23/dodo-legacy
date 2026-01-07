@@ -34,15 +34,27 @@ export default function HeroSection({ onBadgeClick }) {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="text-center space-y-8">
-          {/* Badges */}
+          {/* Badges - Now Clickable */}
           <div className="flex flex-wrap items-center justify-center gap-3 animate-fade-in">
-            <Badge variant="secondary" className="px-4 py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50">
+            <Badge
+              onClick={() => onBadgeClick('heritage')}
+              variant="secondary"
+              className="px-4 py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50 cursor-pointer hover:bg-primary/20 hover:border-primary/50 transition-all"
+            >
               Heritage
             </Badge>
-            <Badge variant="secondary" className="px-4 py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50">
+            <Badge
+              onClick={() => onBadgeClick('island-story')}
+              variant="secondary"
+              className="px-4 py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50 cursor-pointer hover:bg-secondary/20 hover:border-secondary/50 transition-all"
+            >
               Island Story
             </Badge>
-            <Badge variant="secondary" className="px-4 py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50">
+            <Badge
+              onClick={() => onBadgeClick('extinct-icon')}
+              variant="secondary"
+              className="px-4 py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50 cursor-pointer hover:bg-primary/20 hover:border-primary/50 transition-all"
+            >
               Extinct Icon
             </Badge>
           </div>
