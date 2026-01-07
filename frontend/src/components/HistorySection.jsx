@@ -157,6 +157,16 @@ export default function HistorySection() {
                 </Card>
               ))}
             </div>
+
+            {/* Explore Regions Badge - Clickable */}
+            <div className="flex justify-center mt-12">
+              <Badge
+                onClick={scrollToDistricts}
+                className="px-6 py-2 bg-secondary/20 text-secondary border-secondary/30 cursor-pointer hover:bg-secondary/30 hover:scale-105 transition-all"
+              >
+                Explore Regions
+              </Badge>
+            </div>
           </div>
         </div>
       </section>
@@ -164,8 +174,15 @@ export default function HistorySection() {
       {/* District Modal */}
       <DistrictModal
         district={selectedDistrict}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        isOpen={isDistrictModalOpen}
+        onClose={handleCloseDistrictModal}
+      />
+
+      {/* History Fact Modal */}
+      <HistoryFactModal
+        fact={selectedFact}
+        isOpen={isFactModalOpen}
+        onClose={handleCloseFactModal}
       />
     </>
   );
