@@ -8,7 +8,29 @@ const navItems = [
   { name: 'Gallery', href: '#gallery' },
 ];
 
-export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled }) {
+export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSearchClick, onExploreClick }) {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavClick = (href) => {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Highlight section title briefly
+      const title = element.querySelector('h2');
+      if (title) {
+        title.style.transition = 'all 0.3s ease';
+        title.style.transform = 'scale(1.05)';
+        title.style.color = 'hsl(var(--primary))';
+        setTimeout(() => {
+          title.style.transform = 'scale(1)';
+          title.style.color = '';
+        }, 600);
+      }
+    }
+    setIsMenuOpen(false);
+  };
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
