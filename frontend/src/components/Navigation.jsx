@@ -42,35 +42,36 @@ export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSear
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <div className="flex items-center gap-3">
+            <button onClick={scrollToTop} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                 <span className="text-white font-bold text-xl">🦤</span>
               </div>
               <span className="text-xl font-bold tracking-wider" style={{ fontFamily: 'Bebas Neue, sans-serif' }}>
                 DODO LEGACY
               </span>
-            </div>
+            </button>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <a
+              <button
                 key={item.name}
-                href={item.href}
+                onClick={() => handleNavClick(item.href)}
                 className="text-foreground/80 hover:text-foreground transition-colors duration-200 text-sm font-medium uppercase tracking-wide"
               >
                 {item.name}
-              </a>
+              </button>
             ))}
           </div>
 
           {/* Right side buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="rounded-full">
+            <Button variant="ghost" size="icon" className="rounded-full" onClick={onSearchClick}>
               <Search className="w-5 h-5" />
             </Button>
             <Button
+              onClick={onExploreClick}
               className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity"
             >
               Explore
