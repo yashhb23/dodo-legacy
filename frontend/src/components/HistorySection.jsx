@@ -3,7 +3,9 @@ import { MapPin, Calendar, Users, Award } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import DistrictModal from '@/components/DistrictModal';
+import HistoryFactModal from '@/components/HistoryFactModal';
 import { districtsData } from '@/data/districts';
+import { historyFactsExpanded } from '@/data/historyFacts';
 
 const facts = [
   {
@@ -11,40 +13,59 @@ const facts = [
     title: 'Discovered 1598',
     description: 'Dutch sailors first landed on the uninhabited island',
     color: 'primary',
+    id: 'discovered-1598',
   },
   {
     icon: Users,
     title: 'Multicultural',
     description: 'Blend of Indian, African, Chinese, and European heritage',
     color: 'secondary',
+    id: 'multicultural',
   },
   {
     icon: MapPin,
     title: 'Island Paradise',
     description: 'Located in the Indian Ocean, east of Madagascar',
     color: 'primary',
+    id: 'island-paradise',
   },
   {
     icon: Award,
     title: 'Independence 1968',
     description: 'Gained sovereignty from British colonial rule',
     color: 'secondary',
+    id: 'independence-1968',
   },
 ];
 
 export default function HistorySection() {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDistrictModalOpen, setIsDistrictModalOpen] = useState(false);
+  const [selectedFact, setSelectedFact] = useState(null);
+  const [isFactModalOpen, setIsFactModalOpen] = useState(false);
 
   const handleDistrictClick = (district) => {
     setSelectedDistrict(district);
-    setIsModalOpen(true);
+    setIsDistrictModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    // Delay clearing selected district until modal closes
+  const handleCloseDistrictModal = () => {
+    setIsDistrictModalOpen(false);
     setTimeout(() => setSelectedDistrict(null), 300);
+  };
+
+  const handleFactClick = (fact) => {
+    setSelectedFact(historyFactsExpanded[fact.id]);
+    setIsFactModalOpen(true);
+  };
+
+  const handleCloseFactModal = () => {
+    setIsFactModalOpen(false);
+    setTimeout(() => setSelectedFact(null), 300);
+  };
+
+  const scrollToDistricts = () => {
+    document.getElementById('districts').scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
