@@ -4,6 +4,8 @@ export const cultureData = [
     title: 'Languages',
     icon: '🗣️',
     summary: 'Mauritius is a multilingual nation where Mauritian Creole, French, English, and Asian languages coexist, creating a unique linguistic landscape shaped by centuries of colonization and immigration.',
+    microStory: 'Why Creole Became the Unifying Language',
+    microStoryContent: 'When enslaved Africans, Malagasy workers, Indian laborers, Chinese traders, and European colonizers lived side by side, no single group held linguistic majority. Mauritian Creole emerged organically as the language of survival and solidarity—a French-based pidgin enriched by African grammar, Malagasy words, and Indian expressions. Today, 90% speak Creole regardless of ethnic origin, making it the true language of national unity.',
     image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800',
     content: [
       'Mauritian Creole (Morisyen or Kreol Morisien) is the lingua franca, spoken by approximately 90% of the population in daily life. It evolved from 18th-century French with significant influences from Malagasy, African Bantu languages, and Indian languages. Kreol became a symbol of national identity and cultural unity across ethnic groups.',
