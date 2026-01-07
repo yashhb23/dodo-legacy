@@ -68,6 +68,8 @@ export const cultureData = [
     title: 'Festivals',
     icon: '🎊',
     summary: 'Mauritius celebrates an extraordinary number of religious and cultural festivals year-round, with public holidays honoring Hindu, Muslim, Christian, Chinese, and national traditions—reflecting the island\'s inclusive ethos.',
+    microStory: 'Why Maha Shivaratri Is Uniquely Massive in Mauritius',
+    microStoryContent: 'While Maha Shivaratri is celebrated across the Hindu world, Mauritius hosts the largest gathering outside India. The reason: Grand Bassin crater lake, discovered in the 19th century, was declared spiritually connected to the Ganges River. Hindu leaders proclaimed its waters sacred. For Indo-Mauritian laborers, disconnected from India by indentured contracts, Grand Bassin became a spiritual homeland substitute. Today, up to 500,000 pilgrims walk there annually—over 40% of the population.',
     image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800',
     content: [
       'Maha Shivaratri ("Great Night of Shiva") is the largest Hindu pilgrimage outside India. Up to 500,000 devotees, dressed in white, walk to Grand Bassin crater lake carrying kanwars (decorated bamboo structures). The pilgrimage can be 30-50 km from some areas. Participants fast, pray, and pour holy water from the lake into Shiva lingams.',
