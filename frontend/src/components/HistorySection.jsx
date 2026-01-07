@@ -81,12 +81,13 @@ export default function HistorySection() {
               The Story of <span className="text-primary">Mauritius</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Mauritius is a volcanic island nation in the Indian Ocean, discovered uninhabited by Portuguese 
-              sailors around 1507. The Dutch colonized it in 1598, naming it after Prince Maurice of Nassau. 
-              After Dutch abandonment in 1710, the French took control in 1715, developing sugar plantations. 
-              Britain captured the island in 1810 during the Napoleonic Wars. Mauritius gained independence 
-              in 1968 and became a republic in 1992. Today, it's known for its multicultural society, 
-              thriving economy, and the extinct dodo bird—its most famous symbol.
+              Mauritius, formed by volcanic activity 8-10 million years ago, remained uninhabited until Portuguese sailors 
+              arrived circa 1507. Dutch colonization (1598-1710) introduced sugarcane and witnessed the dodo's extinction. 
+              French rule (1715-1810) as Île de France established plantation economy with enslaved African labor. 
+              British conquest (1810) maintained sugar dominance; abolition of slavery (1835) brought 450,000 Indian 
+              indentured laborers (1834-1920), fundamentally shaping demographics. Independence (1968) and republic status 
+              (1992) followed. Today, Mauritius exemplifies successful multiculturalism: Hindu, Christian, Muslim, and Buddhist 
+              communities coexist harmoniously in one of Africa's most stable democracies.
             </p>
           </div>
 
