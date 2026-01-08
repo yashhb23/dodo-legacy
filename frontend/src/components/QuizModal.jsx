@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, Check, AlertCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -11,12 +11,20 @@ export default function QuizModal({ isOpen, onClose }) {
   const [showExplanation, setShowExplanation] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [quizComplete, setQuizComplete] = useState(false);
+  const stateInitialized = useRef(false);
+
+  // Preserve state when modal reopens in same session
+  useEffect(() => {
+    if (isOpen && !stateInitialized.current) {
+      stateInitialized.current = true;
+    }
+  }, [isOpen]);
 
   const question = mauritiusQuiz.questions[currentQuestion];
   const isLastQuestion = currentQuestion === mauritiusQuiz.questions.length - 1;
 
   const handleAnswerSelect = (optionId) => {
-    if (showExplanation) return; // Prevent changing answer after submission
+    if (showExplanation) return;
     setSelectedAnswer(optionId);
   };
 
@@ -24,7 +32,7 @@ export default function QuizModal({ isOpen, onClose }) {
     if (!selectedAnswer) return;
     
     const correct = question.options.find(opt => opt.id === selectedAnswer).correct;
-    setAnswers([...answers, { questionId: question.id, correct }]);
+    setAnswers(prev => [...prev, { questionId: question.id, correct }]);
     setShowExplanation(true);
   };
 
@@ -32,7 +40,7 @@ export default function QuizModal({ isOpen, onClose }) {
     if (isLastQuestion) {
       setQuizComplete(true);
     } else {
-      setCurrentQuestion(currentQuestion + 1);
+      setCurrentQuestion(prev => prev + 1);
       setSelectedAnswer(null);
       setShowExplanation(false);
     }
@@ -47,6 +55,11 @@ export default function QuizModal({ isOpen, onClose }) {
   };
 
   const handleClose = () => {
+    // Don't reset state on close - preserve progress
+    onClose();
+  };
+
+  const handleCloseAndReset = () => {
     handleRestart();
     onClose();
   };
