@@ -214,21 +214,31 @@ html {
 /* Mobile: Reduce animation intensity */
 @media (max-width: 768px) {
     .animate-rotate {
-        animation: rotateCircle 120s linear infinite;
-        opacity: 0.3;
+        animation: rotateCircle 180s linear infinite;
+        opacity: 0.15;
     }
     
     .animate-float {
-        animation: float 4s ease-in-out infinite;
+        animation: float 5s ease-in-out infinite;
+    }
+}
+
+/* Mobile hero text overlay for better readability */
+@media (max-width: 640px) {
+    .hero-title {
+        font-size: clamp(2.5rem, 14vw, 4rem);
+        line-height: 1.1;
+        letter-spacing: 0.02em;
     }
 }
 
 /* Text readability enhancement on mobile */
 @media (max-width: 768px) {
     .hero-text-overlay {
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.6);
         padding: 1.5rem;
-        border-radius: 0.5rem;
+        border-radius: 0.75rem;
+        backdrop-filter: blur(8px);
     }
 }
 
