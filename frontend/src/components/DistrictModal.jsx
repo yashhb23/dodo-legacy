@@ -201,6 +201,21 @@ export default function DistrictModal({ district, isOpen, onClose }) {
                 )}
               </div>
             </div>
+
+            {/* Share Buttons */}
+            <div className="mt-6 pt-4 border-t border-border/50 flex items-center justify-between">
+              <ShareButtons 
+                title={`Discover ${district.name} - Mauritius`}
+                description={district.overview?.substring(0, 150) + '...'}
+              />
+              <Button
+                onClick={onClose}
+                variant="outline"
+                className="border-primary/50 hover:bg-primary/10"
+              >
+                Continue Exploring
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
