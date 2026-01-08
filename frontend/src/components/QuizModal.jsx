@@ -72,28 +72,28 @@ export default function QuizModal({ isOpen, onClose }) {
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
         <DialogContent className="max-w-2xl bg-card border-border/50 text-foreground p-0 overflow-hidden">
-          <div className="p-8 text-center">
-            <div className="text-6xl mb-4">{result.emoji}</div>
+          <div className="p-6 sm:p-8 text-center">
+            <div className="text-5xl sm:text-6xl mb-4">{result.emoji}</div>
             <h2
-              className="text-4xl uppercase tracking-wide mb-4 text-primary"
+              className="text-3xl sm:text-4xl uppercase tracking-wide mb-4 text-primary"
               style={{ fontFamily: 'Bebas Neue, sans-serif' }}
             >
               {result.level}
             </h2>
-            <p className="text-lg text-muted-foreground mb-6">{result.message}</p>
+            <p className="text-base sm:text-lg text-muted-foreground mb-6">{result.message}</p>
             
             <div className="mb-8">
-              <div className="text-5xl font-bold text-foreground mb-2">
+              <div className="text-4xl sm:text-5xl font-bold text-foreground mb-2">
                 {correctCount}/{mauritiusQuiz.questions.length}
               </div>
               <p className="text-muted-foreground">Correct Answers ({percentage}%)</p>
             </div>
 
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button onClick={handleRestart} className="bg-gradient-to-r from-primary to-secondary">
                 Try Again
               </Button>
-              <Button onClick={handleClose} variant="outline">
+              <Button onClick={handleCloseAndReset} variant="outline">
                 Close
               </Button>
             </div>
