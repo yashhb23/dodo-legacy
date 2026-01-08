@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Shuffle, X, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { didYouKnowFacts, onThisDayEvents } from '@/data/facts';
@@ -6,9 +6,14 @@ import { didYouKnowFacts, onThisDayEvents } from '@/data/facts';
 export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
   const [currentFact, setCurrentFact] = useState(null);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [factType, setFactType] = useState('did-you-know');
+  const factTypeRef = useRef('did-you-know');
+  const initializedRef = useRef(false);
 
   useEffect(() => {
+    // Prevent double initialization in React strict mode
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
     // Get "On This Day" event for current date
     const today = new Date();
     const todayEvent = onThisDayEvents.find(
@@ -17,10 +22,10 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
 
     // Rotate between "Did You Know" and "On This Day"
     const rotateFacts = () => {
-      if (factType === 'did-you-know') {
+      if (factTypeRef.current === 'did-you-know') {
         const randomFact = didYouKnowFacts[Math.floor(Math.random() * didYouKnowFacts.length)];
         setCurrentFact({ type: 'did-you-know', content: randomFact.fact });
-        setFactType('on-this-day');
+        factTypeRef.current = 'on-this-day';
       } else {
         if (todayEvent) {
           setCurrentFact({ type: 'on-this-day', content: todayEvent.event, source: todayEvent.source });
@@ -33,7 +38,7 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
             source: randomEvent.source,
           });
         }
-        setFactType('did-you-know');
+        factTypeRef.current = 'did-you-know';
       }
     };
 
@@ -44,7 +49,7 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
     const interval = setInterval(rotateFacts, 10000);
 
     return () => clearInterval(interval);
-  }, [factType]);
+  }, []); // Empty dependency array - runs once
 
   if (isMinimized) {
     return (
