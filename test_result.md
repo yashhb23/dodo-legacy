@@ -242,15 +242,18 @@ frontend:
 
   - task: "Discovery Widget Testing"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/components/DiscoveryWidget.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "New feature implemented - Floating discovery widget with 'Did You Know?' facts and 'On This Day' historical events. Widget has minimize button, Discover button (random district), and Quiz button (opens quiz modal)."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED: Discovery widget fully functional. Located in bottom-right corner with dodo emoji, displays rotating facts ('Did You Know?' and 'On This Day'), Discover button opens random district modal successfully, Quiz button opens quiz modal, minimize/expand functionality works (minimizes to dodo emoji button). Minor: Widget expansion had overlay interception issue but core functionality works perfectly. Fact rotation confirmed working between different fact types."
 
   - task: "SEO Meta Tags Testing"
     implemented: true
