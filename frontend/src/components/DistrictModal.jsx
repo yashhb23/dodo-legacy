@@ -3,6 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import ShareButtons from '@/components/ShareButtons';
 
 export default function DistrictModal({ district, isOpen, onClose }) {
   const [expandedSection, setExpandedSection] = useState(null);
@@ -12,6 +14,11 @@ export default function DistrictModal({ district, isOpen, onClose }) {
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
   };
+
+  const breadcrumbItems = [
+    { label: 'Districts', onClick: () => document.getElementById('districts')?.scrollIntoView({ behavior: 'smooth' }) },
+    { label: district.name }
+  ];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -43,6 +50,9 @@ export default function DistrictModal({ district, isOpen, onClose }) {
 
         <div className="overflow-y-auto max-h-[calc(90vh-256px)]">
           <div className="p-8">
+            {/* Breadcrumbs */}
+            <Breadcrumbs items={breadcrumbItems} />
+            
             {/* Title */}
             <DialogHeader className="mb-6">
               <div className="flex items-center gap-4 mb-2">
