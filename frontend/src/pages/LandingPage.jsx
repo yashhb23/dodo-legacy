@@ -34,6 +34,9 @@ export default function LandingPage() {
   const [isSearchCultureModalOpen, setIsSearchCultureModalOpen] = useState(false);
   const [selectedSearchGallery, setSelectedSearchGallery] = useState(null);
   const [isSearchGalleryViewerOpen, setIsSearchGalleryViewerOpen] = useState(false);
+  
+  // Quiz modal state
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
