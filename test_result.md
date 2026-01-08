@@ -210,6 +210,54 @@ frontend:
         agent: "testing"
         comment: "✅ PASSED: Rotating dodo circle ring animation working (40 dodo icons rotating around center), multiple fade-in animations found and functional, bounce animation for scroll indicator present, float animation for dodo image working, smooth scrolling behavior verified."
 
+  - task: "Voices Section Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/VoicesSection.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New feature implemented - Voices of Mauritius section with 10 authentic testimonials from real Mauritian visitors. Section displays testimonial cards with name, location, rating, experience type, and tags."
+
+  - task: "Quiz Modal Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/QuizModal.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New feature implemented - Interactive quiz with 10 questions about Mauritius history and culture. Features progress bar, difficulty badges, explanations after each answer, and final score with level assessment."
+
+  - task: "Discovery Widget Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/DiscoveryWidget.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New feature implemented - Floating discovery widget with 'Did You Know?' facts and 'On This Day' historical events. Widget has minimize button, Discover button (random district), and Quiz button (opens quiz modal)."
+
+  - task: "SEO Meta Tags Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/LandingPage.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New feature implemented - Added react-helmet for SEO with Open Graph tags, Twitter Card tags, and schema.org structured data for improved discoverability."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
