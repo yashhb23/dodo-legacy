@@ -116,6 +116,41 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* SEO Meta Tags */}
+      <Helmet>
+        <title>DODO LEGACY | Discover the Rich History & Culture of Mauritius</title>
+        <meta name="description" content="Explore the captivating history of Mauritius - from the legendary dodo bird to vibrant multicultural heritage. Discover 9 districts, colonial history, sega music, and authentic Mauritian culture." />
+        <meta name="keywords" content="Mauritius, dodo bird, Mauritian history, Mauritius culture, Port Louis, Le Morne, sega music, Mauritian heritage, Indian Ocean, Mauritius travel" />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="DODO LEGACY | Discover Mauritius" />
+        <meta property="og:description" content="Explore the captivating history and vibrant culture of Mauritius - the Island of the Dodo. A digital journey through heritage, traditions, and natural wonders." />
+        <meta property="og:image" content="https://images.unsplash.com/photo-1585556557157-cd9191630e4a?w=1200" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="DODO LEGACY | Discover Mauritius" />
+        <meta name="twitter:description" content="Explore the captivating history and vibrant culture of Mauritius - the Island of the Dodo." />
+        <meta name="twitter:image" content="https://images.unsplash.com/photo-1585556557157-cd9191630e4a?w=1200" />
+        
+        {/* Schema.org structured data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "DODO LEGACY",
+            "description": "A digital experience exploring the rich history and culture of Mauritius",
+            "url": window.location.href,
+            "about": {
+              "@type": "Place",
+              "name": "Mauritius",
+              "description": "Island nation in the Indian Ocean known for its diverse culture and history"
+            }
+          })}
+        </script>
+      </Helmet>
+
       <TopBanner />
       <Navigation
         isMenuOpen={isMenuOpen}
@@ -128,7 +163,14 @@ export default function LandingPage() {
       <HistorySection />
       <CultureSection />
       <GallerySection />
+      <VoicesSection />
       <Footer />
+
+      {/* Discovery Widget - floating */}
+      <DiscoveryWidget 
+        onRandomDiscover={handleRandomDiscover}
+        onQuizOpen={() => setIsQuizOpen(true)}
+      />
 
       {/* Global Modals */}
       <SearchModal
@@ -143,6 +185,10 @@ export default function LandingPage() {
       <DodoModal
         isOpen={isDodoModalOpen}
         onClose={() => setIsDodoModalOpen(false)}
+      />
+      <QuizModal
+        isOpen={isQuizOpen}
+        onClose={() => setIsQuizOpen(false)}
       />
 
       {/* Search Result Modals */}
