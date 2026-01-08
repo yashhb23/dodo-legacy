@@ -74,7 +74,7 @@ export default function LandingPage() {
 
   // Guided explore - auto scroll through sections
   const handleExploreClick = () => {
-    const sections = ['#heritage', '#districts', '#culture', '#gallery'];
+    const sections = ['#heritage', '#districts', '#culture', '#gallery', '#voices'];
     let currentIndex = 0;
 
     const scrollToNext = () => {
@@ -105,6 +105,13 @@ export default function LandingPage() {
     // Start from hero
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setTimeout(scrollToNext, 2000);
+  };
+
+  // Random discovery - opens a random district modal
+  const handleRandomDiscover = () => {
+    const randomDistrict = districts[Math.floor(Math.random() * districts.length)];
+    setSelectedSearchDistrict(randomDistrict);
+    setIsSearchDistrictModalOpen(true);
   };
 
   return (
