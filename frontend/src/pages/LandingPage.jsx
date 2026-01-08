@@ -16,7 +16,7 @@ import CultureModal from '@/components/CultureModal';
 import GalleryViewer from '@/components/GalleryViewer';
 import QuizModal from '@/components/QuizModal';
 import DiscoveryWidget from '@/components/DiscoveryWidget';
-import { districts } from '@/data/districts';
+import { districtsData } from '@/data/districts';
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
