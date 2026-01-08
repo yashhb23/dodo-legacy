@@ -159,7 +159,10 @@ export default function LandingPage() {
         onSearchClick={() => setIsSearchOpen(true)}
         onExploreClick={handleExploreClick}
       />
-      <HeroSection onBadgeClick={handleBadgeClick} />
+      <HeroSection 
+        onBadgeClick={handleBadgeClick} 
+        onWatchStory={() => setIsTimelineOpen(true)}
+      />
       <HistorySection />
       <CultureSection />
       <GallerySection />
