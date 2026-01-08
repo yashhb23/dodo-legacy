@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Shuffle, X } from 'lucide-react';
+import { Shuffle, X, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { didYouKnowFacts, onThisDayEvents } from '@/data/facts';
 
-export default function DiscoveryWidget({ onRandomDiscover }) {
+export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
   const [currentFact, setCurrentFact] = useState(null);
   const [isMinimized, setIsMinimized] = useState(false);
   const [factType, setFactType] = useState('did-you-know');
@@ -48,7 +48,7 @@ export default function DiscoveryWidget({ onRandomDiscover }) {
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-6 right-6 z-40">
+      <div className="fixed bottom-6 right-6 z-40 md:right-6 md:bottom-6 left-1/2 md:left-auto transform -translate-x-1/2 md:translate-x-0">
         <Button
           onClick={() => setIsMinimized(false)}
           className="rounded-full w-14 h-14 bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-lg"
@@ -61,7 +61,7 @@ export default function DiscoveryWidget({ onRandomDiscover }) {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 max-w-sm">
+    <div className="fixed bottom-6 right-6 z-40 max-w-sm md:right-6 md:bottom-6 left-1/2 md:left-auto transform -translate-x-1/2 md:translate-x-0">
       <div className="bg-card/95 backdrop-blur-md border border-border/50 rounded-lg shadow-xl p-4 space-y-3">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -104,7 +104,16 @@ export default function DiscoveryWidget({ onRandomDiscover }) {
             className="flex-1 text-xs border-secondary/50 hover:bg-secondary/10"
           >
             <Shuffle className="w-3 h-3 mr-1" />
-            Discover Random
+            Discover
+          </Button>
+          <Button
+            onClick={onQuizOpen}
+            size="sm"
+            variant="outline"
+            className="flex-1 text-xs border-primary/50 hover:bg-primary/10"
+          >
+            <Brain className="w-3 h-3 mr-1" />
+            Quiz
           </Button>
         </div>
       </div>
