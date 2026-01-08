@@ -109,7 +109,7 @@ export default function LandingPage() {
 
   // Random discovery - opens a random district modal
   const handleRandomDiscover = () => {
-    const randomDistrict = districts[Math.floor(Math.random() * districts.length)];
+    const randomDistrict = districtsData[Math.floor(Math.random() * districtsData.length)];
     setSelectedSearchDistrict(randomDistrict);
     setIsSearchDistrictModalOpen(true);
   };
