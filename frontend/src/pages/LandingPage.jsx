@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import TopBanner from '@/components/TopBanner';
 import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
 import HistorySection from '@/components/HistorySection';
 import CultureSection from '@/components/CultureSection';
 import GallerySection from '@/components/GallerySection';
+import VoicesSection from '@/components/VoicesSection';
 import Footer from '@/components/Footer';
 import SearchModal from '@/components/SearchModal';
 import TimelineModal from '@/components/TimelineModal';
@@ -12,6 +14,9 @@ import DodoModal from '@/components/DodoModal';
 import DistrictModal from '@/components/DistrictModal';
 import CultureModal from '@/components/CultureModal';
 import GalleryViewer from '@/components/GalleryViewer';
+import QuizModal from '@/components/QuizModal';
+import DiscoveryWidget from '@/components/DiscoveryWidget';
+import { districts } from '@/data/districts';
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
