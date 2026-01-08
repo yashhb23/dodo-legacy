@@ -277,11 +277,7 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus:
-    - "Voices Section Testing"
-    - "Quiz Modal Testing"
-    - "Discovery Widget Testing"
-    - "SEO Meta Tags Testing"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
