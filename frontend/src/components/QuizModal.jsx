@@ -105,20 +105,25 @@ export default function QuizModal({ isOpen, onClose }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-3xl bg-card border-border/50 text-foreground p-0 overflow-hidden max-h-[90vh]">
+      <DialogContent className="max-w-3xl w-[95vw] sm:w-full bg-card border-border/50 text-foreground p-0 overflow-hidden max-h-[90vh]">
         {/* Header */}
-        <div className="p-6 border-b border-border/50">
-          <div className="flex items-center justify-between mb-4">
+        <div className="p-4 sm:p-6 border-b border-border/50">
+          <div className="flex items-center justify-between mb-2">
             <DialogTitle
-              className="text-2xl uppercase tracking-wide"
+              className="text-xl sm:text-2xl uppercase tracking-wide"
               style={{ fontFamily: 'Bebas Neue, sans-serif' }}
             >
               {mauritiusQuiz.title}
             </DialogTitle>
-            <Button variant="ghost" size="icon" className="rounded-full" onClick={handleClose}>
+            <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0" onClick={handleClose}>
               <X className="w-5 h-5" />
             </Button>
           </div>
+          
+          {/* Quiz Subtitle */}
+          <p className="text-sm text-muted-foreground mb-4">
+            {mauritiusQuiz.subtitle}
+          </p>
           
           {/* Progress */}
           <div className="flex items-center gap-2 mb-2">
@@ -128,23 +133,23 @@ export default function QuizModal({ isOpen, onClose }) {
                 style={{ width: `${((currentQuestion + 1) / mauritiusQuiz.questions.length) * 100}%` }}
               />
             </div>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-muted-foreground whitespace-nowrap">
               {currentQuestion + 1}/{mauritiusQuiz.questions.length}
             </span>
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Badge className="text-xs capitalize">{question.difficulty}</Badge>
             <Badge variant="outline" className="text-xs capitalize">{question.category}</Badge>
           </div>
         </div>
 
         {/* Question */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
-          <h3 className="text-xl font-bold mb-6">{question.question}</h3>
+        <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+          <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">{question.question}</h3>
 
           {/* Options */}
-          <div className="space-y-3 mb-6">
+          <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
             {question.options.map((option) => {
               const isSelected = selectedAnswer === option.id;
               const isCorrect = option.correct;
@@ -158,11 +163,11 @@ export default function QuizModal({ isOpen, onClose }) {
                 if (isCorrect) {
                   borderColor = 'border-primary';
                   bgColor = 'bg-primary/10';
-                  icon = <Check className="w-5 h-5 text-primary" />;
+                  icon = <Check className="w-5 h-5 text-primary flex-shrink-0" />;
                 } else if (isSelected && !isCorrect) {
                   borderColor = 'border-destructive';
                   bgColor = 'bg-destructive/10';
-                  icon = <X className="w-5 h-5 text-destructive" />;
+                  icon = <X className="w-5 h-5 text-destructive flex-shrink-0" />;
                 }
               } else if (isSelected) {
                 borderColor = 'border-primary';
@@ -174,7 +179,7 @@ export default function QuizModal({ isOpen, onClose }) {
                   key={option.id}
                   onClick={() => handleAnswerSelect(option.id)}
                   disabled={showExplanation}
-                  className={`w-full p-4 rounded-lg border-2 ${borderColor} ${bgColor} hover:border-primary/50 transition-all text-left flex items-center justify-between gap-3 disabled:cursor-not-allowed`}
+                  className={`w-full p-3 sm:p-4 rounded-lg border-2 ${borderColor} ${bgColor} hover:border-primary/50 transition-all text-left flex items-center justify-between gap-3 disabled:cursor-not-allowed`}
                 >
                   <span className="text-sm">{option.text}</span>
                   {icon}
@@ -185,12 +190,12 @@ export default function QuizModal({ isOpen, onClose }) {
 
           {/* Explanation */}
           {showExplanation && (
-            <div className="p-4 bg-muted/30 rounded-lg border border-border/50 mb-6">
+            <div className="p-3 sm:p-4 bg-muted/30 rounded-lg border border-border/50 mb-4 sm:mb-6">
               <div className="flex items-start gap-2">
                 <AlertCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold mb-2">Explanation</h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <h4 className="font-bold mb-2 text-sm sm:text-base">Did You Know?</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                     {question.explanation}
                   </p>
                 </div>
