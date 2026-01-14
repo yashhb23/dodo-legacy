@@ -83,7 +83,7 @@ export default function Footer() {
           {/* Bottom Bar */}
           <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground text-center md:text-left">
-              © 2024 Dodo Legacy. Celebrating Mauritius Heritage.
+              © {new Date().getFullYear()} Dodo Legacy. Celebrating Mauritius Heritage.
             </p>
             <div className="flex gap-6 text-sm text-muted-foreground">
               <a href="#" className="hover:text-foreground transition-colors">

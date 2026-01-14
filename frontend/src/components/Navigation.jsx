@@ -96,12 +96,12 @@ export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSear
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-background/98 backdrop-blur-md border-t border-border">
-          <div className="px-4 pt-4 pb-6 space-y-4">
+          <div className="px-4 pt-4 pb-6 space-y-2">
             {navItems.map((item) => (
               <button
                 key={item.name}
                 onClick={() => handleNavClick(item.href)}
-                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-200 text-base font-medium uppercase tracking-wide"
+                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-200 text-base font-medium uppercase tracking-wide py-3 px-2 rounded-md hover:bg-primary/10 min-h-[44px]"
               >
                 {item.name}
               </button>
@@ -111,7 +111,7 @@ export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSear
                 onExploreClick();
                 setIsMenuOpen(false);
               }}
-              className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity mt-4"
+              className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity mt-4 min-h-[48px]"
             >
               Explore
             </Button>

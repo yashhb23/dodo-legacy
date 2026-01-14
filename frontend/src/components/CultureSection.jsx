@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cultureData } from '@/data/culture';
 import CultureModal from '@/components/CultureModal';
 
-export default function CultureSection() {
+function CultureSection() {
   const [selectedCulture, setSelectedCulture] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -70,3 +70,6 @@ export default function CultureSection() {
     </>
   );
 }
+
+// Memoize to prevent unnecessary re-renders
+export default memo(CultureSection);

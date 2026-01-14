@@ -14,10 +14,20 @@ from datetime import datetime, timezone
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+# MongoDB connection with error handling
+try:
+    mongo_url = os.environ['MONGO_URL']
+    db_name = os.environ['DB_NAME']
+except KeyError as e:
+    raise RuntimeError(
+        f"Missing required environment variable: {e}\n"
+        f"Please create a .env file in the backend directory.\n"
+        f"Copy env.example to .env and fill in your MongoDB credentials.\n"
+        f"Sign up for free MongoDB Atlas at: https://www.mongodb.com/cloud/atlas"
+    )
+
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[db_name]
 
 # Create the main app without a prefix
 app = FastAPI()
@@ -84,6 +94,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@app.on_event("startup")
+async def startup_db_client():
+    try:
+        # Test MongoDB connection
+        await client.admin.command('ping')
+        logger.info(f"Successfully connected to MongoDB database: {db.name}")
+        logger.info(f"Backend server ready at /api endpoints")
+    except Exception as e:
+        logger.error(f"Failed to connect to MongoDB: {e}")
+        logger.error("Please check your MONGO_URL in the .env file")
+        logger.error("Make sure MongoDB Atlas is configured and network access is allowed")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+    logger.info("MongoDB connection closed")

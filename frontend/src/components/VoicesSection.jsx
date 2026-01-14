@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { voicesOfMauritius } from '@/data/testimonials';
 import { Badge } from '@/components/ui/badge';
 import VoicesCard from '@/components/VoicesCard';
 
-export default function VoicesSection() {
+function VoicesSection() {
   return (
     <section id="voices" className="relative py-24 bg-gradient-to-b from-background to-muted/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,3 +33,6 @@ export default function VoicesSection() {
     </section>
   );
 }
+
+// Memoize to prevent unnecessary re-renders
+export default memo(VoicesSection);

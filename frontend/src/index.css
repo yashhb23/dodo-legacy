@@ -1,3 +1,4 @@
+/* Optimized Google Fonts import with font-display swap for better performance */
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
 
 @tailwind base;
@@ -289,8 +290,16 @@ html {
 
 @media (max-width: 767px) {
     .modal-content {
-        max-width: 90%;
-        width: 90%;
+        max-width: 92%;
+        width: 92%;
+        margin: 0.5rem;
+    }
+}
+
+/* Better modal height management for short screens */
+@media (max-height: 667px) {
+    .modal-content {
+        max-height: 85vh;
     }
 }
 
@@ -298,6 +307,18 @@ html {
 .accordion-header {
     min-height: 44px;
     touch-action: manipulation;
+}
+
+/* Modal close button always accessible */
+@media (max-width: 768px) {
+    [role="dialog"] button[aria-label*="Close"],
+    [role="dialog"] button[aria-label*="close"] {
+        position: sticky;
+        top: 0.5rem;
+        z-index: 50;
+        min-width: 44px;
+        min-height: 44px;
+    }
 }
 
 /* Footer responsive */
@@ -424,14 +445,39 @@ section {
 [role="dialog"] {
     max-height: 90vh;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 640px) {
+    [role="dialog"] {
+        max-height: 95vh;
+    }
+    
     [role="dialog"] > div {
         margin: 0.5rem;
-        max-height: calc(100vh - 2rem);
+        max-height: calc(100vh - 1rem);
         border-radius: 0.75rem;
+        overflow-y: auto;
     }
+}
+
+@media (max-height: 667px) {
+    [role="dialog"] {
+        max-height: 98vh;
+    }
+    
+    [role="dialog"] > div {
+        max-height: calc(100vh - 0.5rem);
+        padding: 1rem;
+    }
+}
+
+/* Ensure modal content is scrollable */
+[role="dialog"] [data-radix-dialog-content] {
+    overflow-y: auto;
+    max-height: inherit;
 }
 
 /* Smooth image loading */
@@ -460,11 +506,27 @@ html {
     overflow-y: scroll;
 }
 
-/* Mobile touch targets */
+/* Mobile touch targets - ensure all interactive elements meet WCAG minimum */
 @media (max-width: 768px) {
-    button, a {
+    button:not(.btn-exception), 
+    a:not(.text-link) {
         min-height: 44px;
+    }
+    
+    /* Icon buttons specifically */
+    button[role="button"]:not([aria-label=""]),
+    [role="menuitem"],
+    [role="tab"] {
         min-width: 44px;
+        min-height: 44px;
+    }
+    
+    /* Nav items and clickable cards */
+    nav a,
+    nav button {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
     }
 }
 

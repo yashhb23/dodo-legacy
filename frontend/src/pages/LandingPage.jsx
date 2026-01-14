@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 import TopBanner from '@/components/TopBanner';
 import Navigation from '@/components/Navigation';
@@ -8,15 +8,17 @@ import CultureSection from '@/components/CultureSection';
 import GallerySection from '@/components/GallerySection';
 import VoicesSection from '@/components/VoicesSection';
 import Footer from '@/components/Footer';
-import SearchModal from '@/components/SearchModal';
-import TimelineModal from '@/components/TimelineModal';
-import DodoModal from '@/components/DodoModal';
-import DistrictModal from '@/components/DistrictModal';
-import CultureModal from '@/components/CultureModal';
-import GalleryViewer from '@/components/GalleryViewer';
-import QuizModal from '@/components/QuizModal';
 import DiscoveryWidget from '@/components/DiscoveryWidget';
 import { districtsData } from '@/data/districts';
+
+// Lazy load modal components for better performance
+const SearchModal = lazy(() => import('@/components/SearchModal'));
+const TimelineModal = lazy(() => import('@/components/TimelineModal'));
+const DodoModal = lazy(() => import('@/components/DodoModal'));
+const DistrictModal = lazy(() => import('@/components/DistrictModal'));
+const CultureModal = lazy(() => import('@/components/CultureModal'));
+const GalleryViewer = lazy(() => import('@/components/GalleryViewer'));
+const QuizModal = lazy(() => import('@/components/QuizModal'));
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -175,50 +177,66 @@ export default function LandingPage() {
         onQuizOpen={() => setIsQuizOpen(true)}
       />
 
-      {/* Global Modals */}
-      <SearchModal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onResultClick={handleSearchResultClick}
-      />
-      <TimelineModal
-        isOpen={isTimelineOpen}
-        onClose={() => setIsTimelineOpen(false)}
-      />
-      <DodoModal
-        isOpen={isDodoModalOpen}
-        onClose={() => setIsDodoModalOpen(false)}
-      />
-      <QuizModal
-        isOpen={isQuizOpen}
-        onClose={() => setIsQuizOpen(false)}
-      />
+      {/* Global Modals - Lazy loaded for performance */}
+      <Suspense fallback={null}>
+        {isSearchOpen && (
+          <SearchModal
+            isOpen={isSearchOpen}
+            onClose={() => setIsSearchOpen(false)}
+            onResultClick={handleSearchResultClick}
+          />
+        )}
+        {isTimelineOpen && (
+          <TimelineModal
+            isOpen={isTimelineOpen}
+            onClose={() => setIsTimelineOpen(false)}
+          />
+        )}
+        {isDodoModalOpen && (
+          <DodoModal
+            isOpen={isDodoModalOpen}
+            onClose={() => setIsDodoModalOpen(false)}
+          />
+        )}
+        {isQuizOpen && (
+          <QuizModal
+            isOpen={isQuizOpen}
+            onClose={() => setIsQuizOpen(false)}
+          />
+        )}
 
-      {/* Search Result Modals */}
-      <DistrictModal
-        district={selectedSearchDistrict}
-        isOpen={isSearchDistrictModalOpen}
-        onClose={() => {
-          setIsSearchDistrictModalOpen(false);
-          setTimeout(() => setSelectedSearchDistrict(null), 300);
-        }}
-      />
-      <CultureModal
-        culture={selectedSearchCulture}
-        isOpen={isSearchCultureModalOpen}
-        onClose={() => {
-          setIsSearchCultureModalOpen(false);
-          setTimeout(() => setSelectedSearchCulture(null), 300);
-        }}
-      />
-      <GalleryViewer
-        image={selectedSearchGallery}
-        isOpen={isSearchGalleryViewerOpen}
-        onClose={() => {
-          setIsSearchGalleryViewerOpen(false);
-          setTimeout(() => setSelectedSearchGallery(null), 300);
-        }}
-      />
+        {/* Search Result Modals */}
+        {isSearchDistrictModalOpen && (
+          <DistrictModal
+            district={selectedSearchDistrict}
+            isOpen={isSearchDistrictModalOpen}
+            onClose={() => {
+              setIsSearchDistrictModalOpen(false);
+              setTimeout(() => setSelectedSearchDistrict(null), 300);
+            }}
+          />
+        )}
+        {isSearchCultureModalOpen && (
+          <CultureModal
+            culture={selectedSearchCulture}
+            isOpen={isSearchCultureModalOpen}
+            onClose={() => {
+              setIsSearchCultureModalOpen(false);
+              setTimeout(() => setSelectedSearchCulture(null), 300);
+            }}
+          />
+        )}
+        {isSearchGalleryViewerOpen && (
+          <GalleryViewer
+            image={selectedSearchGallery}
+            isOpen={isSearchGalleryViewerOpen}
+            onClose={() => {
+              setIsSearchGalleryViewerOpen(false);
+              setTimeout(() => setSelectedSearchGallery(null), 300);
+            }}
+          />
+        )}
+      </Suspense>
     </div>
   );
 }

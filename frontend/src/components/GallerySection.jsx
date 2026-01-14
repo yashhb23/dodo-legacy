@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { galleryData } from '@/data/gallery';
 import GalleryViewer from '@/components/GalleryViewer';
 
-export default function GallerySection() {
+function GallerySection() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
@@ -48,6 +48,7 @@ export default function GallerySection() {
                   alt={item.title}
                   className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
+                  decoding="async"
                 />
                 
                 {/* Overlay on hover */}
@@ -72,3 +73,6 @@ export default function GallerySection() {
     </>
   );
 }
+
+// Memoize to prevent unnecessary re-renders with many images
+export default memo(GallerySection);

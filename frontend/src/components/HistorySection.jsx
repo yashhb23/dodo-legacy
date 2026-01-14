@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { MapPin, Calendar, Users, Award } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -38,7 +38,7 @@ const facts = [
   },
 ];
 
-export default function HistorySection() {
+function HistorySection() {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [isDistrictModalOpen, setIsDistrictModalOpen] = useState(false);
   const [selectedFact, setSelectedFact] = useState(null);
@@ -188,3 +188,6 @@ export default function HistorySection() {
     </>
   );
 }
+
+// Memoize to prevent unnecessary re-renders with many district cards
+export default memo(HistorySection);
