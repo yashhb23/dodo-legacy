@@ -139,19 +139,19 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
                   type="image/webp"
                   srcSet="https://www.pictureboxblue.com/wp-content/uploads/2021/02/Edwards_Dodo-s.jpg"
                 />
-                <img
-                  src="https://www.pictureboxblue.com/wp-content/uploads/2021/02/Edwards_Dodo-s.jpg"
-                  alt="Historic illustration of the Dodo Bird - Mauritius national symbol"
-                  className="relative z-10 w-full h-full object-contain drop-shadow-2xl animate-float"
-                  style={{
-                    filter: 'drop-shadow(0 0 30px hsl(var(--primary) / 0.5))',
-                  }}
-                  loading="eager"
+              <img
+                src="https://www.pictureboxblue.com/wp-content/uploads/2021/02/Edwards_Dodo-s.jpg"
+                alt="Historic illustration of the Dodo Bird - Mauritius national symbol"
+                className="relative z-10 w-full h-full object-contain drop-shadow-2xl animate-float"
+                style={{
+                  filter: 'drop-shadow(0 0 30px hsl(var(--primary) / 0.5))',
+                }}
+                loading="eager"
                   fetchpriority="high"
                   decoding="async"
                   width="800"
                   height="800"
-                />
+              />
               </picture>
             </div>
           </div>

@@ -27,24 +27,14 @@ export default function TimelineModal({ isOpen, onClose }) {
       <DialogContent className="max-w-6xl bg-card border-border/50 text-foreground p-0 overflow-hidden max-h-[90vh]">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm border-b border-border/50 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2
-                className="text-3xl uppercase tracking-wide mb-2"
-                style={{ fontFamily: 'Bebas Neue, sans-serif' }}
-              >
-                Island Story: Timeline of Mauritius
-              </h2>
-              <p className="text-sm text-muted-foreground">From discovery to modern republic</p>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full bg-background/80 backdrop-blur-sm hover:bg-background"
-              onClick={onClose}
+          <div>
+            <h2
+              className="text-3xl uppercase tracking-wide mb-2"
+              style={{ fontFamily: 'Bebas Neue, sans-serif' }}
             >
-              <X className="w-5 h-5" />
-            </Button>
+              Island Story: Timeline of Mauritius
+            </h2>
+            <p className="text-sm text-muted-foreground">From discovery to modern republic</p>
           </div>
         </div>
 

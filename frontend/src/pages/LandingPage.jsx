@@ -76,7 +76,7 @@ export default function LandingPage() {
 
   // Guided explore - auto scroll through sections
   const handleExploreClick = () => {
-    const sections = ['#heritage', '#districts', '#culture', '#gallery', '#voices'];
+    const sections = ['#heritage', '#districts', '#culture', '#voices', '#gallery'];
     let currentIndex = 0;
 
     const scrollToNext = () => {
@@ -167,8 +167,8 @@ export default function LandingPage() {
       />
       <HistorySection />
       <CultureSection />
-      <GallerySection />
       <VoicesSection />
+      <GallerySection />
       <Footer />
 
       {/* Discovery Widget - floating */}
@@ -180,61 +180,61 @@ export default function LandingPage() {
       {/* Global Modals - Lazy loaded for performance */}
       <Suspense fallback={null}>
         {isSearchOpen && (
-          <SearchModal
-            isOpen={isSearchOpen}
-            onClose={() => setIsSearchOpen(false)}
-            onResultClick={handleSearchResultClick}
-          />
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onResultClick={handleSearchResultClick}
+      />
         )}
         {isTimelineOpen && (
-          <TimelineModal
-            isOpen={isTimelineOpen}
-            onClose={() => setIsTimelineOpen(false)}
-          />
+      <TimelineModal
+        isOpen={isTimelineOpen}
+        onClose={() => setIsTimelineOpen(false)}
+      />
         )}
         {isDodoModalOpen && (
-          <DodoModal
-            isOpen={isDodoModalOpen}
-            onClose={() => setIsDodoModalOpen(false)}
-          />
+      <DodoModal
+        isOpen={isDodoModalOpen}
+        onClose={() => setIsDodoModalOpen(false)}
+      />
         )}
         {isQuizOpen && (
-          <QuizModal
-            isOpen={isQuizOpen}
-            onClose={() => setIsQuizOpen(false)}
-          />
+      <QuizModal
+        isOpen={isQuizOpen}
+        onClose={() => setIsQuizOpen(false)}
+      />
         )}
 
-        {/* Search Result Modals */}
+      {/* Search Result Modals */}
         {isSearchDistrictModalOpen && (
-          <DistrictModal
-            district={selectedSearchDistrict}
-            isOpen={isSearchDistrictModalOpen}
-            onClose={() => {
-              setIsSearchDistrictModalOpen(false);
-              setTimeout(() => setSelectedSearchDistrict(null), 300);
-            }}
-          />
+      <DistrictModal
+        district={selectedSearchDistrict}
+        isOpen={isSearchDistrictModalOpen}
+        onClose={() => {
+          setIsSearchDistrictModalOpen(false);
+          setTimeout(() => setSelectedSearchDistrict(null), 300);
+        }}
+      />
         )}
         {isSearchCultureModalOpen && (
-          <CultureModal
-            culture={selectedSearchCulture}
-            isOpen={isSearchCultureModalOpen}
-            onClose={() => {
-              setIsSearchCultureModalOpen(false);
-              setTimeout(() => setSelectedSearchCulture(null), 300);
-            }}
-          />
+      <CultureModal
+        culture={selectedSearchCulture}
+        isOpen={isSearchCultureModalOpen}
+        onClose={() => {
+          setIsSearchCultureModalOpen(false);
+          setTimeout(() => setSelectedSearchCulture(null), 300);
+        }}
+      />
         )}
         {isSearchGalleryViewerOpen && (
-          <GalleryViewer
-            image={selectedSearchGallery}
-            isOpen={isSearchGalleryViewerOpen}
-            onClose={() => {
-              setIsSearchGalleryViewerOpen(false);
-              setTimeout(() => setSelectedSearchGallery(null), 300);
-            }}
-          />
+      <GalleryViewer
+        image={selectedSearchGallery}
+        isOpen={isSearchGalleryViewerOpen}
+        onClose={() => {
+          setIsSearchGalleryViewerOpen(false);
+          setTimeout(() => setSelectedSearchGallery(null), 300);
+        }}
+      />
         )}
       </Suspense>
     </div>

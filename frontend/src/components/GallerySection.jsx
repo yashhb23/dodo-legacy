@@ -1,12 +1,21 @@
 import { useState, memo } from 'react';
-import { X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { galleryData } from '@/data/gallery';
 import GalleryViewer from '@/components/GalleryViewer';
 
 function GallerySection() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('All');
+
+  // Extract unique categories from gallery data
+  const categories = ['All', ...new Set(galleryData.map(item => item.category))];
+
+  // Filter images based on active category
+  const filteredImages = activeCategory === 'All' 
+    ? galleryData 
+    : galleryData.filter(item => item.category === activeCategory);
 
   const handleImageClick = (item) => {
     setSelectedImage(item);
@@ -30,38 +39,78 @@ function GallerySection() {
               Historical <span className="text-secondary">Gallery</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Explore colonial-era photographs, dodo illustrations, and archival images 
-              documenting Mauritius' rich historical journey.
+              Explore authentic photographs capturing Mauritius' vibrant culture, festivals, 
+              and the beautiful diversity of its people.
             </p>
           </div>
 
-          {/* Masonry Grid */}
+          {/* Category Filter Tabs */}
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={activeCategory === category ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveCategory(category)}
+                className={`transition-all duration-300 ${
+                  activeCategory === category 
+                    ? 'bg-secondary text-white hover:bg-secondary/90' 
+                    : 'hover:bg-secondary/10'
+                }`}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
+
+          {/* Masonry Grid with Always-Visible Captions */}
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-            {galleryData.map((item) => (
+            {filteredImages.map((item) => (
               <div
                 key={item.id}
-                onClick={() => handleImageClick(item)}
-                className="group relative break-inside-avoid cursor-pointer overflow-hidden rounded-lg border border-border/50 hover:border-secondary/50 transition-all duration-300"
+                className="group relative break-inside-avoid overflow-hidden rounded-lg border border-border/50 hover:border-secondary/50 transition-all duration-300 bg-card"
               >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
+                {/* Image */}
+                <div
+                  onClick={() => handleImageClick(item)}
+                  className="cursor-pointer overflow-hidden"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
                 
-                {/* Overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                  <Badge className="mb-2 w-fit bg-secondary/80 text-white border-0 text-xs">
+                {/* Always-Visible Caption */}
+                <div className="p-4">
+                  <Badge className="mb-2 bg-secondary/80 text-white border-0 text-xs">
                     {item.category}
                   </Badge>
-                  <h3 className="text-white font-bold text-sm mb-1">{item.title}</h3>
-                  <p className="text-white/70 text-xs line-clamp-2">{item.description}</p>
+                  <h3 className="font-bold text-sm mb-2 text-foreground">{item.title}</h3>
+                  <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3">
+                    {item.description}
+                  </p>
+                  {/* Click to expand hint */}
+                  <button
+                    onClick={() => handleImageClick(item)}
+                    className="text-xs text-secondary hover:text-secondary/80 mt-2 font-medium transition-colors"
+                  >
+                    View details →
+                  </button>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* No results message */}
+          {filteredImages.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No images found in this category.</p>
+            </div>
+          )}
         </div>
       </section>
 

@@ -5,8 +5,8 @@ const navItems = [
   { name: 'Heritage', href: '#heritage' },
   { name: 'Districts', href: '#districts' },
   { name: 'Culture', href: '#culture' },
-  { name: 'Gallery', href: '#gallery' },
   { name: 'Voices', href: '#voices' },
+  { name: 'Gallery', href: '#gallery' },
 ];
 
 export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSearchClick, onExploreClick }) {
