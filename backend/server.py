@@ -16,7 +16,7 @@ load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection with error handling
 try:
-mongo_url = os.environ['MONGO_URL']
+    mongo_url = os.environ['MONGO_URL']
     db_name = os.environ['DB_NAME']
 except KeyError as e:
     raise RuntimeError(

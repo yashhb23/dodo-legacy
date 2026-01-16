@@ -81,6 +81,10 @@ function GallerySection() {
                     className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
+                    onError={(e) => {
+                      console.error(`Failed to load image: ${item.image}`);
+                      e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="%23f0f0f0"/><text x="50%" y="50%" text-anchor="middle" fill="%23999" font-size="16">Image not found</text></svg>';
+                    }}
                   />
                 </div>
                 
