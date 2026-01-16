@@ -1,8 +1,6 @@
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useEffect } from 'react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 
 export default function GalleryViewer({ image, isOpen, onClose }) {
   // Keyboard navigation
@@ -22,29 +20,19 @@ export default function GalleryViewer({ image, isOpen, onClose }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-7xl w-full bg-background/98 border-0 p-0 overflow-hidden">
-        <div className="relative">
-          {/* Close Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 z-20 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background"
-            onClick={onClose}
-          >
-            <X className="w-5 h-5" />
-          </Button>
-
+      <DialogContent className="max-w-7xl max-h-[95vh] w-full bg-background/98 border-0 p-0 overflow-hidden">
+        <div className="max-h-[95vh] overflow-y-auto">
           {/* Image */}
           <div className="relative w-full">
             <img
               src={image.image}
               alt={image.title}
-              className="w-full h-auto max-h-[85vh] object-contain"
+              className="w-full h-auto max-h-[70vh] object-contain bg-black/5"
             />
           </div>
 
           {/* Info Panel */}
-          <div className="p-8 bg-gradient-to-t from-background to-transparent">
+          <div className="p-6 sm:p-8 bg-gradient-to-t from-background to-transparent">
             <div className="max-w-4xl mx-auto">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="flex-1">
@@ -52,15 +40,15 @@ export default function GalleryViewer({ image, isOpen, onClose }) {
                     {image.category} • {image.era}
                   </Badge>
                   <h2
-                    className="text-3xl uppercase tracking-wide mb-2"
+                    className="text-2xl sm:text-3xl uppercase tracking-wide mb-2"
                     style={{ fontFamily: 'Bebas Neue, sans-serif' }}
                   >
                     {image.title}
                   </h2>
-                  <p className="text-muted-foreground leading-relaxed mb-4">
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-4">
                     {image.description}
                   </p>
-                  <p className="text-sm text-muted-foreground/70">
+                  <p className="text-xs sm:text-sm text-muted-foreground/70">
                     <strong>Source:</strong> {image.source}
                   </p>
                 </div>

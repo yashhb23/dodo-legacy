@@ -1,4 +1,4 @@
-import { X, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,33 +22,23 @@ export default function DistrictModal({ district, isOpen, onClose }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl bg-card border-border/50 text-foreground p-0 overflow-hidden max-h-[90vh]">
-        {/* Header Image */}
-        <div className="relative h-64 w-full overflow-hidden">
-          <img
-            src={district.image}
-            alt={district.name}
-            className="w-full h-full object-cover"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: 'linear-gradient(to top, hsl(var(--card)) 0%, transparent 100%)',
-            }}
-          />
-          
-          {/* Close button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background"
-            onClick={onClose}
-          >
-            <X className="w-5 h-5" />
-          </Button>
-        </div>
+      <DialogContent className="max-w-5xl max-h-[90vh] bg-card border-border/50 text-foreground p-0 overflow-hidden">
+        <div className="max-h-[90vh] overflow-y-auto">
+          {/* Header Image */}
+          <div className="relative h-64 w-full overflow-hidden">
+            <img
+              src={district.image}
+              alt={district.name}
+              className="w-full h-full object-cover"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(to top, hsl(var(--card)) 0%, transparent 100%)',
+              }}
+            />
+          </div>
 
-        <div className="overflow-y-auto max-h-[calc(90vh-256px)]">
           <div className="p-8">
             {/* Breadcrumbs */}
             <Breadcrumbs items={breadcrumbItems} />
