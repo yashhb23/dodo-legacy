@@ -57,7 +57,7 @@ const webpackConfig = {
             '**/build/**',
             '**/dist/**',
             '**/coverage/**',
-            '**/public/**',
+            // Removed '**/public/**' to allow gallery images to be copied during build
         ],
       };
 
