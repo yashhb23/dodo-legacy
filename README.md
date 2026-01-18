@@ -319,4 +319,6 @@ Need help? Check the documentation:
 
 ⭐ Star this repo if you found it helpful!
 
+<!-- Deployment trigger: 2026-01-18 -->
+
 </div>
