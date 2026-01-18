@@ -77,4 +77,6 @@ agenthub/agents/youtube/db
 .cache/
 
 # Mobile development
-android-sdk/ 
+android-sdk/
+
+# Force Vercel fresh deployment - gallery images fix
