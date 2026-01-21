@@ -485,12 +485,12 @@ img {
     transition: opacity 0.3s ease;
 }
 
-img[loading="lazy"] {
+/* Opt-in fade-in for images (do NOT hide all loading=lazy images globally) */
+.img-fade {
     opacity: 0;
 }
 
-img[loading="lazy"].loaded,
-img:not([loading="lazy"]) {
+.img-fade.loaded {
     opacity: 1;
 }
 

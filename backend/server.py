@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, Query
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -47,6 +47,22 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+# Gallery comments models
+class GalleryComment(BaseModel):
+    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    image_id: str
+    name: str
+    message: str
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+
+class GalleryCommentCreate(BaseModel):
+    name: str
+    message: str
+
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
@@ -75,6 +91,38 @@ async def get_status_checks():
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
     
     return status_checks
+
+
+@api_router.get("/gallery/{image_id}/comments", response_model=List[GalleryComment])
+async def get_gallery_comments(
+    image_id: str,
+    limit: int = Query(default=50, ge=1, le=100),
+):
+    comments = await (
+        db.gallery_comments.find({"image_id": image_id}, {"_id": 0})
+        .sort("created_at", -1)
+        .to_list(limit)
+    )
+    return comments
+
+
+@api_router.post("/gallery/{image_id}/comments", response_model=GalleryComment)
+async def create_gallery_comment(image_id: str, input: GalleryCommentCreate):
+    name = (input.name or "").strip()
+    message = (input.message or "").strip()
+
+    if not name:
+        raise HTTPException(status_code=422, detail="Name is required.")
+    if len(name) > 40:
+        raise HTTPException(status_code=422, detail="Name must be 40 characters or less.")
+    if not message:
+        raise HTTPException(status_code=422, detail="Comment is required.")
+    if len(message) > 500:
+        raise HTTPException(status_code=422, detail="Comment must be 500 characters or less.")
+
+    comment = GalleryComment(image_id=image_id, name=name, message=message)
+    await db.gallery_comments.insert_one(comment.model_dump())
+    return comment
 
 # Include the router in the main app
 app.include_router(api_router)

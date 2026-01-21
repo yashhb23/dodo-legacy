@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import GalleryComments from '@/components/GalleryComments';
 
 export default function GalleryViewer({ image, isOpen, onClose }) {
   // Keyboard navigation
@@ -53,6 +54,8 @@ export default function GalleryViewer({ image, isOpen, onClose }) {
                   </p>
                 </div>
               </div>
+
+              <GalleryComments imageId={image.id} isOpen={isOpen} />
             </div>
           </div>
         </div>

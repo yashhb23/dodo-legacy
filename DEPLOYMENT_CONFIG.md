@@ -32,6 +32,8 @@ git push -u origin main
 
 **Environment Variables** (if needed for frontend):
 - None required for basic setup
+- If you enable MongoDB-backed features (e.g. **Gallery Comments**), add:
+  - `REACT_APP_API_URL=https://<your-railway-backend>.up.railway.app`
 
 ### Backend on Railway
 
