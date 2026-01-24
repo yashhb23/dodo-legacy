@@ -191,6 +191,53 @@ git push -u origin main
 
 5. **Click:** "Deploy"
    - Wait 2-3 minutes for first deployment
+
+---
+
+## Enable Gallery Comments (Vercel + Railway + MongoDB)
+
+Your gallery now supports **comments per image** (stored in MongoDB via the Railway backend).
+
+### Vercel (Frontend) Environment Variable
+
+In your Vercel project:
+- Go to **Settings → Environment Variables**
+- Add:
+  - `REACT_APP_API_URL` = your Railway backend URL (example: `https://your-app-name.up.railway.app`)
+- Redeploy (or trigger a redeploy by pushing a commit).
+
+### Railway (Backend) CORS
+
+In your Railway service:
+- Set `CORS_ORIGINS` to include your Vercel domain(s), for example:
+  - `https://dodo-legacy.vercel.app,https://dodo-legacy-<anything>.vercel.app`
+
+### API Endpoints (for reference)
+
+- `GET /api/gallery/{image_id}/comments?limit=50`
+- `POST /api/gallery/{image_id}/comments`
+
+---
+
+## Analytics (Visitors + “Where they spend time”)
+
+You have **PostHog** already included (see `frontend/public/index.html`). It provides:
+- Visitors and pageviews
+- Events/funnels
+- Session replay (where users click/scroll)
+
+Notes:
+- Some browsers/ad blockers will show `net::ERR_BLOCKED_BY_CLIENT` for PostHog. This is normal and cannot be “fixed” on your side.
+
+### Optional: Microsoft Clarity (Heatmaps + Recordings)
+
+Clarity is a great free complement to PostHog for visual heatmaps.
+
+To enable:
+- Vercel → Project Settings → Environment Variables
+- Add: `REACT_APP_CLARITY_ID` = your Clarity project ID
+- Redeploy
+
    - ☕ Grab coffee while Vercel builds your site
 
 ### Step 4: Get Your URL (1 minute)

@@ -1,5 +1,4 @@
-import { X } from 'lucide-react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -25,16 +24,23 @@ export default function TimelineModal({ isOpen, onClose }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl bg-card border-border/50 text-foreground p-0 overflow-hidden max-h-[90vh]">
+        {/* Accessibility: required title/description for Radix DialogContent */}
+        <DialogHeader className="sr-only">
+          <DialogTitle>Island Story: Timeline of Mauritius</DialogTitle>
+          <DialogDescription>
+            A timeline of key events in Mauritian history.
+          </DialogDescription>
+        </DialogHeader>
         {/* Header */}
         <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm border-b border-border/50 p-6">
-          <div>
-            <h2
-              className="text-3xl uppercase tracking-wide mb-2"
-              style={{ fontFamily: 'Bebas Neue, sans-serif' }}
-            >
-              Island Story: Timeline of Mauritius
-            </h2>
-            <p className="text-sm text-muted-foreground">From discovery to modern republic</p>
+            <div>
+              <h2
+                className="text-3xl uppercase tracking-wide mb-2"
+                style={{ fontFamily: 'Bebas Neue, sans-serif' }}
+              >
+                Island Story: Timeline of Mauritius
+              </h2>
+              <p className="text-sm text-muted-foreground">From discovery to modern republic</p>
           </div>
         </div>
 

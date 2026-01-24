@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
 export default function CreditsModal({ isOpen, onClose }) {
@@ -15,6 +15,9 @@ export default function CreditsModal({ isOpen, onClose }) {
               >
                 Sources & Credits
               </DialogTitle>
+              <DialogDescription className="sr-only">
+                Sources and attribution for content and images.
+              </DialogDescription>
               <Button
                 variant="ghost"
                 size="icon"

@@ -41,7 +41,7 @@ export default function GalleryComments({ imageId, isOpen }) {
   useEffect(() => {
     if (!isOpen || !imageId) return;
     if (!canUseApi) {
-      setError('Comments are not configured (missing REACT_APP_API_URL).');
+      setError('Comments are not configured. Please reload later.');
       setComments([]);
       return;
     }
@@ -58,7 +58,7 @@ export default function GalleryComments({ imageId, isOpen }) {
       })
       .catch((e) => {
         if (e?.name === 'AbortError') return;
-        setError(e?.message || 'Failed to load comments.');
+        setError(e?.message || 'Failed to load comments. Please reload.');
       })
       .finally(() => setLoading(false));
 
@@ -71,24 +71,20 @@ export default function GalleryComments({ imageId, isOpen }) {
 
     const trimmedName = name.trim();
     const trimmedMessage = message.trim();
-
     if (!trimmedName || !trimmedMessage) return;
 
     setSubmitting(true);
     setError('');
     try {
-      const created = await apiJson(
-        `/api/gallery/${encodeURIComponent(String(imageId))}/comments`,
-        {
-          method: 'POST',
-          body: JSON.stringify({ name: trimmedName, message: trimmedMessage }),
-        },
-      );
+      const created = await apiJson(`/api/gallery/${encodeURIComponent(String(imageId))}/comments`, {
+        method: 'POST',
+        body: JSON.stringify({ name: trimmedName, message: trimmedMessage }),
+      });
 
       setComments((prev) => (created ? [created, ...prev] : prev));
       setMessage('');
     } catch (e2) {
-      setError(e2?.message || 'Failed to post comment.');
+      setError(e2?.message || 'Failed to post comment. Please reload and try again.');
     } finally {
       setSubmitting(false);
     }
@@ -103,9 +99,13 @@ export default function GalleryComments({ imageId, isOpen }) {
         </Badge>
       </div>
 
-      {error && (
-        <p className="text-sm text-destructive mb-4">{error}</p>
+      {!canUseApi && (
+        <p className="text-xs text-muted-foreground mb-3">
+          Comments will appear after the site is configured. If you just deployed, try reloading in a minute.
+        </p>
       )}
+
+      {error && <p className="text-sm text-destructive mb-4">{error}</p>}
 
       {loading ? (
         <p className="text-sm text-muted-foreground mb-4">Loading comments…</p>
@@ -116,17 +116,12 @@ export default function GalleryComments({ imageId, isOpen }) {
       ) : (
         <div className="space-y-3 mb-6">
           {comments.map((c) => (
-            <div
-              key={c.id}
-              className="rounded-lg border border-border/50 bg-background/40 p-3"
-            >
+            <div key={c.id} className="rounded-lg border border-border/50 bg-background/40 p-3">
               <div className="flex items-baseline justify-between gap-3">
                 <p className="text-sm font-semibold">{c.name}</p>
                 <p className="text-xs text-muted-foreground">{formatDate(c.created_at)}</p>
               </div>
-              <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
-                {c.message}
-              </p>
+              <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{c.message}</p>
             </div>
           ))}
         </div>

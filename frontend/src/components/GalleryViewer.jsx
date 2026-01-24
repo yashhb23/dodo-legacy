@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import GalleryComments from '@/components/GalleryComments';
 
@@ -22,6 +22,13 @@ export default function GalleryViewer({ image, isOpen, onClose }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-7xl max-h-[95vh] w-full bg-background/98 border-0 p-0 overflow-hidden">
+        {/* Accessibility: required title/description for Radix DialogContent */}
+        <DialogHeader className="sr-only">
+          <DialogTitle>{image.title}</DialogTitle>
+          <DialogDescription>
+            Gallery image details and comments.
+          </DialogDescription>
+        </DialogHeader>
         <div className="max-h-[95vh] overflow-y-auto">
           {/* Image */}
           <div className="relative w-full">

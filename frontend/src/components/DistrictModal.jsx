@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -24,20 +24,20 @@ export default function DistrictModal({ district, isOpen, onClose }) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] bg-card border-border/50 text-foreground p-0 overflow-hidden">
         <div className="max-h-[90vh] overflow-y-auto">
-          {/* Header Image */}
-          <div className="relative h-64 w-full overflow-hidden">
-            <img
-              src={district.image}
-              alt={district.name}
-              className="w-full h-full object-cover"
-            />
-            <div
-              className="absolute inset-0"
-              style={{
-                background: 'linear-gradient(to top, hsl(var(--card)) 0%, transparent 100%)',
-              }}
-            />
-          </div>
+        {/* Header Image */}
+        <div className="relative h-64 w-full overflow-hidden">
+          <img
+            src={district.image}
+            alt={district.name}
+            className="w-full h-full object-cover"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'linear-gradient(to top, hsl(var(--card)) 0%, transparent 100%)',
+            }}
+          />
+        </div>
 
           <div className="p-8">
             {/* Breadcrumbs */}
@@ -62,6 +62,9 @@ export default function DistrictModal({ district, isOpen, onClose }) {
                   </Badge>
                 </div>
               </div>
+              <DialogDescription className="sr-only">
+                District details, history, and highlights.
+              </DialogDescription>
             </DialogHeader>
 
             {/* Geography & Overview - Always Visible */}
