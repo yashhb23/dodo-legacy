@@ -18,6 +18,13 @@ export default function GalleryComments({ imageId, isOpen }) {
   const [error, setError] = useState('');
 
   const [message, setMessage] = useState('');
+  const [name, setName] = useState(() => {
+    try {
+      return localStorage.getItem('dodoLegacyCommentName') || '';
+    } catch {
+      return '';
+    }
+  });
   const [submitting, setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
