@@ -17,15 +17,9 @@ export default function GalleryComments({ imageId, isOpen }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const [name, setName] = useState(() => {
-    try {
-      return localStorage.getItem('dodoLegacyCommentName') || '';
-    } catch {
-      return '';
-    }
-  });
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const apiBase = useMemo(() => getApiBaseUrl(), []);
   const canUseApi = Boolean(apiBase);
@@ -75,14 +69,16 @@ export default function GalleryComments({ imageId, isOpen }) {
 
     setSubmitting(true);
     setError('');
+    setShowSuccess(false);
     try {
-      const created = await apiJson(`/api/gallery/${encodeURIComponent(String(imageId))}/comments`, {
+      await apiJson(`/api/gallery/${encodeURIComponent(String(imageId))}/comments`, {
         method: 'POST',
         body: JSON.stringify({ name: trimmedName, message: trimmedMessage }),
       });
 
-      setComments((prev) => (created ? [created, ...prev] : prev));
+      setShowSuccess(true);
       setMessage('');
+      // We don't add the comment to the list immediately because it needs approval
     } catch (e2) {
       setError(e2?.message || 'Failed to post comment. Please reload and try again.');
     } finally {
@@ -128,11 +124,19 @@ export default function GalleryComments({ imageId, isOpen }) {
       )}
 
       <form onSubmit={submit} className="space-y-3">
+        {showSuccess && (
+          <div className="bg-green-500/10 border border-green-500/20 text-green-500 p-3 rounded-lg text-sm mb-3">
+            Thank you! Your comment has been submitted and is awaiting approval.
+          </div>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="sm:col-span-1">
             <Input
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                setShowSuccess(false);
+              }}
               placeholder="Your name"
               required
               maxLength={40}
@@ -142,7 +146,10 @@ export default function GalleryComments({ imageId, isOpen }) {
           <div className="sm:col-span-2">
             <Textarea
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                setShowSuccess(false);
+              }}
               placeholder="Write a comment…"
               required
               maxLength={500}

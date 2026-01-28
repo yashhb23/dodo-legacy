@@ -55,12 +55,21 @@ class GalleryComment(BaseModel):
     image_id: str
     name: str
     message: str
+    is_approved: bool = False
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
 class GalleryCommentCreate(BaseModel):
     name: str
     message: str
+
+
+# Helper for word filtering
+PROHIBITED_WORDS = {"spam", "scam", "offensive", "badword"}  # User can add more later
+
+def contains_prohibited_words(text: str) -> bool:
+    content = text.lower()
+    return any(word in content for word in PROHIBITED_WORDS)
 
 
 # Add your routes to the router instead of directly to app
@@ -99,7 +108,7 @@ async def get_gallery_comments(
     limit: int = Query(default=50, ge=1, le=100),
 ):
     comments = await (
-        db.gallery_comments.find({"image_id": image_id}, {"_id": 0})
+        db.gallery_comments.find({"image_id": image_id, "is_approved": True}, {"_id": 0})
         .sort("created_at", -1)
         .to_list(limit)
     )
@@ -120,9 +129,54 @@ async def create_gallery_comment(image_id: str, input: GalleryCommentCreate):
     if len(message) > 500:
         raise HTTPException(status_code=422, detail="Comment must be 500 characters or less.")
 
-    comment = GalleryComment(image_id=image_id, name=name, message=message)
+    # Apply word filter - auto-reject if contains prohibited words
+    if contains_prohibited_words(message) or contains_prohibited_words(name):
+        raise HTTPException(status_code=400, detail="Comment contains prohibited content.")
+
+    comment = GalleryComment(image_id=image_id, name=name, message=message, is_approved=False)
     await db.gallery_comments.insert_one(comment.model_dump())
     return comment
+
+
+# Admin Endpoints (Simple Secret Key Auth)
+@api_router.get("/admin/comments", response_model=List[GalleryComment])
+async def get_all_comments_for_moderation(secret: str = Query(...)):
+    if secret != os.environ.get("ADMIN_SECRET"):
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    
+    comments = await (
+        db.gallery_comments.find({}, {"_id": 0})
+        .sort("created_at", -1)
+        .to_list(100)
+    )
+    return comments
+
+@api_router.put("/admin/comments/{comment_id}/approve")
+async def approve_comment(comment_id: str, secret: str = Query(...)):
+    if secret != os.environ.get("ADMIN_SECRET"):
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    
+    result = await db.gallery_comments.update_one(
+        {"id": comment_id},
+        {"$set": {"is_approved": True}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    
+    return {"message": "Comment approved"}
+
+@api_router.delete("/admin/comments/{comment_id}")
+async def delete_comment(comment_id: str, secret: str = Query(...)):
+    if secret != os.environ.get("ADMIN_SECRET"):
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    
+    result = await db.gallery_comments.delete_one({"id": comment_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    
+    return {"message": "Comment deleted"}
 
 # Include the router in the main app
 app.include_router(api_router)

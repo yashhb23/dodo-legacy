@@ -9,6 +9,7 @@ import GallerySection from '@/components/GallerySection';
 import VoicesSection from '@/components/VoicesSection';
 import Footer from '@/components/Footer';
 import DiscoveryWidget from '@/components/DiscoveryWidget';
+import Newsletter from '@/components/Newsletter';
 import { districtsData } from '@/data/districts';
 
 // Lazy load modal components for better performance
@@ -23,12 +24,12 @@ const QuizModal = lazy(() => import('@/components/QuizModal'));
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  
+
   // Modal states
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isTimelineOpen, setIsTimelineOpen] = useState(false);
   const [isDodoModalOpen, setIsDodoModalOpen] = useState(false);
-  
+
   // Modals opened from search results
   const [selectedSearchDistrict, setSelectedSearchDistrict] = useState(null);
   const [isSearchDistrictModalOpen, setIsSearchDistrictModalOpen] = useState(false);
@@ -36,7 +37,7 @@ export default function LandingPage() {
   const [isSearchCultureModalOpen, setIsSearchCultureModalOpen] = useState(false);
   const [selectedSearchGallery, setSelectedSearchGallery] = useState(null);
   const [isSearchGalleryViewerOpen, setIsSearchGalleryViewerOpen] = useState(false);
-  
+
   // Quiz modal state
   const [isQuizOpen, setIsQuizOpen] = useState(false);
 
@@ -44,7 +45,7 @@ export default function LandingPage() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -84,7 +85,7 @@ export default function LandingPage() {
         const element = document.querySelector(sections[currentIndex]);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          
+
           // Highlight section title
           const title = element.querySelector('h2');
           if (title) {
@@ -123,19 +124,19 @@ export default function LandingPage() {
         <title>DODO LEGACY | Discover the Rich History & Culture of Mauritius</title>
         <meta name="description" content="Explore the captivating history of Mauritius - from the legendary dodo bird to vibrant multicultural heritage. Discover 9 districts, colonial history, sega music, and authentic Mauritian culture." />
         <meta name="keywords" content="Mauritius, dodo bird, Mauritian history, Mauritius culture, Port Louis, Le Morne, sega music, Mauritian heritage, Indian Ocean, Mauritius travel" />
-        
+
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content="DODO LEGACY | Discover Mauritius" />
         <meta property="og:description" content="Explore the captivating history and vibrant culture of Mauritius - the Island of the Dodo. A digital journey through heritage, traditions, and natural wonders." />
         <meta property="og:image" content="https://images.unsplash.com/photo-1585556557157-cd9191630e4a?w=1200" />
-        
+
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="DODO LEGACY | Discover Mauritius" />
         <meta name="twitter:description" content="Explore the captivating history and vibrant culture of Mauritius - the Island of the Dodo." />
         <meta name="twitter:image" content="https://images.unsplash.com/photo-1585556557157-cd9191630e4a?w=1200" />
-        
+
         {/* Schema.org structured data */}
         <script type="application/ld+json">
           {JSON.stringify({
@@ -161,18 +162,21 @@ export default function LandingPage() {
         onSearchClick={() => setIsSearchOpen(true)}
         onExploreClick={handleExploreClick}
       />
-      <HeroSection 
-        onBadgeClick={handleBadgeClick} 
+      <HeroSection
+        onBadgeClick={handleBadgeClick}
         onWatchStory={() => setIsTimelineOpen(true)}
       />
       <HistorySection />
       <CultureSection />
       <VoicesSection />
       <GallerySection />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <Newsletter />
+      </div>
       <Footer />
 
       {/* Discovery Widget - floating */}
-      <DiscoveryWidget 
+      <DiscoveryWidget
         onRandomDiscover={handleRandomDiscover}
         onQuizOpen={() => setIsQuizOpen(true)}
       />
@@ -180,61 +184,61 @@ export default function LandingPage() {
       {/* Global Modals - Lazy loaded for performance */}
       <Suspense fallback={null}>
         {isSearchOpen && (
-      <SearchModal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onResultClick={handleSearchResultClick}
-      />
+          <SearchModal
+            isOpen={isSearchOpen}
+            onClose={() => setIsSearchOpen(false)}
+            onResultClick={handleSearchResultClick}
+          />
         )}
         {isTimelineOpen && (
-      <TimelineModal
-        isOpen={isTimelineOpen}
-        onClose={() => setIsTimelineOpen(false)}
-      />
+          <TimelineModal
+            isOpen={isTimelineOpen}
+            onClose={() => setIsTimelineOpen(false)}
+          />
         )}
         {isDodoModalOpen && (
-      <DodoModal
-        isOpen={isDodoModalOpen}
-        onClose={() => setIsDodoModalOpen(false)}
-      />
+          <DodoModal
+            isOpen={isDodoModalOpen}
+            onClose={() => setIsDodoModalOpen(false)}
+          />
         )}
         {isQuizOpen && (
-      <QuizModal
-        isOpen={isQuizOpen}
-        onClose={() => setIsQuizOpen(false)}
-      />
+          <QuizModal
+            isOpen={isQuizOpen}
+            onClose={() => setIsQuizOpen(false)}
+          />
         )}
 
-      {/* Search Result Modals */}
+        {/* Search Result Modals */}
         {isSearchDistrictModalOpen && (
-      <DistrictModal
-        district={selectedSearchDistrict}
-        isOpen={isSearchDistrictModalOpen}
-        onClose={() => {
-          setIsSearchDistrictModalOpen(false);
-          setTimeout(() => setSelectedSearchDistrict(null), 300);
-        }}
-      />
+          <DistrictModal
+            district={selectedSearchDistrict}
+            isOpen={isSearchDistrictModalOpen}
+            onClose={() => {
+              setIsSearchDistrictModalOpen(false);
+              setTimeout(() => setSelectedSearchDistrict(null), 300);
+            }}
+          />
         )}
         {isSearchCultureModalOpen && (
-      <CultureModal
-        culture={selectedSearchCulture}
-        isOpen={isSearchCultureModalOpen}
-        onClose={() => {
-          setIsSearchCultureModalOpen(false);
-          setTimeout(() => setSelectedSearchCulture(null), 300);
-        }}
-      />
+          <CultureModal
+            culture={selectedSearchCulture}
+            isOpen={isSearchCultureModalOpen}
+            onClose={() => {
+              setIsSearchCultureModalOpen(false);
+              setTimeout(() => setSelectedSearchCulture(null), 300);
+            }}
+          />
         )}
         {isSearchGalleryViewerOpen && (
-      <GalleryViewer
-        image={selectedSearchGallery}
-        isOpen={isSearchGalleryViewerOpen}
-        onClose={() => {
-          setIsSearchGalleryViewerOpen(false);
-          setTimeout(() => setSelectedSearchGallery(null), 300);
-        }}
-      />
+          <GalleryViewer
+            image={selectedSearchGallery}
+            isOpen={isSearchGalleryViewerOpen}
+            onClose={() => {
+              setIsSearchGalleryViewerOpen(false);
+              setTimeout(() => setSelectedSearchGallery(null), 300);
+            }}
+          />
         )}
       </Suspense>
     </div>
