@@ -25,6 +25,11 @@ export default function GalleryComments({ imageId, isOpen }) {
   const canUseApi = Boolean(apiBase);
 
   useEffect(() => {
+    // Diagnostic log
+    console.log('GalleryComments API Base:', apiBase, 'Can Use API:', canUseApi);
+  }, [apiBase, canUseApi]);
+
+  useEffect(() => {
     try {
       localStorage.setItem('dodoLegacyCommentName', name);
     } catch {

@@ -49,7 +49,7 @@ export const cultureData = [
     summary: 'Religious diversity and harmony define Mauritian society. Hinduism, Christianity, Islam, and Buddhism coexist peacefully, with government-recognized public holidays for all major religious festivals.',
     microStory: 'Why Religious Harmony Succeeded in Mauritius',
     microStoryContent: 'After independence, Mauritius faced the risk of ethnic and religious conflict like many postcolonial nations. Instead, founding leaders enshrined religious tolerance in law: all major faiths receive equal public holidays, government funding for religious sites, and protection from discrimination. Grand Bassin (Hindu), Père Laval shrine (Catholic), and mosques receive equal reverence. This wasn\'t accidental—it was deliberate nation-building through pluralism.',
-    image: 'https://images.unsplash.com/photo-1604608672516-f1b9b1f4a159?w=800',
+    image: '/images/banners/religion.jpg',
     content: [
       'Hinduism is practiced by approximately 48-52% of the population, brought by Indian indentured laborers (1834-1920). Temples (kovils) are found throughout the island. Grand Bassin (Ganga Talao), a crater lake in the mountains, is the holiest Hindu site—pilgrims walk there annually during Maha Shivaratri, making it the largest religious gathering outside India.',
       'Christianity comprises about 32% of the population, predominantly Roman Catholic (26%), reflecting French colonial heritage. Protestant denominations include Anglicans, Seventh-day Adventists, and Pentecostals. Historic Catholic churches built under French rule remain architectural landmarks. Père Jacques-Désiré Laval, a Catholic missionary (1841-1864), is venerated across all communities.',
