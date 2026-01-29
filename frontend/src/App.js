@@ -1,5 +1,6 @@
 import '@/App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Analytics } from "@vercel/analytics/react";
 import LandingPage from '@/pages/LandingPage';
 import AdminComments from '@/pages/AdminComments';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -16,6 +17,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        <Analytics />
       </div>
     </ErrorBoundary>
   );
