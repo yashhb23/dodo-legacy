@@ -5,30 +5,54 @@ import CreditsModal from '@/components/CreditsModal';
 
 const footerLinks = [
   {
-    title: 'Explore',
-    links: ['Heritage', 'Districts', 'Culture', 'Gallery'],
-  },
-  {
-    title: 'Learn',
-    links: ['History', 'Wildlife', 'Conservation', 'Education'],
-  },
-  {
-    title: 'Visit',
-    links: ['Tourism', 'Museums', 'Natural Parks', 'Beaches'],
+    title: 'Sections',
+    links: [
+      { name: 'Heritage', href: '#heritage' },
+      { name: 'Districts', href: '#districts' },
+      { name: 'Culture', href: '#culture' },
+      { name: 'Gallery', href: '#gallery' },
+      { name: 'Voices', href: '#voices' },
+    ],
   },
   {
     title: 'Connect',
-    links: ['Contact', 'Newsletter', 'Events', 'Community'],
+    links: [
+      { name: 'Contact Us', href: 'mailto:dodolegacy1@gmail.com' },
+      { name: 'Instagram', href: 'https://instagram.com' }, // Placeholder as requested
+      { name: 'Twitter', href: 'https://twitter.com' },     // Placeholder as requested
+    ],
   },
 ];
 
 export default function Footer() {
   const [isCreditsOpen, setIsCreditsOpen] = useState(false);
+
+  const handleNavClick = (href, e) => {
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Highlight effect
+        const title = element.querySelector('h2');
+        if (title) {
+          title.style.transition = 'all 0.3s ease';
+          title.style.transform = 'scale(1.05)';
+          title.style.color = 'hsl(var(--primary))';
+          setTimeout(() => {
+            title.style.transform = 'scale(1)';
+            title.style.color = '';
+          }, 600);
+        }
+      }
+    }
+  };
+
   return (
     <>
       <footer className="relative bg-gradient-to-b from-muted/20 to-background border-t border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             {/* Brand Section */}
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-4">
@@ -44,16 +68,10 @@ export default function Footer() {
               </p>
               <div className="flex gap-3">
                 <Button variant="outline" size="icon" className="rounded-full hover:bg-primary hover:text-white transition-colors">
-                  <Facebook className="w-4 h-4" />
+                  <Instagram className="w-4 h-4" />
                 </Button>
                 <Button variant="outline" size="icon" className="rounded-full hover:bg-primary hover:text-white transition-colors">
                   <Twitter className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="rounded-full hover:bg-secondary hover:text-white transition-colors">
-                  <Instagram className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="rounded-full hover:bg-secondary hover:text-white transition-colors">
-                  <Youtube className="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -68,10 +86,13 @@ export default function Footer() {
                   {section.links.map((link, linkIndex) => (
                     <li key={linkIndex}>
                       <a
-                        href="#"
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        href={link.href}
+                        onClick={(e) => handleNavClick(link.href, e)}
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                        target={link.href.startsWith('http') ? '_blank' : undefined}
+                        rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                       >
-                        {link}
+                        {link.name}
                       </a>
                     </li>
                   ))}
@@ -86,12 +107,6 @@ export default function Footer() {
               © {new Date().getFullYear()} Dodo Legacy. Celebrating Mauritius Heritage.
             </p>
             <div className="flex gap-6 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-foreground transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="hover:text-foreground transition-colors">
-                Terms of Service
-              </a>
               <button
                 onClick={() => setIsCreditsOpen(true)}
                 className="hover:text-foreground transition-colors"

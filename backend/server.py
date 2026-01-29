@@ -59,9 +59,21 @@ class GalleryComment(BaseModel):
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
+
 class GalleryCommentCreate(BaseModel):
     name: str
     message: str
+
+
+class GalleryLike(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    image_id: str
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class GalleryLikeCount(BaseModel):
+    count: int
 
 
 # Helper for word filtering
@@ -136,6 +148,34 @@ async def create_gallery_comment(image_id: str, input: GalleryCommentCreate):
     comment = GalleryComment(image_id=image_id, name=name, message=message, is_approved=False)
     await db.gallery_comments.insert_one(comment.model_dump())
     return comment
+
+
+@api_router.get("/gallery/{image_id}/likes", response_model=GalleryLikeCount)
+async def get_image_likes(image_id: str):
+    count = await db.gallery_likes.count_documents({"image_id": image_id})
+    return {"count": count}
+
+@api_router.post("/gallery/{image_id}/like")
+async def like_image(image_id: str):
+    # Check if a like exists? For now, we allow infinite anonymous likes but rate limiting would be better.
+    # To prevent spam, we could check IP if we had middleware, but for simplicity we just add it.
+    # User requested "only admin can see which people liked". Without auth, we can't really track "people".
+    # We will just verify the image_id format/existence if we had validation.
+    
+    like = GalleryLike(image_id=image_id)
+    await db.gallery_likes.insert_one(like.model_dump())
+    return {"message": "Liked"}
+
+# Admin endpoint extensions
+@api_router.get("/admin/likes")
+async def get_all_likes(secret: str = Query(...)):
+    if secret != os.environ.get("ADMIN_SECRET"):
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    
+    # Return all likes, grouped by image? Or just raw list?
+    # User wants "see which people liked". We only have timestamps.
+    likes = await db.gallery_likes.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return likes
 
 
 # Admin Endpoints (Simple Secret Key Auth)

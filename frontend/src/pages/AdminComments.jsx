@@ -1,19 +1,22 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { apiJson, getApiBaseUrl } from '@/lib/api';
+import { apiJson } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Navigation from '@/components/Navigation';
+import { galleryData } from '@/data/gallery';
 
 export default function AdminComments() {
     const [searchParams] = useSearchParams();
     const secret = searchParams.get('secret');
     const [comments, setComments] = useState([]);
+    const [likes, setLikes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const fetchComments = async () => {
+    const fetchData = async () => {
         if (!secret) {
             setError('Secret key is required in URL (?secret=your_key)');
             setLoading(false);
@@ -21,17 +24,21 @@ export default function AdminComments() {
         }
 
         try {
-            const data = await apiJson(`/api/admin/comments?secret=${secret}`);
-            setComments(data);
+            const [commentsData, likesData] = await Promise.all([
+                apiJson(`/api/admin/comments?secret=${secret}`),
+                apiJson(`/api/admin/likes?secret=${secret}`).catch(() => [])
+            ]);
+            setComments(commentsData);
+            setLikes(likesData);
         } catch (err) {
-            setError(err.message || 'Failed to fetch comments');
+            setError(err.message || 'Failed to fetch data');
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchComments();
+        fetchData();
     }, [secret]);
 
     const handleApprove = async (id) => {
@@ -57,13 +64,22 @@ export default function AdminComments() {
         }
     };
 
+    const getImageDetails = (imageId) => {
+        // Try strict string matching first
+        let img = galleryData.find(g => String(g.id) === String(imageId));
+        return img || { title: 'Unknown Image', image: null };
+    };
+
     return (
         <div className="min-h-screen bg-background text-foreground">
             <Navigation scrolled={true} />
             <div className="container mx-auto pt-24 pb-12 px-4">
                 <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-3xl font-bold">Comment Moderation</h1>
-                    <Badge variant="outline">{comments.length} Total</Badge>
+                    <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+                    <div className="flex gap-2">
+                        <Badge variant="outline">{comments.length} Comments</Badge>
+                        <Badge variant="secondary">{likes.length} Likes</Badge>
+                    </div>
                 </div>
 
                 {error && (
@@ -73,54 +89,103 @@ export default function AdminComments() {
                 )}
 
                 {loading ? (
-                    <p>Loading comments...</p>
+                    <p>Loading dashboard...</p>
                 ) : (
-                    <div className="grid gap-4">
-                        {comments.map((comment) => (
-                            <Card key={comment.id} className="bg-background/40 border-border/50">
-                                <CardHeader className="flex flex-row items-center justify-between py-3">
-                                    <div>
-                                        <CardTitle className="text-lg">{comment.name}</CardTitle>
-                                        <p className="text-xs text-muted-foreground">{new Date(comment.created_at).toLocaleString()}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-2">
-                                        {comment.is_approved ? (
-                                            <Badge className="bg-green-500/20 text-green-500 hover:bg-green-500/20">Approved</Badge>
-                                        ) : (
-                                            <Badge variant="outline" className="text-yellow-500 border-yellow-500/30">Pending</Badge>
-                                        )}
-                                        <p className="text-xs text-muted-foreground self-center ml-2">Image: {comment.image_id}</p>
-                                    </div>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-sm border-l-2 border-secondary/30 pl-3 italic mb-4">
-                                        {comment.message}
-                                    </p>
-                                    <div className="flex gap-3 justify-end">
-                                        {!comment.is_approved && (
-                                            <Button
-                                                size="sm"
-                                                onClick={() => handleApprove(comment.id)}
-                                                className="bg-green-600 hover:bg-green-700 text-white"
-                                            >
-                                                Approve
-                                            </Button>
-                                        )}
-                                        <Button
-                                            size="sm"
-                                            variant="destructive"
-                                            onClick={() => handleDelete(comment.id)}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                        {comments.length === 0 && !error && (
-                            <p className="text-center text-muted-foreground py-12">No comments found.</p>
-                        )}
-                    </div>
+                    <Tabs defaultValue="comments" className="space-y-6">
+                        <TabsList>
+                            <TabsTrigger value="comments">Comments ({comments.length})</TabsTrigger>
+                            <TabsTrigger value="likes">Recent Likes ({likes.length})</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="comments" className="space-y-4">
+                            {comments.map((comment) => {
+                                const imgDetails = getImageDetails(comment.image_id);
+                                return (
+                                    <Card key={comment.id} className="bg-background/40 border-border/50">
+                                        <CardHeader className="flex flex-row items-start justify-between py-4">
+                                            <div className="flex gap-4">
+                                                {/* Thumbnail Image */}
+                                                <div className="w-16 h-16 rounded overflow-hidden shrink-0 border border-border bg-muted">
+                                                    {imgDetails.image ? (
+                                                        <img src={imgDetails.image} alt="Thumbnail" className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">No Img</div>
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <CardTitle className="text-lg flex items-center gap-2">
+                                                        {comment.name}
+                                                        <span className="text-sm font-normal text-muted-foreground">on {imgDetails.title}</span>
+                                                    </CardTitle>
+                                                    <CardDescription>{new Date(comment.created_at).toLocaleString()}</CardDescription>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-col items-end gap-2">
+                                                {comment.is_approved ? (
+                                                    <Badge className="bg-green-500/20 text-green-500 hover:bg-green-500/20">Approved</Badge>
+                                                ) : (
+                                                    <Badge variant="outline" className="text-yellow-500 border-yellow-500/30">Pending</Badge>
+                                                )}
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="bg-muted/30 p-4 rounded-md mb-4 border-l-4 border-primary/30">
+                                                <p className="text-sm italic">"{comment.message}"</p>
+                                            </div>
+                                            <div className="flex gap-3 justify-end">
+                                                {!comment.is_approved && (
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={() => handleApprove(comment.id)}
+                                                        className="bg-green-600 hover:bg-green-700 text-white"
+                                                    >
+                                                        Approve
+                                                    </Button>
+                                                )}
+                                                <Button
+                                                    size="sm"
+                                                    variant="destructive"
+                                                    onClick={() => handleDelete(comment.id)}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })}
+                            {comments.length === 0 && <p className="text-center text-muted-foreground py-12">No comments found.</p>}
+                        </TabsContent>
+
+                        <TabsContent value="likes">
+                            <div className="rounded-md border border-border">
+                                <div className="grid grid-cols-1 divide-y divide-border">
+                                    {likes.map((like) => {
+                                        const imgDetails = getImageDetails(like.image_id);
+                                        return (
+                                            <div key={like.id || like.created_at} className="p-4 flex items-center justify-between hover:bg-muted/20">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded overflow-hidden shrink-0 border border-border bg-muted">
+                                                        {imgDetails.image && (
+                                                            <img src={imgDetails.image} alt="Thumbnail" className="w-full h-full object-cover" />
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium">Like on <span className="text-primary">{imgDetails.title}</span></p>
+                                                        <p className="text-xs text-muted-foreground">{new Date(like.created_at).toLocaleString()}</p>
+                                                    </div>
+                                                </div>
+                                                <Badge variant="outline">❤️</Badge>
+                                            </div>
+                                        );
+                                    })}
+                                    {likes.length === 0 && <p className="text-center p-8 text-muted-foreground">No likes recorded yet.</p>}
+                                </div>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
                 )}
             </div>
         </div>
