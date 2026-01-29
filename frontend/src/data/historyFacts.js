@@ -1,7 +1,7 @@
 export const historyFactsExpanded = {
   'discovered-1598': {
     title: 'Early Discovery and Dutch Period',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+    image: '/images/banners/history.jpg',
     content: [
       'Mauritius was discovered uninhabited by Portuguese sailors around 1507, likely by Diogo Fernandes Pereira. They named it Ilha do Cirne (Swan Island) but did not settle. The island served only as a provisioning stop for ships traveling between Europe and the East Indies.',
       'The Dutch formally claimed Mauritius in 1598 when Admiral Wybrand van Warwyck landed and named it after Prince Maurice of Nassau, stadtholder of the Dutch Republic. The first Dutch settlement attempt (1638-1658) under Governor Cornelius Gooyer struggled with cyclones, droughts, and isolation.',
@@ -21,7 +21,7 @@ export const historyFactsExpanded = {
   },
   'island-paradise': {
     title: 'Island Geography and Ecology',
-    image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800',
+    image: '/images/banners/paradise.jpg',
     content: [
       'Mauritius is a volcanic island nation located approximately 2,000 kilometers off the southeast coast of Africa in the Indian Ocean. It lies about 900 km east of Madagascar and forms part of the Mascarene Islands archipelago with Réunion and Rodrigues.',
       'The main island covers 1,865 km² (720 sq mi), with a total land area of 2,040 km² including Rodrigues and outer islands. The landscape features a central plateau (400-600m elevation) surrounded by mountain ranges reaching up to 828m (Piton de la Petite Rivière Noire). Nearly surrounded by coral reefs, Mauritius has stunning lagoons and beaches.',
@@ -31,7 +31,7 @@ export const historyFactsExpanded = {
   },
   'independence-1968': {
     title: 'Independence and Modern Development',
-    image: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800',
+    image: '/images/banners/independence.jpg',
     content: [
       'Mauritius achieved independence from Britain on March 12, 1968, after 158 years of British rule. Sir Seewoosagur Ramgoolam, leader of the Labour Party and "Father of the Nation," became the first Prime Minister. The path to independence involved negotiations between different ethnic and political groups.',
       'At independence, Mauritius faced significant challenges: economic dependence on sugar (93% of export earnings), high unemployment, rapid population growth, and potential ethnic tensions. The government pursued economic diversification, developing the Export Processing Zone (EPZ) for textiles, promoting tourism, and later establishing offshore financial services.',
