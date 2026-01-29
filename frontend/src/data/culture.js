@@ -6,7 +6,7 @@ export const cultureData = [
     summary: 'Mauritius is a multilingual nation where Mauritian Creole, French, English, and Asian languages coexist, creating a unique linguistic landscape shaped by centuries of colonization and immigration.',
     microStory: 'Why Creole Became the Unifying Language',
     microStoryContent: 'When enslaved Africans, Malagasy workers, Indian laborers, Chinese traders, and European colonizers lived side by side, no single group held linguistic majority. Mauritian Creole emerged organically as the language of survival and solidarity—a French-based pidgin enriched by African grammar, Malagasy words, and Indian expressions. Today, 90% speak Creole regardless of ethnic origin, making it the true language of national unity.',
-    image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800',
+    image: 'https://images.unsplash.com/photo-1453928582365-b6ad33cbcf64?q=80&w=2000',
     content: [
       'Mauritian Creole (Morisyen or Kreol Morisien) is the lingua franca, spoken by approximately 90% of the population in daily life. It evolved from 18th-century French with significant influences from Malagasy, African Bantu languages, and Indian languages. Kreol became a symbol of national identity and cultural unity across ethnic groups.',
       'English is the official language of parliament, judiciary, and government administration. However, it\'s primarily a written and formal language; few Mauritians speak it as a mother tongue. French dominates print media, private education, business, and arts—a legacy of French colonial rule (1715-1810) that persists over 200 years after British conquest.',
@@ -27,7 +27,7 @@ export const cultureData = [
     summary: 'Mauritian cuisine is a unique fusion reflecting Indian, African, Chinese, and French influences, creating flavors found nowhere else. Street food culture thrives alongside family recipes passed through generations.',
     microStory: 'How Dholl Puri Became the National Soul Food',
     microStoryContent: 'Dholl puri—yellow split pea flatbread—originated with Indian indentured laborers who adapted roti using local ingredients. What made it uniquely Mauritian was its evolution: Creole rougaille (tomato chutney), Chinese pickles, and French butter bean curry were added. Sold from roadside stalls for pennies, it became the equalizer—eaten by everyone regardless of class or ethnicity. Today, no food better represents Mauritius\' fusion identity.',
-    image: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800',
+    image: 'https://images.unsplash.com/photo-1589187151046-51d02c84131d?q=80&w=2000',
     content: [
       'Street food defines Mauritian culinary culture. Dholl puri—yellow split pea flatbread served with butter bean curry, chutney, and rougaille—is the national street food icon. Gateaux piments (fried chili lentil cakes), samosas, boulettes (steamed dumplings), and bara (lentil fritters) are sold from colorful mobile stalls across the island.',
       'Curries reflect Indian heritage with Creole adaptations. Vindaye (mustard-based curry), rougaille (tomato-based sauce), and various carry (curries) use local seafood, chicken, or vegetables. Rice and farata (flatbread) are staples. Mauritian biryani, infused with saffron and local spices, differs from Indian versions. Chinese influence appears in fried noodles (mine frite), fried rice, and integration of soy sauce into Creole cooking.',
@@ -49,7 +49,7 @@ export const cultureData = [
     summary: 'Religious diversity and harmony define Mauritian society. Hinduism, Christianity, Islam, and Buddhism coexist peacefully, with government-recognized public holidays for all major religious festivals.',
     microStory: 'Why Religious Harmony Succeeded in Mauritius',
     microStoryContent: 'After independence, Mauritius faced the risk of ethnic and religious conflict like many postcolonial nations. Instead, founding leaders enshrined religious tolerance in law: all major faiths receive equal public holidays, government funding for religious sites, and protection from discrimination. Grand Bassin (Hindu), Père Laval shrine (Catholic), and mosques receive equal reverence. This wasn\'t accidental—it was deliberate nation-building through pluralism.',
-    image: '/images/banners/religion.jpg',
+    image: 'https://images.unsplash.com/photo-1548013146-72479768bbaa?q=80&w=2000',
     content: [
       'Hinduism is practiced by approximately 48-52% of the population, brought by Indian indentured laborers (1834-1920). Temples (kovils) are found throughout the island. Grand Bassin (Ganga Talao), a crater lake in the mountains, is the holiest Hindu site—pilgrims walk there annually during Maha Shivaratri, making it the largest religious gathering outside India.',
       'Christianity comprises about 32% of the population, predominantly Roman Catholic (26%), reflecting French colonial heritage. Protestant denominations include Anglicans, Seventh-day Adventists, and Pentecostals. Historic Catholic churches built under French rule remain architectural landmarks. Père Jacques-Désiré Laval, a Catholic missionary (1841-1864), is venerated across all communities.',
@@ -70,7 +70,7 @@ export const cultureData = [
     summary: 'Mauritius celebrates an extraordinary number of religious and cultural festivals year-round, with public holidays honoring Hindu, Muslim, Christian, Chinese, and national traditions—reflecting the island\'s inclusive ethos.',
     microStory: 'Why Maha Shivaratri Is Uniquely Massive in Mauritius',
     microStoryContent: 'While Maha Shivaratri is celebrated across the Hindu world, Mauritius hosts the largest gathering outside India. The reason: Grand Bassin crater lake, discovered in the 19th century, was declared spiritually connected to the Ganges River. Hindu leaders proclaimed its waters sacred. For Indo-Mauritian laborers, disconnected from India by indentured contracts, Grand Bassin became a spiritual homeland substitute. Today, up to 500,000 pilgrims walk there annually—over 40% of the population.',
-    image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800',
+    image: 'https://images.unsplash.com/photo-1621252174170-91fbdaa46231?q=80&w=2000',
     content: [
       'Maha Shivaratri ("Great Night of Shiva") is the largest Hindu pilgrimage outside India. Up to 500,000 devotees, dressed in white, walk to Grand Bassin crater lake carrying kanwars (decorated bamboo structures). The pilgrimage can be 30-50 km from some areas. Participants fast, pray, and pour holy water from the lake into Shiva lingams.',
       'Cavadee (Thaipoosam Cavadee) is a Tamil Hindu festival honoring Lord Muruga. Devotees pierce their bodies and tongues with vel (silver skewers) and carry cavadees (decorated wooden arches) in procession. Divali (Deepavali), the Festival of Lights, sees homes illuminated with oil lamps and fireworks. Holi (Festival of Colors) is celebrated with colored powder throwing.',
@@ -91,7 +91,7 @@ export const cultureData = [
     summary: 'Sega music and dance, born from African slave heritage and recognized by UNESCO, represents the soul of Mauritius—a rhythmic expression of joy, resilience, and Creole identity that evolved into modern fusion genres.',
     microStory: 'Why Sega Was Banned and How It Survived',
     microStoryContent: 'During slavery and early colonial periods, French and British authorities viewed sega as dangerous—a gathering point for enslaved Africans that could spark resistance. Sega performances were restricted or banned outright. Yet enslaved communities continued performing secretly on beaches at night, preserving it as an act of cultural defiance. After independence, sega was reclaimed as a symbol of Creole identity and pride. UNESCO recognition in 2014 completed its journey from forbidden music to national heritage.',
-    image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800',
+    image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=2000',
     content: [
       'Sega is the national music and dance, recognized by UNESCO as Intangible Cultural Heritage (2014). Originating among enslaved Africans during French colonial rule, sega was a form of expression, resistance, and community bonding. Performed traditionally on beaches around bonfires, it features the ravanne (goat-skin drum), maravane (shaker), and triangle.',
       'Traditional sega features sensual hip-swaying dances and lyrics in Mauritian Creole telling stories of love, hardship, daily life, and social commentary. Ti Frère (Alphonse Ravaton, 1900-1992), known as the "King of Sega," preserved and popularized the tradition. Sega tambour, a variant from Rodrigues Island, uses hand drums and more African-rooted rhythms.',
