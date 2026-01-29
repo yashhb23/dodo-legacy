@@ -1,7 +1,12 @@
-function normalizeBaseUrl(url) {
-  const trimmed = (url || '').trim();
-  if (!trimmed) return '';
-  return trimmed.replace(/\/+$/, '');
+let trimmed = (url || '').trim();
+if (!trimmed) return '';
+
+// Fix: Ensure protocol exists, otherwise browser treats it as relative path (causing 405 on Vercel)
+if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+  trimmed = `https://${trimmed}`;
+}
+
+return trimmed.replace(/\/+$/, '');
 }
 
 export function getApiBaseUrl() {
