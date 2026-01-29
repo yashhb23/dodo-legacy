@@ -89,7 +89,7 @@ export const districtsData = [
     name: 'Rivière du Rempart',
     description: 'Northern coastline and island gateway',
     icon: '🏝️',
-    image: 'https://images.unsplash.com/photo-1551061711-2a628859a5a3?q=80&w=2000',
+    image: '/images/banners/riviere-du-rempart.jpg',
     geography: 'Northernmost district covering 147.6 km². Characterized by dramatic coastline, offshore islands (Gunners\' Quoin, Flat Island, Round Island), and Cap Malheureux—the northernmost point. Reef-protected lagoons.',
     overview: 'Rivière du Rempart (River of Ramparts) is a coastal district combining tourism, fishing, and agriculture. Known for its red-roofed church at Cap Malheureux and pristine beaches. Less densely populated than southern neighbors.',
     history: 'Named after the river and the natural ramparts (coral rock formations) along the coast. Under French rule, served as sugar plantation area. British landed at Cap Malheureux in 1810 during their conquest. The district remained primarily agricultural until late 20th-century tourism development.',

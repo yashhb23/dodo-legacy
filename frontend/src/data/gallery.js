@@ -4,7 +4,7 @@ export const galleryData = [
     id: 1,
     title: 'Le Morne Brabant',
     category: 'Natural Heritage',
-    image: `${process.env.PUBLIC_URL}/gallery/le-morne-brabant.jpg`,
+    image: '/images/banners/le-morne.jpg',
     description: 'The rugged cliffs of Le Morne Brabant rising majestically from the turquoise lagoon, a timeless symbol of freedom and resilience.',
     source: 'Mauritius Tourism',
     era: 'Natural Landmark',

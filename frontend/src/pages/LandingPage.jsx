@@ -122,7 +122,7 @@ export default function LandingPage() {
       {/* SEO Meta Tags */}
       <Helmet>
         <title>DODO LEGACY | Discover the Rich History & Culture of Mauritius</title>
-        <meta name="description" content="Explore the captivating history of Mauritius - from the legendary dodo bird to vibrant multicultural heritage. Discover 9 districts, colonial history, sega music, and authentic Mauritian culture." />
+        <meta name="description" content="Explore the captivating history of Mauritius - from the legendary dodo bird to vibrant districts, colonial history, and authentic Mauritian culture, through the voices of its people." />
         <meta name="keywords" content="Mauritius, dodo bird, Mauritian history, Mauritius culture, Port Louis, Le Morne, sega music, Mauritian heritage, Indian Ocean, Mauritius travel" />
 
         {/* Open Graph / Facebook */}
@@ -168,8 +168,8 @@ export default function LandingPage() {
       />
       <HistorySection />
       <CultureSection />
-      <VoicesSection />
       <GallerySection />
+      <VoicesSection />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <Newsletter />
       </div>
