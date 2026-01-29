@@ -1,12 +1,13 @@
-let trimmed = (url || '').trim();
-if (!trimmed) return '';
+function normalizeBaseUrl(url) {
+  let trimmed = (url || '').trim();
+  if (!trimmed) return '';
 
-// Fix: Ensure protocol exists, otherwise browser treats it as relative path (causing 405 on Vercel)
-if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
-  trimmed = `https://${trimmed}`;
-}
+  // Fix: Ensure protocol exists, otherwise browser treats it as relative path (causing 405 on Vercel)
+  if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+    trimmed = `https://${trimmed}`;
+  }
 
-return trimmed.replace(/\/+$/, '');
+  return trimmed.replace(/\/+$/, '');
 }
 
 export function getApiBaseUrl() {
