@@ -99,50 +99,59 @@ export default function GalleryComments({ imageId, isOpen }) {
   };
 
   return (
-    <div className="mt-6 border-t border-border/50 pt-6">
-      <div className="flex items-center justify-between gap-3 mb-4">
-        <h3 className="text-lg font-semibold">Comments</h3>
-        <Badge className="bg-secondary/20 text-secondary border-secondary/30">
-          {comments.length}
-        </Badge>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
+          Comments
+        </h3>
+        {comments.length > 0 && (
+          <Badge variant="outline" className="text-xs text-muted-foreground border-border/50">
+            {comments.length}
+          </Badge>
+        )}
       </div>
 
       {!canUseApi && (
-        <p className="text-xs text-muted-foreground mb-3">
+        <p className="text-xs text-muted-foreground">
           Comments will appear after the site is configured. If you just deployed, try reloading in a minute.
         </p>
       )}
 
-      {error && <p className="text-sm text-destructive mb-4">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
+      {/* Comment list */}
       {loading ? (
-        <p className="text-sm text-muted-foreground mb-4">Loading comments…</p>
+        <p className="text-sm text-muted-foreground py-4">Loading comments...</p>
       ) : comments.length === 0 ? (
-        <p className="text-sm text-muted-foreground mb-4">
+        <p className="text-sm text-muted-foreground py-4">
           No comments yet. Be the first to share your thoughts.
         </p>
       ) : (
-        <div className="space-y-3 mb-6">
+        <div className="space-y-4">
           {comments.map((c) => (
-            <div key={c.id} className="rounded-lg border border-border/50 bg-background/40 p-3">
-              <div className="flex items-baseline justify-between gap-3">
-                <p className="text-sm font-semibold">{c.name}</p>
-                <p className="text-xs text-muted-foreground">{formatDate(c.created_at)}</p>
+            <div key={c.id} className="py-4 border-b border-border/30 last:border-b-0">
+              <div className="flex items-baseline justify-between gap-3 mb-1">
+                <p className="text-sm font-medium text-foreground">{c.name}</p>
+                <p className="text-xs text-muted-foreground/60 shrink-0">{formatDate(c.created_at)}</p>
               </div>
-              <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{c.message}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{c.message}</p>
             </div>
           ))}
         </div>
       )}
 
-      <form onSubmit={submit} className="space-y-3">
+      {/* Comment form */}
+      <form onSubmit={submit} className="space-y-4 pt-2">
         {showSuccess && (
-          <div className="bg-green-500/10 border border-green-500/20 text-green-500 p-3 rounded-lg text-sm mb-3">
+          <div className="bg-green-500/10 border border-green-500/20 text-green-600 p-3 rounded-lg text-sm">
             Thank you! Your comment has been submitted and is awaiting approval.
           </div>
         )}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="sm:col-span-1">
+
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-muted-foreground mb-1.5 block">Name</label>
             <Input
               value={name}
               onChange={(e) => {
@@ -152,20 +161,22 @@ export default function GalleryComments({ imageId, isOpen }) {
               placeholder="Your name"
               required
               maxLength={40}
-              className="bg-background border-border/50"
+              className="bg-background/50 border-border/40 focus:border-secondary/50"
             />
           </div>
-          <div className="sm:col-span-2">
+          <div>
+            <label className="text-xs text-muted-foreground mb-1.5 block">Message</label>
             <Textarea
               value={message}
               onChange={(e) => {
                 setMessage(e.target.value);
                 setShowSuccess(false);
               }}
-              placeholder="Write a comment…"
+              placeholder="Share your thoughts..."
               required
               maxLength={500}
-              className="bg-background border-border/50 min-h-[44px]"
+              rows={3}
+              className="bg-background/50 border-border/40 focus:border-secondary/50 min-h-[80px] resize-none"
             />
           </div>
         </div>
@@ -174,9 +185,10 @@ export default function GalleryComments({ imageId, isOpen }) {
           <Button
             type="submit"
             disabled={submitting || !canUseApi}
-            className="bg-secondary text-white hover:bg-secondary/90"
+            size="sm"
+            className="bg-secondary text-white hover:bg-secondary/90 px-6"
           >
-            {submitting ? 'Posting…' : 'Post comment'}
+            {submitting ? 'Posting...' : 'Post comment'}
           </Button>
         </div>
       </form>

@@ -9,7 +9,7 @@ export default function Newsletter() {
     return (
         <div className="mt-16 mb-8 text-center border-t border-border/40 pt-8">
             <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: 'Bebas Neue, sans-serif' }}>
-                Let's Connect
+                🔗 Let's Connect
             </h3>
             <p className="text-muted-foreground text-sm mb-4 max-w-md mx-auto">
                 Have a story to share? We'd love to hear from you.
