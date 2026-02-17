@@ -74,8 +74,7 @@ export default function GalleryViewer({ image, isOpen, onClose }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      {/* Solid background, no transparency */}
-      <DialogContent className="max-w-5xl max-h-[95vh] w-full bg-background border-0 p-0 shadow-2xl overflow-hidden">
+      <DialogContent className="max-w-7xl h-[90vh] w-full bg-background border-0 p-0 shadow-2xl overflow-hidden">
         <DialogHeader className="sr-only">
           <DialogTitle>{image.title}</DialogTitle>
           <DialogDescription>
@@ -83,85 +82,91 @@ export default function GalleryViewer({ image, isOpen, onClose }) {
           </DialogDescription>
         </DialogHeader>
 
-        {/* Scrollable wrapper for the entire modal content */}
-        <div className="overflow-y-auto max-h-[95vh]">
+        {/* Horizontal Layout: Content Left (45%), Image Right (55%) */}
+        <div className="flex flex-col lg:flex-row h-full">
+          
+          {/* Left Panel: Metadata + Comments (scrollable) */}
+          <div className="w-full lg:w-[45%] overflow-y-auto order-2 lg:order-1">
+            <div className="p-6 lg:p-8 space-y-6">
+              
+              {/* Metadata Section */}
+              <div className="space-y-4">
+                {/* Badges */}
+                <div className="flex flex-wrap items-center gap-3">
+                  <Badge variant="outline" className="text-secondary border-secondary/30 bg-secondary/5 text-xs">
+                    {image.category}
+                  </Badge>
+                  <Badge variant="outline" className="text-muted-foreground border-border text-xs">
+                    {image.era}
+                  </Badge>
+                  {likes > 0 && (
+                    <span className="text-xs text-muted-foreground ml-auto flex items-center gap-1">
+                      <Heart className={`w-3.5 h-3.5 ${hasLiked ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+                      {likes}
+                    </span>
+                  )}
+                </div>
 
-          {/* Image -- full width, capped height */}
-          <div className="relative w-full bg-black flex items-center justify-center">
+                {/* Title */}
+                <h2 className="text-2xl sm:text-3xl uppercase tracking-wide font-bold text-foreground leading-tight">
+                  {image.title}
+                </h2>
+
+                {/* Description */}
+                <p className="text-base text-muted-foreground leading-relaxed">
+                  {image.description}
+                </p>
+
+                {/* Source & Actions */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+                  <p className="text-sm text-muted-foreground/60 italic">
+                    Source: {image.source}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleLike}
+                      disabled={hasLiked}
+                      className="gap-2 shrink-0"
+                    >
+                      <Heart className={`w-4 h-4 ${hasLiked ? 'fill-current text-red-500' : ''}`} />
+                      {hasLiked ? 'Liked' : 'Like'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleShare}
+                      className="gap-2 shrink-0"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-green-500" /> : <Share2 className="w-4 h-4" />}
+                      {copied ? 'Copied' : 'Share'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Elegant Divider */}
+              <div className="relative py-2">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border/40"></div>
+                </div>
+              </div>
+
+              {/* Comments Section */}
+              <GalleryComments imageId={image.id} isOpen={isOpen} />
+            </div>
+          </div>
+
+          {/* Right Panel: Image (fixed, no scroll) */}
+          <div className="w-full lg:w-[55%] bg-black flex items-center justify-center relative order-1 lg:order-2 h-[40vh] lg:h-full">
             <img
               src={image.image}
               alt={image.title}
-              className="w-full h-auto max-h-[60vh] object-contain"
+              className="w-full h-full object-contain p-4 lg:p-8"
             />
-
-            {/* Like overlay */}
-            <div className="absolute bottom-4 right-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleLike();
-                }}
-                className={`rounded-full w-11 h-11 bg-black/40 hover:bg-black/60 backdrop-blur-sm transition-all duration-300 ${hasLiked ? 'text-red-500 scale-110' : 'text-white hover:text-red-400 hover:scale-110'}`}
-              >
-                <Heart className={`w-5 h-5 ${hasLiked ? 'fill-current' : ''}`} />
-              </Button>
-            </div>
           </div>
 
-          {/* Info + Comments panel */}
-          <div className="max-w-3xl mx-auto px-6 sm:px-10 py-10 space-y-8">
-
-            {/* Meta */}
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <Badge variant="outline" className="text-secondary border-secondary/30 bg-secondary/5 text-xs">
-                  {image.category}
-                </Badge>
-                <Badge variant="outline" className="text-muted-foreground border-border text-xs">
-                  {image.era}
-                </Badge>
-                {likes > 0 && (
-                  <span className="text-xs text-muted-foreground ml-auto">
-                    ❤️ {likes}
-                  </span>
-                )}
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl uppercase tracking-wide font-bold text-foreground leading-tight">
-                {image.title}
-              </h2>
-
-              <p className="text-base text-muted-foreground leading-relaxed">
-                {image.description}
-              </p>
-
-              <div className="flex items-center justify-between pt-2">
-                <p className="text-sm text-muted-foreground/60 italic">
-                  Source: {image.source}
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleShare}
-                  className="gap-2 shrink-0"
-                >
-                  {copied ? <Check className="w-4 h-4 text-green-500" /> : <Share2 className="w-4 h-4" />}
-                  {copied ? 'Copied' : 'Share'}
-                </Button>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <hr className="border-border/40" />
-
-            {/* Comments -- rendered directly, no extra wrapper */}
-            <GalleryComments imageId={image.id} isOpen={isOpen} />
-
-            {/* Bottom breathing room */}
-            <div className="h-4" />
-          </div>
         </div>
       </DialogContent>
     </Dialog>
