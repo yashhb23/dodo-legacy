@@ -1,3 +1,4 @@
+import { useEffect, useCallback, useRef } from 'react';
 import { Menu, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -10,15 +11,27 @@ const navItems = [
 ];
 
 export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSearchClick, onExploreClick }) {
+  const menuRef = useRef(null);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const closeMenu = useCallback(() => setIsMenuOpen(false), [setIsMenuOpen]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') closeMenu();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMenuOpen, closeMenu]);
 
   const handleNavClick = (href) => {
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // Highlight section title briefly
       const title = element.querySelector('h2');
       if (title) {
         title.style.transition = 'all 0.3s ease';
@@ -85,6 +98,9 @@ export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSear
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="rounded-full"
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-nav-menu"
+              aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
@@ -94,7 +110,13 @@ export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSear
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-background/98 backdrop-blur-md border-t border-border">
+        <div
+          id="mobile-nav-menu"
+          ref={menuRef}
+          role="navigation"
+          aria-label="Mobile navigation"
+          className="md:hidden bg-background/98 backdrop-blur-md border-t border-border"
+        >
           <div className="px-4 pt-4 pb-6 space-y-2">
             {navItems.map((item) => (
               <button

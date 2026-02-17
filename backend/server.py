@@ -1,7 +1,11 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Query
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, APIRouter, HTTPException, Query, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 import os
 import logging
 from pathlib import Path
@@ -29,8 +33,37 @@ except KeyError as e:
 client = AsyncIOMotorClient(mongo_url)
 db = client[db_name]
 
-# Create the main app without a prefix
-app = FastAPI()
+# Configure logging early so lifespan can use the logger
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(application: FastAPI):
+    """Modern lifecycle handler replacing deprecated on_event."""
+    try:
+        await client.admin.command('ping')
+        logger.info(f"Successfully connected to MongoDB database: {db.name}")
+        logger.info("Backend server ready at /api endpoints")
+    except Exception as e:
+        logger.error(f"Failed to connect to MongoDB: {e}")
+        logger.error("Please check your MONGO_URL in the .env file")
+        logger.error("Make sure MongoDB Atlas is configured and network access is allowed")
+    yield
+    client.close()
+    logger.info("MongoDB connection closed")
+
+
+# Rate limiter keyed by client IP
+limiter = Limiter(key_func=get_remote_address)
+
+# Create the main app with lifespan
+app = FastAPI(lifespan=lifespan)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -128,7 +161,8 @@ async def get_gallery_comments(
 
 
 @api_router.post("/gallery/{image_id}/comments", response_model=GalleryComment)
-async def create_gallery_comment(image_id: str, input: GalleryCommentCreate):
+@limiter.limit("10/minute")
+async def create_gallery_comment(request: Request, image_id: str, input: GalleryCommentCreate):
     name = (input.name or "").strip()
     message = (input.message or "").strip()
 
@@ -156,12 +190,8 @@ async def get_image_likes(image_id: str):
     return {"count": count}
 
 @api_router.post("/gallery/{image_id}/like")
-async def like_image(image_id: str):
-    # Check if a like exists? For now, we allow infinite anonymous likes but rate limiting would be better.
-    # To prevent spam, we could check IP if we had middleware, but for simplicity we just add it.
-    # User requested "only admin can see which people liked". Without auth, we can't really track "people".
-    # We will just verify the image_id format/existence if we had validation.
-    
+@limiter.limit("30/minute")
+async def like_image(request: Request, image_id: str):
     like = GalleryLike(image_id=image_id)
     await db.gallery_likes.insert_one(like.model_dump())
     return {"message": "Liked"}
@@ -229,26 +259,3 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
-
-@app.on_event("startup")
-async def startup_db_client():
-    try:
-        # Test MongoDB connection
-        await client.admin.command('ping')
-        logger.info(f"Successfully connected to MongoDB database: {db.name}")
-        logger.info(f"Backend server ready at /api endpoints")
-    except Exception as e:
-        logger.error(f"Failed to connect to MongoDB: {e}")
-        logger.error("Please check your MONGO_URL in the .env file")
-        logger.error("Make sure MongoDB Atlas is configured and network access is allowed")
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
-    logger.info("MongoDB connection closed")

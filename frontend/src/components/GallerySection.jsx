@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { galleryData } from '@/data/gallery';
@@ -9,13 +9,18 @@ function GallerySection() {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
 
-  // Extract unique categories from gallery data
-  const categories = ['All', ...new Set(galleryData.map(item => item.category))];
+  const categories = useMemo(
+    () => ['All', ...new Set(galleryData.map(item => item.category))],
+    [],
+  );
 
-  // Filter images based on active category
-  const filteredImages = activeCategory === 'All' 
-    ? galleryData 
-    : galleryData.filter(item => item.category === activeCategory);
+  const filteredImages = useMemo(
+    () =>
+      activeCategory === 'All'
+        ? galleryData
+        : galleryData.filter(item => item.category === activeCategory),
+    [activeCategory],
+  );
 
   const handleImageClick = (item) => {
     setSelectedImage(item);
