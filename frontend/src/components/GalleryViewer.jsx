@@ -173,8 +173,7 @@ export default function GalleryViewer({ image, isOpen, onClose }) {
             <div className="h-16"></div>
           </div>
         </div>
-      </div>
-    </DialogContent>
-    </Dialog >
+      </DialogContent>
+    </Dialog>
   );
 }
