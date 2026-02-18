@@ -67,12 +67,16 @@ export default function Footer() {
                 Preserving and celebrating the rich heritage of Mauritius and its iconic dodo bird—a symbol of our unique island story.
               </p>
               <div className="flex gap-3">
-                <Button variant="outline" size="icon" className="rounded-full hover:bg-primary hover:text-white transition-colors">
-                  <Instagram className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="rounded-full hover:bg-primary hover:text-white transition-colors">
-                  <Twitter className="w-4 h-4" />
-                </Button>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" size="icon" className="rounded-full hover:bg-primary hover:text-white transition-colors">
+                    <Instagram className="w-4 h-4" />
+                  </Button>
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" size="icon" className="rounded-full hover:bg-primary hover:text-white transition-colors">
+                    <Twitter className="w-4 h-4" />
+                  </Button>
+                </a>
               </div>
             </div>
 
