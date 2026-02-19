@@ -67,11 +67,12 @@ app = FastAPI(lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# CORS — must be registered before routes so preflight requests always get headers
+# CORS — allow_origin_regex is the bulletproof matcher; allow_origins is a fallback
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
     allow_origins=[o.strip() for o in os.environ.get('CORS_ORIGINS', '*').split(',') if o.strip()],
+    allow_origin_regex=r"https://(www\.)?dodolegacy\.com",
     allow_methods=["*"],
     allow_headers=["*"],
 )
