@@ -56,9 +56,7 @@ export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSear
           {/* Logo */}
           <div className="flex-shrink-0">
             <button onClick={scrollToTop} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <span className="text-white font-bold text-xl">🦤</span>
-              </div>
+              <img src="/dodo-icon.png" alt="Dodo Legacy" className="w-10 h-10 rounded-full object-cover" />
               <span className="text-xl font-bold tracking-wider" style={{ fontFamily: 'Bebas Neue, sans-serif' }}>
                 DODO LEGACY
               </span>

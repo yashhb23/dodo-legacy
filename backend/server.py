@@ -11,8 +11,10 @@ import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List
+import re
 import uuid
 from datetime import datetime, timezone
+from prohibited_words import PROHIBITED_WORDS
 
 
 ROOT_DIR = Path(__file__).parent
@@ -65,6 +67,15 @@ app = FastAPI(lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+# CORS — must be registered before routes so preflight requests always get headers
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
@@ -109,12 +120,18 @@ class GalleryLikeCount(BaseModel):
     count: int
 
 
-# Helper for word filtering
-PROHIBITED_WORDS = {"spam", "scam", "offensive", "badword"}  # User can add more later
+VALID_NAME_RE = re.compile(r"^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' \-]{0,38}[A-Za-zÀ-ÖØ-öø-ÿ]$")
 
 def contains_prohibited_words(text: str) -> bool:
     content = text.lower()
     return any(word in content for word in PROHIBITED_WORDS)
+
+def is_valid_name(name: str) -> bool:
+    """Require at least 2 letter characters and a real-name pattern."""
+    if not VALID_NAME_RE.match(name):
+        return False
+    letter_count = sum(1 for c in name if c.isalpha())
+    return letter_count >= 2
 
 
 # Add your routes to the router instead of directly to app
@@ -170,14 +187,21 @@ async def create_gallery_comment(request: Request, image_id: str, input: Gallery
         raise HTTPException(status_code=422, detail="Name is required.")
     if len(name) > 40:
         raise HTTPException(status_code=422, detail="Name must be 40 characters or less.")
+    if not is_valid_name(name):
+        raise HTTPException(
+            status_code=422,
+            detail="Please use your real first name. Comments with fake or unrecognizable names will not be published.",
+        )
     if not message:
         raise HTTPException(status_code=422, detail="Comment is required.")
     if len(message) > 500:
         raise HTTPException(status_code=422, detail="Comment must be 500 characters or less.")
 
-    # Apply word filter - auto-reject if contains prohibited words
     if contains_prohibited_words(message) or contains_prohibited_words(name):
-        raise HTTPException(status_code=400, detail="Comment contains prohibited content.")
+        raise HTTPException(
+            status_code=400,
+            detail="Your comment contains inappropriate language and cannot be submitted.",
+        )
 
     comment = GalleryComment(image_id=image_id, name=name, message=message, is_approved=False)
     await db.gallery_comments.insert_one(comment.model_dump())
@@ -250,12 +274,4 @@ async def delete_comment(comment_id: str, secret: str = Query(...)):
 
 # Include the router in the main app
 app.include_router(api_router)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 

@@ -145,9 +145,13 @@ export default function GalleryComments({ imageId, isOpen }) {
       <form onSubmit={submit} className="space-y-4 pt-2">
         {showSuccess && (
           <div className="bg-green-500/10 border border-green-500/20 text-green-600 p-3 rounded-lg text-sm">
-            Thank you! Your comment has been submitted and is awaiting approval.
+            Thank you! Your comment has been submitted for review. Only comments with real names and genuine messages will be approved and displayed.
           </div>
         )}
+
+        <div className="bg-muted/30 border border-border/40 rounded-lg p-3 text-xs text-muted-foreground leading-relaxed">
+          Please use your real first name and write a genuine comment. Submissions with fake names, inappropriate language, or low-effort messages have a much lower chance of being approved and appearing on the comment board.
+        </div>
 
         <div className="space-y-3">
           <div>
@@ -158,11 +162,12 @@ export default function GalleryComments({ imageId, isOpen }) {
                 setName(e.target.value);
                 setShowSuccess(false);
               }}
-              placeholder="Your name"
+              placeholder="Your first name"
               required
               maxLength={40}
               className="bg-background/50 border-border/40 focus:border-secondary/50"
             />
+            <p className="text-[11px] text-muted-foreground/60 mt-1">Your real first name — fake names won't be approved.</p>
           </div>
           <div>
             <label className="text-xs text-muted-foreground mb-1.5 block">Message</label>

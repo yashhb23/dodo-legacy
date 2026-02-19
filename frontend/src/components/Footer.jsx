@@ -56,9 +56,7 @@ export default function Footer() {
             {/* Brand Section */}
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                  <span className="text-white font-bold text-2xl">🦤</span>
-                </div>
+                <img src="/dodo-icon.png" alt="Dodo Legacy" className="w-12 h-12 rounded-full object-cover" />
                 <span className="text-2xl font-bold tracking-wider" style={{ fontFamily: 'Bebas Neue, sans-serif' }}>
                   DODO LEGACY
                 </span>
