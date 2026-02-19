@@ -122,7 +122,18 @@ export default function GalleryComments({ imageId, isOpen }) {
 
       {/* Comment list */}
       {loading ? (
-        <p className="text-sm text-muted-foreground py-4">Loading comments...</p>
+        <div className="space-y-4 py-2 animate-pulse">
+          {[1, 2].map((i) => (
+            <div key={i} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="h-3 w-24 bg-muted/50 rounded" />
+                <div className="h-2.5 w-16 bg-muted/30 rounded" />
+              </div>
+              <div className="h-3 w-full bg-muted/40 rounded" />
+              <div className="h-3 w-3/4 bg-muted/30 rounded" />
+            </div>
+          ))}
+        </div>
       ) : comments.length === 0 ? (
         <p className="text-sm text-muted-foreground py-4">
           No comments yet. Be the first to share your thoughts.
@@ -145,13 +156,13 @@ export default function GalleryComments({ imageId, isOpen }) {
       <form onSubmit={submit} className="space-y-4 pt-2">
         {showSuccess && (
           <div className="bg-green-500/10 border border-green-500/20 text-green-600 p-3 rounded-lg text-sm">
-            Thank you! Your comment has been submitted for review. Only comments with real names and genuine messages will be approved and displayed.
+            Thanks! Your comment is under review and will appear once approved.
           </div>
         )}
 
-        <div className="bg-muted/30 border border-border/40 rounded-lg p-3 text-xs text-muted-foreground leading-relaxed">
-          Please use your real first name and write a genuine comment. Submissions with fake names, inappropriate language, or low-effort messages have a much lower chance of being approved and appearing on the comment board.
-        </div>
+        <p className="text-xs text-muted-foreground/70 italic">
+          Use your real name and keep it respectful. Only genuine comments get approved.
+        </p>
 
         <div className="space-y-3">
           <div>
@@ -167,7 +178,7 @@ export default function GalleryComments({ imageId, isOpen }) {
               maxLength={40}
               className="bg-background/50 border-border/40 focus:border-secondary/50"
             />
-            <p className="text-[11px] text-muted-foreground/60 mt-1">Your real first name — fake names won't be approved.</p>
+            <p className="text-[11px] text-muted-foreground/60 mt-1">First name only</p>
           </div>
           <div>
             <label className="text-xs text-muted-foreground mb-1.5 block">Message</label>
