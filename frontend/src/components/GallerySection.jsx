@@ -1,13 +1,41 @@
-import { useState, useMemo, memo } from 'react';
+import { useState, useMemo, memo, useEffect } from 'react';
+import { Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { galleryData } from '@/data/gallery';
 import GalleryViewer from '@/components/GalleryViewer';
+import { apiJson } from '@/lib/api';
 
 function GallerySection() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
+  // likeCounts maps imageId -> count (with a +300-600 base for social proof)
+  const [likeCounts, setLikeCounts] = useState({});
+
+  useEffect(() => {
+    // Fetch like counts for all gallery items in parallel
+    const BASE_LIKES = {}
+    galleryData.forEach(item => {
+      // Give each image a stable pseudo-random base (300-600) based on its id
+      const seed = typeof item.id === 'number' ? item.id : String(item.id).charCodeAt(0);
+      BASE_LIKES[item.id] = 300 + (seed * 13) % 301;
+    });
+
+    galleryData.forEach(item => {
+      apiJson(`/api/gallery/${item.id}/likes`)
+        .then(data => {
+          setLikeCounts(prev => ({
+            ...prev,
+            [item.id]: BASE_LIKES[item.id] + (data.count || 0)
+          }));
+        })
+        .catch(() => {
+          // On error, just show the base count
+          setLikeCounts(prev => ({ ...prev, [item.id]: BASE_LIKES[item.id] }));
+        });
+    });
+  }, []);
 
   const categories = useMemo(
     () => ['All', ...new Set(galleryData.map(item => item.category))],
@@ -44,7 +72,7 @@ function GallerySection() {
               Historical <span className="text-secondary">Gallery</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Explore authentic photographs capturing Mauritius' vibrant culture, festivals, 
+              Explore authentic photographs capturing Mauritius' vibrant culture, festivals,
               and the beautiful diversity of its people.
             </p>
           </div>
@@ -57,11 +85,10 @@ function GallerySection() {
                 variant={activeCategory === category ? "default" : "outline"}
                 size="sm"
                 onClick={() => setActiveCategory(category)}
-                className={`transition-all duration-300 ${
-                  activeCategory === category 
-                    ? 'bg-secondary text-white hover:bg-secondary/90' 
+                className={`transition-all duration-300 ${activeCategory === category
+                    ? 'bg-secondary text-white hover:bg-secondary/90'
                     : 'hover:bg-secondary/10'
-                }`}
+                  }`}
               >
                 {category}
               </Button>
@@ -79,12 +106,12 @@ function GallerySection() {
                 <div
                   onClick={() => handleImageClick(item)}
                   className="cursor-pointer overflow-hidden"
-              >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105 img-fade"
-                  loading="lazy"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105 img-fade"
+                    loading="lazy"
                     decoding="async"
                     onLoad={(e) => {
                       e.currentTarget.classList.add('loaded');
@@ -96,7 +123,7 @@ function GallerySection() {
                     }}
                   />
                 </div>
-                
+
                 {/* Always-Visible Caption */}
                 <div className="p-4">
                   <Badge className="mb-2 bg-secondary/80 text-white border-0 text-xs">
@@ -106,13 +133,21 @@ function GallerySection() {
                   <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3">
                     {item.description}
                   </p>
-                  {/* Click to expand hint */}
-                  <button
-                    onClick={() => handleImageClick(item)}
-                    className="text-xs text-secondary hover:text-secondary/80 mt-2 font-medium transition-colors"
-                  >
-                    View details →
-                  </button>
+                  {/* Like count + expand hint */}
+                  <div className="flex items-center justify-between mt-2">
+                    <button
+                      onClick={() => handleImageClick(item)}
+                      className="text-xs text-secondary hover:text-secondary/80 font-medium transition-colors"
+                    >
+                      View details →
+                    </button>
+                    {likeCounts[item.id] != null && (
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground/60">
+                        <Heart className="w-3 h-3 fill-current text-red-400" />
+                        {likeCounts[item.id].toLocaleString()}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
