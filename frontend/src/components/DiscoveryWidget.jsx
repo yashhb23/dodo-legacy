@@ -116,9 +116,9 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
             onClick={onQuizOpen}
             size="sm"
             variant="outline"
-            className="flex-1 text-[10px] md:text-xs py-1 md:py-2 h-8 md:h-auto border-primary/50 hover:bg-primary/10"
+            className="flex-1 text-[10px] md:text-xs py-1 md:py-2 h-8 md:h-auto border-primary/50 hover:bg-primary/10 hover:text-foreground hover:border-primary text-foreground"
           >
-            <Brain className="w-3 h-3 mr-1" />
+            <Brain className="w-3 h-3 mr-1 text-current" />
             Quiz
           </Button>
         </div>

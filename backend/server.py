@@ -8,6 +8,10 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import os
 import logging
+import asyncio
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List
@@ -41,6 +45,37 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Email Notification Helper
+# ---------------------------------------------------------------------------
+NOTIFY_EMAIL = os.environ.get('NOTIFY_EMAIL', '')     # e.g. dodolegacy1@gmail.com
+NOTIFY_PASSWORD = os.environ.get('NOTIFY_PASSWORD', '')  # Gmail App Password (not your main password)
+
+async def send_notification_email(subject: str, body: str) -> None:
+    """Send a plain-text notification email in a background thread so it never blocks the request."""
+    if not NOTIFY_EMAIL or not NOTIFY_PASSWORD:
+        logger.debug("Email notifications not configured (NOTIFY_EMAIL / NOTIFY_PASSWORD missing).")
+        return
+
+    def _send():
+        try:
+            msg = MIMEMultipart()
+            msg['From'] = NOTIFY_EMAIL
+            msg['To'] = NOTIFY_EMAIL
+            msg['Subject'] = subject
+            msg.attach(MIMEText(body, 'plain'))
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+                server.login(NOTIFY_EMAIL, NOTIFY_PASSWORD)
+                server.sendmail(NOTIFY_EMAIL, NOTIFY_EMAIL, msg.as_string())
+            logger.info(f"Notification email sent: {subject}")
+        except Exception as e:
+            logger.warning(f"Failed to send notification email: {e}")
+
+    # Run blocking SMTP in a thread so FastAPI stays non-blocking
+    loop = asyncio.get_event_loop()
+    loop.run_in_executor(None, _send)
 
 
 @asynccontextmanager
@@ -206,6 +241,19 @@ async def create_gallery_comment(request: Request, image_id: str, input: Gallery
 
     comment = GalleryComment(image_id=image_id, name=name, message=message, is_approved=False)
     await db.gallery_comments.insert_one(comment.model_dump())
+
+    # 📬 Notify owner of new comment (non-blocking)
+    await send_notification_email(
+        subject=f"[Dodo Legacy] New comment from {name}",
+        body=(
+            f"You have a new comment awaiting moderation.\n\n"
+            f"Image ID: {image_id}\n"
+            f"From: {name}\n"
+            f"Message: {message}\n\n"
+            f"Moderate at: https://dodo-legacy.vercel.app/admin/comments?secret={os.environ.get('ADMIN_SECRET', 'MISSING')}"
+        )
+    )
+
     return comment
 
 
@@ -219,6 +267,17 @@ async def get_image_likes(image_id: str):
 async def like_image(request: Request, image_id: str):
     like = GalleryLike(image_id=image_id)
     await db.gallery_likes.insert_one(like.model_dump())
+
+    # 📬 Notify owner of new like (non-blocking, but keep it brief to avoid email spam)
+    await send_notification_email(
+        subject=f"[Dodo Legacy] New like on image {image_id}",
+        body=(
+            f"Someone liked image ID: {image_id}\n"
+            f"Time: {datetime.now(timezone.utc).isoformat()}\n\n"
+            f"View all likes at: https://dodo-legacy.vercel.app/admin/comments?secret={os.environ.get('ADMIN_SECRET', 'MISSING')}"
+        )
+    )
+
     return {"message": "Liked"}
 
 # Admin endpoint extensions

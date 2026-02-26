@@ -17,9 +17,9 @@ function GallerySection() {
     // Fetch like counts for all gallery items in parallel
     const BASE_LIKES = {}
     galleryData.forEach(item => {
-      // Give each image a stable pseudo-random base (300-600) based on its id
+      // Give each image a stable pseudo-random base (250-650) based on its id
       const seed = typeof item.id === 'number' ? item.id : String(item.id).charCodeAt(0);
-      BASE_LIKES[item.id] = 300 + (seed * 13) % 301;
+      BASE_LIKES[item.id] = 250 + (seed * 17) % 401;
     });
 
     galleryData.forEach(item => {
@@ -86,8 +86,8 @@ function GallerySection() {
                 size="sm"
                 onClick={() => setActiveCategory(category)}
                 className={`transition-all duration-300 ${activeCategory === category
-                    ? 'bg-secondary text-white hover:bg-secondary/90'
-                    : 'hover:bg-secondary/10'
+                  ? 'bg-secondary text-white hover:bg-secondary/90'
+                  : 'hover:bg-secondary/10'
                   }`}
               >
                 {category}

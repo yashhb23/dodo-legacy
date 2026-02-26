@@ -1,3 +1,34 @@
+// Inline SVG dodo silhouette — renders on ALL devices including old Android/Windows
+// that do not support the 🦤 emoji (added Emoji 13.0, Sept 2020, not available on older OS).
+function DodoSVG({ size = 24 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      {/* Body */}
+      <ellipse cx="32" cy="40" rx="18" ry="15" fill="white" fillOpacity="0.9" />
+      {/* Head */}
+      <circle cx="44" cy="22" r="10" fill="white" fillOpacity="0.9" />
+      {/* Beak */}
+      <path d="M53 20 L61 22 L53 25 Z" fill="#f0a050" />
+      {/* Eye */}
+      <circle cx="47" cy="20" r="2" fill="#1a1a2e" />
+      {/* Tail feathers */}
+      <path d="M14 38 C8 30 6 24 10 20 C12 28 14 34 18 38Z" fill="white" fillOpacity="0.7" />
+      {/* Wing hint */}
+      <ellipse cx="28" cy="38" rx="8" ry="5" fill="white" fillOpacity="0.5" />
+      {/* Legs */}
+      <line x1="28" y1="54" x2="26" y2="60" stroke="#f0a050" strokeWidth="2" strokeLinecap="round" />
+      <line x1="36" y1="54" x2="38" y2="60" stroke="#f0a050" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function DodoCircleRing() {
   // Create array of 40 icons for the circle
   const iconCount = 40;
@@ -5,8 +36,8 @@ export default function DodoCircleRing() {
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] max-w-[1800px] aspect-square pointer-events-none z-0">
-      <div 
-        className="relative w-full h-full animate-rotate opacity-20 md:opacity-40 lg:opacity-60" 
+      <div
+        className="relative w-full h-full animate-rotate opacity-20 md:opacity-40 lg:opacity-60"
         style={{ animationDuration: '120s' }}
       >
         {icons.map((index) => {
@@ -32,7 +63,7 @@ export default function DodoCircleRing() {
                   boxShadow: '0 0 15px hsl(var(--primary) / 0.3)',
                 }}
               >
-                <span className="text-lg sm:text-xl md:text-2xl">🦤</span>
+                <DodoSVG size={20} />
               </div>
             </div>
           );
