@@ -1,0 +1,6 @@
+# robots.txt for dodolegacy.com
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+Sitemap: https://dodolegacy.com/sitemap.xml

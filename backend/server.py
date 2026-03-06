@@ -19,6 +19,7 @@ import re
 import uuid
 from datetime import datetime, timezone
 from prohibited_words import PROHIBITED_WORDS
+import time
 
 
 ROOT_DIR = Path(__file__).parent
@@ -175,6 +176,39 @@ def is_valid_name(name: str) -> bool:
 async def root():
     return {"message": "Hello World"}
 
+@api_router.get("/health")
+async def health_check():
+    """Health endpoint for uptime monitoring services."""
+    try:
+        await client.admin.command('ping')
+        db_status = "connected"
+    except Exception:
+        db_status = "disconnected"
+    return {
+        "status": "ok",
+        "database": db_status,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Simple in-memory TTL cache for read-heavy endpoints (likes counts)
+# ---------------------------------------------------------------------------
+_likes_cache: dict[str, tuple[int, float]] = {}  # image_id -> (count, expires_at)
+LIKES_CACHE_TTL = 60  # seconds
+
+def _get_cached_likes(image_id: str) -> int | None:
+    entry = _likes_cache.get(image_id)
+    if entry and entry[1] > time.time():
+        return entry[0]
+    return None
+
+def _set_cached_likes(image_id: str, count: int) -> None:
+    _likes_cache[image_id] = (count, time.time() + LIKES_CACHE_TTL)
+
+def _invalidate_likes_cache(image_id: str) -> None:
+    _likes_cache.pop(image_id, None)
+
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
     status_dict = input.model_dump()
@@ -250,7 +284,7 @@ async def create_gallery_comment(request: Request, image_id: str, input: Gallery
             f"Image ID: {image_id}\n"
             f"From: {name}\n"
             f"Message: {message}\n\n"
-            f"Moderate at: https://dodo-legacy.vercel.app/admin/comments?secret={os.environ.get('ADMIN_SECRET', 'MISSING')}"
+            f"Moderate at: https://dodolegacy.com/admin/comments?secret={os.environ.get('ADMIN_SECRET', 'MISSING')}"
         )
     )
 
@@ -259,7 +293,12 @@ async def create_gallery_comment(request: Request, image_id: str, input: Gallery
 
 @api_router.get("/gallery/{image_id}/likes", response_model=GalleryLikeCount)
 async def get_image_likes(image_id: str):
+    """Return like count for an image, cached for 60 seconds."""
+    cached = _get_cached_likes(image_id)
+    if cached is not None:
+        return {"count": cached}
     count = await db.gallery_likes.count_documents({"image_id": image_id})
+    _set_cached_likes(image_id, count)
     return {"count": count}
 
 @api_router.post("/gallery/{image_id}/like")
@@ -267,6 +306,7 @@ async def get_image_likes(image_id: str):
 async def like_image(request: Request, image_id: str):
     like = GalleryLike(image_id=image_id)
     await db.gallery_likes.insert_one(like.model_dump())
+    _invalidate_likes_cache(image_id)  # bust the cache so next GET is fresh
 
     # 📬 Notify owner of new like (non-blocking, but keep it brief to avoid email spam)
     await send_notification_email(
@@ -274,7 +314,7 @@ async def like_image(request: Request, image_id: str):
         body=(
             f"Someone liked image ID: {image_id}\n"
             f"Time: {datetime.now(timezone.utc).isoformat()}\n\n"
-            f"View all likes at: https://dodo-legacy.vercel.app/admin/comments?secret={os.environ.get('ADMIN_SECRET', 'MISSING')}"
+            f"View all likes at: https://dodolegacy.com/admin/comments?secret={os.environ.get('ADMIN_SECRET', 'MISSING')}"
         )
     )
 
