@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import TopBanner from '@/components/TopBanner';
 import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
+import { HistoryStack } from '@/components/HistoryStack/HistoryStack';
 import HistorySection from '@/components/HistorySection';
 import CultureSection from '@/components/CultureSection';
 import GallerySection from '@/components/GallerySection';
@@ -166,6 +167,14 @@ export default function LandingPage() {
         onBadgeClick={handleBadgeClick}
         onWatchStory={() => setIsTimelineOpen(true)}
       />
+      {/* History Stack - 3D Interactive Timeline */}
+      <div id="history-stack" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">Mauritius Historical Timeline</h2>
+          <p className="text-gray-400">Hover over the 3D stack to explore key moments in history</p>
+        </div>
+        <HistoryStack />
+      </div>
       <HistorySection />
       <CultureSection />
       <GallerySection />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { apiJson } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ export default function AdminComments() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         if (!secret) {
             setError('Secret key is required in URL (?secret=your_key)');
             setLoading(false);
@@ -35,11 +35,11 @@ export default function AdminComments() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [secret]);
 
     useEffect(() => {
         fetchData();
-    }, [secret]);
+    }, [fetchData]);
 
     const handleApprove = async (id) => {
         try {
