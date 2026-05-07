@@ -60,8 +60,8 @@
     "zod": "^3.24.4"
   },
   "scripts": {
-    "dev": "cross-env PORT=3005 craco start",
-    "start": "cross-env PORT=3005 craco start",
+    "dev": "cross-env PORT=3506 craco start",
+    "start": "cross-env PORT=3506 craco start",
     "build": "cross-env CI=false craco build",
     "test": "craco test"
   },

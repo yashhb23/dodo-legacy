@@ -168,7 +168,9 @@ export default function LandingPage() {
         onWatchStory={() => setIsTimelineOpen(true)}
       />
       {/* History Stack - 3D Interactive Timeline */}
-      <div id="history-stack" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div id="history-stack" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative">
+        {/* Soft bridge between sections to remove the hard horizontal seam */}
+        <div className="absolute -top-16 inset-x-0 h-20 pointer-events-none bg-gradient-to-b from-transparent to-background" />
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">Mauritius Historical Timeline</h2>
           <p className="text-gray-400">Hover over the 3D stack to explore key moments in history</p>
