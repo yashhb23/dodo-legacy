@@ -311,7 +311,7 @@ export const HistoryStack = () => {
             effect without any chaotic cursor-chasing. */}
         <div
           ref={tooltipRef}
-          className={`absolute top-2 md:top-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none w-[90vw] max-w-[20rem] md:max-w-[28rem] h-52 md:h-[16rem] transition-opacity duration-300 ease-out ${
+          className={`absolute top-8 left-1/2 -translate-x-1/2 w-[85%] md:w-[65%] h-[250px] md:h-[400px] z-50 pointer-events-none transition-opacity duration-300 ease-out ${
             activeMilestone ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -324,8 +324,8 @@ export const HistoryStack = () => {
               decoding="async"
               className={`absolute inset-0 w-full h-full object-contain will-change-[transform,opacity] transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
                 activeMilestone?.id === milestone.id
-                  ? "opacity-100 scale-100 translate-y-0 rotate-0"
-                  : "opacity-0 scale-[0.2] translate-y-[100px] rotate-3 pointer-events-none"
+                  ? "opacity-100 scale-100 translate-y-0 shadow-2xl"
+                  : "opacity-0 scale-[0.2] translate-y-12 pointer-events-none"
               }`}
               onError={(e) => {
                 e.currentTarget.style.display = "none";
@@ -345,7 +345,7 @@ export const HistoryStack = () => {
             never repaints. This is what eliminates the background shake.
             z-0 keeps it layered behind the title + description text. */}
         {activeMilestone && (
-          <div className="text-[10rem] md:text-[14rem] font-serif font-black absolute top-0 md:top-10 right-4 md:right-12 pointer-events-none text-zinc-300/40 drop-shadow-xl z-0 leading-none overflow-hidden">
+          <div className="text-[12rem] md:text-[18rem] font-serif font-black absolute top-0 right-0 md:-right-8 pointer-events-none text-zinc-500/40 select-none z-0 leading-none">
             {activeMilestone.date.split("-")[0]}
           </div>
         )}
@@ -362,7 +362,7 @@ export const HistoryStack = () => {
               <ScrambleText text={activeMilestone.title} />
             </h2>
 
-            <p className="text-lg font-light leading-relaxed md:leading-loose text-zinc-300/90">
+            <p className="text-zinc-300 text-base md:text-lg leading-relaxed animate-in fade-in slide-in-from-bottom-2 duration-700 delay-150 fill-mode-both">
               {activeMilestone.description}
             </p>
           </div>
@@ -375,7 +375,7 @@ export const HistoryStack = () => {
           <div
             className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)] transition-all duration-700 ease-out"
             style={{
-              top: `${activeMilestone ? ((activeMilestone.id - 1) / 9) * 100 : 0}%`,
+              top: `${activeMilestone ? ((activeMilestone.id - 1) / 15) * 100 : 0}%`,
             }}
           />
         </div>
