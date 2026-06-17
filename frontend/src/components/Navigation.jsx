@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 import { Menu, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -10,8 +10,21 @@ const navItems = [
   { name: 'Voices', href: '#voices' },
 ];
 
-export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSearchClick, onExploreClick }) {
+export default function Navigation({
+  isMenuOpen: isMenuOpenProp,
+  setIsMenuOpen: setIsMenuOpenProp,
+  scrolled,
+  onSearchClick = () => {},
+  onExploreClick = () => {},
+}) {
   const menuRef = useRef(null);
+  // Work standalone when menu props are omitted (e.g. the admin page renders
+  // <Navigation scrolled /> with no menu state). Falling back to local state
+  // prevents "setIsMenuOpen is not a function" when the mobile hamburger is
+  // tapped there.
+  const [internalMenuOpen, setInternalMenuOpen] = useState(false);
+  const isMenuOpen = isMenuOpenProp ?? internalMenuOpen;
+  const setIsMenuOpen = setIsMenuOpenProp ?? setInternalMenuOpen;
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -95,7 +108,7 @@ export default function Navigation({ isMenuOpen, setIsMenuOpen, scrolled, onSear
               variant="ghost"
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="rounded-full"
+              className="rounded-full h-11 w-11"
               aria-expanded={isMenuOpen}
               aria-controls="mobile-nav-menu"
               aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}

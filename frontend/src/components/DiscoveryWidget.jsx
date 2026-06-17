@@ -82,7 +82,7 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 md:h-6 md:w-6 rounded-full flex-shrink-0"
+            className="h-11 w-11 md:h-6 md:w-6 rounded-full flex-shrink-0"
             onClick={() => setIsMinimized(true)}
           >
             <X className="w-3 h-3 md:w-4 md:h-4" />
@@ -106,7 +106,7 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
             onClick={onRandomDiscover}
             size="sm"
             variant="outline"
-            className="flex-1 text-[10px] md:text-xs py-1 md:py-2 h-8 md:h-auto border-secondary/50 hover:bg-secondary/10"
+            className="flex-1 text-[10px] md:text-xs py-1 md:py-2 h-11 md:h-auto border-secondary/50 hover:bg-secondary/10"
           >
             <Shuffle className="w-3 h-3 mr-1" />
             <span className="hidden xs:inline">Discover</span>
@@ -116,7 +116,7 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
             onClick={onQuizOpen}
             size="sm"
             variant="outline"
-            className="flex-1 text-[10px] md:text-xs py-1 md:py-2 h-8 md:h-auto border-primary/50 hover:bg-primary/10 hover:text-foreground hover:border-primary text-foreground"
+            className="flex-1 text-[10px] md:text-xs py-1 md:py-2 h-11 md:h-auto border-primary/50 hover:bg-primary/10 hover:text-foreground hover:border-primary text-foreground"
           >
             <Brain className="w-3 h-3 mr-1 text-current" />
             Quiz

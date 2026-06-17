@@ -212,6 +212,45 @@ html {
     animation: rotateCircle 60s linear infinite;
 }
 
+/* HistoryStack card brighten.
+   The hovered or selected card brightens instantly via an opacity-only
+   crossfade of a dim overlay (no brightness filter, no repaint). The card
+   jiggle itself runs through the Web Animations API in HistoryStack.jsx so
+   it replays reliably on every entry. */
+.dodo-card:hover .dodo-card-dim,
+.dodo-card[aria-pressed="true"] .dodo-card-dim {
+    opacity: 0;
+}
+
+/* Hero kinetic title: each letter slides and fades up in a staggered reveal.
+   The per-letter animation-delay is set inline in HeroSection.jsx. */
+@keyframes heroLetterIn {
+    from { opacity: 0; transform: translateY(0.5em) rotateX(-50deg); }
+    to { opacity: 1; transform: translateY(0) rotateX(0); }
+}
+.hero-letter {
+    display: inline-block;
+    opacity: 0;
+    animation: heroLetterIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Respect prefers-reduced-motion for ambient/looping decorative animations.
+   The HistoryStack card jiggle is intentionally exempt (explicitly requested)
+   and lives in JS via the Web Animations API, so it is unaffected here. */
+@media (prefers-reduced-motion: reduce) {
+    .animate-rotate,
+    .animate-float,
+    .animate-pulse-slow,
+    .animate-pulse {
+        animation: none !important;
+    }
+    /* Reveal hero letters instantly (their base state is opacity:0). */
+    .hero-letter {
+        animation: none !important;
+        opacity: 1 !important;
+    }
+}
+
 /* Mobile: Reduce animation intensity */
 @media (max-width: 768px) {
     .animate-rotate {

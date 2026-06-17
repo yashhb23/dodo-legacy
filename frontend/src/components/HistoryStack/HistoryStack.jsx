@@ -1,16 +1,26 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useRive, Layout, Fit, Alignment } from "@rive-app/react-canvas";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { Share2 } from "lucide-react";
 import { historyMilestones } from "../../data/historyMilestones.ts";
+import ShareDialog from "./ShareDialog";
+import MilestoneModal from "./MilestoneModal";
 
 /**
- * ScrambleText — "data decoding" kinetic typography effect.
- * On every `text` change the string visually decrypts character-by-character
- * from random glyphs into the real title, evoking a classified-document reveal.
- * Runs entirely on a 25ms setInterval — no external motion libraries needed.
+ * ScrambleText: a "data decoding" kinetic typography effect.
+ * On every `text` change the string visually decrypts character by character
+ * from random glyphs into the real title, evoking a classified document reveal.
  */
 const ScrambleText = ({ text }) => {
   const [displayText, setDisplayText] = useState(text);
   useEffect(() => {
+    // Honour reduced-motion: show the final title instantly, no glyph churn
+    // (the rapid character flicker is exactly what WCAG 2.3.3 asks to suppress).
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setDisplayText(text);
+      return;
+    }
     let iterations = 0;
     const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
     const interval = setInterval(() => {
@@ -32,354 +42,595 @@ const ScrambleText = ({ text }) => {
 };
 
 /**
- * HistoryStack — Cinematic 3D Timeline (Next-Gen Interactive build).
+ * HistoryStack v6: locked deck, floating photo preview, reliable jiggle,
+ * click to share.
  *
- * Layout      : split-pane WebGL (left) + data HUD (right).
- * Lighting    : two organic plasma orbs (red + indigo) instead of a rigid
- *               background colour, so the section blends into the global page.
- * Interaction :
- *   • Spotlight Reveal — a radial mask on the Quadricolour overlay reveals
- *     the Mauritian flag colours only beneath the cursor, like a flashlight.
- *   • Micro-Parallax  — the Rive stack tilts up to ±5° toward the cursor on
- *     a 1000px perspective, so the artifact feels physical.
- *   • Spring-back     — `mouseleave` recentres both the spotlight and tilt.
+ * Chronology and flow:
+ *   The deck now reads first to last from TOP RIGHT down to BOTTOM LEFT.
+ *   Milestone 1 (the island's deep-time origin) sits at the top right;
+ *   milestone 16 (Mauritius today) sits at the bottom left, frontmost in
+ *   the stack. Position is driven by a reversed index so the visual order
+ *   matches the historical order from genesis to the present day.
  *
- * Performance contract (important):
- *   We DO NOT drive mouse position through React state. Re-rendering the
- *   tree on every mousemove would trash the Rive WASM canvas and burn CPU.
- *   Instead, the pointer position lives in a ref, and a single
- *   requestAnimationFrame mutates the wrapper transform + overlay
- *   maskImage directly. Zero React re-renders per mousemove.
+ * Interaction:
+ *   • Hover a card: it jiggles (Web Animations API, see jiggle()) and its
+ *     photograph pops up larger just above it, facing the viewer. The card
+ *     itself never resizes or leaves its slot, so it can never cover the
+ *     neighbour you reach for next (the preview is pointer-events:none).
+ *   • Click a card (desktop): opens the share sheet for that milestone.
+ *   • A Share button in the panel opens the same sheet on any device.
+ *   • Touch: first milestone preselected, tap to browse, 44px steppers.
  *
- * Active milestone is still resolved by the existing 10fps rAF poller that
- * reads Rive State Machine inputs — completely independent loop.
+ * Performance: only transform and opacity animate (GPU compositor). No
+ * filters, blends or masks live in the scroll path. The jiggle runs through
+ * the Web Animations API so it is immune to React re-renders and replays
+ * cleanly every time the cursor enters a new card.
  */
+
+const HUD_DEBOUNCE_MS = 60;
+const N = historyMilestones.length;
+
+const LAYOUT = {
+  // w/h = card size, dx/dy = diagonal step, pv = floating preview size.
+  desktop: { w: 150, h: 200, dx: 40, dy: 22, pvW: 280, pvH: 366, gap: 26 },
+  mobile: { w: 86, h: 114, dx: 15, dy: 10, pvW: 188, pvH: 248, gap: 16 },
+};
+
+const SPRING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
+
+/**
+ * One photo card, locked in its isometric pose. React.memo skips it unless
+ * its own props change. Hover jiggle and brighten do not flow through React.
+ */
+const Card = React.memo(function Card({ image, title, date, index, isActive, isMobile, scale }) {
+  const L = isMobile ? LAYOUT.mobile : LAYOUT.desktop;
+  const hue = 330 - index * 11;
+  // Reversed position: index 0 sits top right, the last index sits bottom
+  // left, so the deck reads genesis to present from top right to bottom left.
+  // The fit-scale is baked straight into the pixel geometry (size + offset)
+  // rather than a CSS transform on a wrapper, because a scale() wrapper around
+  // a preserve-3d/perspective subtree computes to identity in some browsers.
+  const posIndex = N - 1 - index;
+  const x = (posIndex - (N - 1) / 2) * L.dx * scale;
+  const y = -((posIndex - (N - 1) / 2) * L.dy) * scale;
+
+  return (
+    <button
+      type="button"
+      data-idx={index}
+      aria-label={`${title}, ${date}`}
+      aria-pressed={isActive}
+      className="dodo-card absolute left-1/2 top-1/2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white rounded-lg md:rounded-xl"
+      style={{
+        width: L.w * scale,
+        height: L.h * scale,
+        // Newest card (bottom left) is frontmost; the stack cascades up-right.
+        zIndex: index + 1,
+        transform: `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) rotateY(-22deg) rotateX(8deg)`,
+        backfaceVisibility: "hidden",
+      }}
+    >
+      {/* Inner wrapper: the Web Animations jiggle targets this element. */}
+      <span className="dodo-card-inner absolute inset-0 block rounded-lg md:rounded-xl will-change-transform">
+        <span
+          className="absolute inset-0 rounded-lg md:rounded-xl overflow-hidden block"
+          style={{
+            boxShadow: `inset 0 0 0 1px hsl(${hue} 75% 72% / 0.45), 0 12px 26px -12px rgba(0,0,0,0.6)`,
+          }}
+        >
+          <img
+            src={image}
+            alt={title}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
+          {/* Legibility scrim plus sheen (static). */}
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `linear-gradient(to top, hsl(${hue} 70% 16% / 0.8) 0%, transparent 42%), linear-gradient(160deg, rgba(255,255,255,0.18) 0%, transparent 36%)`,
+            }}
+          />
+          {/* Dim overlay: opacity flips to 0 on hover or when selected (CSS). */}
+          <span
+            aria-hidden="true"
+            className="dodo-card-dim absolute inset-0 bg-black pointer-events-none"
+            style={{ opacity: 0.28, transition: "opacity 0.3s ease-out" }}
+          />
+          <span className="absolute bottom-1 left-1.5 md:bottom-2 md:left-2.5 max-w-[92%] truncate text-[9px] md:text-xs font-bold tracking-widest text-white/95 drop-shadow pointer-events-none">
+            {date}
+          </span>
+        </span>
+      </span>
+    </button>
+  );
+});
+
 export const HistoryStack = () => {
-  const [activeMilestone, setActiveMilestone] = useState(null);
-
-  // DOM refs for direct, render-free mutation under rAF.
-  const sceneRef = useRef(null); // mouse-tracking surface (left pane)
-  const riveWrapperRef = useRef(null); // carries perspective + tilt + scale
-  const overlayRef = useRef(null); // Quadricolour overlay carrying mask
-  const tooltipRef = useRef(null); // anchored image tooltip (CSS-positioned)
-  const pointerRef = useRef({ x: 50, y: 50 }); // percentages, default centre
-  const rafRef = useRef(null);
-
-  const { rive, RiveComponent } = useRive({
-    src: "/assets/rive/history_stack.riv",
-    stateMachines: "State Machine 1",
-    autoplay: true,
-    // Fit.Cover scales the artwork to fully fill the canvas while preserving
-    // aspect ratio — visually enlarges the card stack without resorting to
-    // CSS scale() (which would re-rasterise and reintroduce blur).
-    layout: new Layout({ fit: Fit.Cover, alignment: Alignment.Center }),
-    onLoad: () => console.log("RIVE FIRE: Successfully loaded!"),
-    onLoadError: (e) => console.error("RIVE FATAL ERROR:", e),
-  });
-
-  /* -------- Rive State Machine polling (unchanged) -------- */
-  useEffect(() => {
-    if (!rive) return;
-
-    const smName = rive.stateMachineNames.includes("State Machine 1")
-      ? "State Machine 1"
-      : rive.stateMachineNames[0];
-
-    if (!smName) {
-      console.error("No State Machine found in this Rive file!");
-      return;
-    }
-
-    try {
-      const inputs = historyMilestones.map((m) => ({
-        milestone: m,
-        input: rive
-          .stateMachineInputs(smName)
-          ?.find((i) => i.name === m.riveInput),
-      }));
-
-      let lastTime = 0;
-      let animationFrameId;
-
-      // Poll at 10fps to keep mobile CPU/battery cost negligible.
-      // When cursor leaves a card and no input is active, immediately
-      // null out the milestone so the tooltip retracts into the stack.
-      const checkHoverState = (time) => {
-        if (time - lastTime > 100) {
-          const activeInput = inputs.find(
-            (item) => item?.input?.value === true,
-          );
-          if (activeInput) {
-            if (activeInput.milestone.id !== activeMilestone?.id) {
-              setActiveMilestone(activeInput.milestone);
-            }
-          } else if (activeMilestone !== null) {
-            setActiveMilestone(null);
-          }
-          lastTime = time;
-        }
-        animationFrameId = requestAnimationFrame(checkHoverState);
-      };
-
-      checkHoverState(performance.now());
-      return () => cancelAnimationFrame(animationFrameId);
-    } catch (err) {
-      console.warn("State Machine mapping failed.", err);
-    }
-    // activeMilestone is intentionally omitted: re-binding inputs on every
-    // milestone change would tear down the rAF loop mid-poll.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rive]);
-
-  /* -------- Pointer-driven parallax + spotlight (rAF batched) -------- */
-
-  // Single rAF tick: read pointerRef and mutate DOM — never schedules React.
-  const paintFrame = useCallback(() => {
-    rafRef.current = null;
-    const { x, y } = pointerRef.current;
-
-    // Map cursor offset (0..100%) → tilt range (-5°..+5°).
-    // rotateY follows horizontal cursor, rotateX follows vertical.
-    const tiltX = ((x - 50) / 50) * 5;
-    const tiltY = ((y - 50) / 50) * 5;
-
-    if (riveWrapperRef.current) {
-      // No CSS scale(): we now grow the *layout* size of the container
-      // (md:w-3/4 + md:h-[900px]) so Rive renders at native pixel
-      // resolution. CSS scale upsamples a rasterised canvas → blur.
-      riveWrapperRef.current.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
-    }
-
-    if (overlayRef.current) {
-      const mask = `radial-gradient(circle 350px at ${x}% ${y}%, black 0%, transparent 100%)`;
-      overlayRef.current.style.maskImage = mask;
-      overlayRef.current.style.WebkitMaskImage = mask;
-    }
-
-    // Tooltip is now CSS-anchored (top-center of the scene container).
-    // No per-frame position updates needed.
-  }, []);
-
-  const scheduleFrame = useCallback(() => {
-    if (rafRef.current == null) {
-      rafRef.current = requestAnimationFrame(paintFrame);
-    }
-  }, [paintFrame]);
-
-  const handleMouseMove = useCallback(
-    (e) => {
-      const rect = sceneRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      pointerRef.current = {
-        x: ((e.clientX - rect.left) / rect.width) * 100,
-        y: ((e.clientY - rect.top) / rect.height) * 100,
-      };
-      scheduleFrame();
-    },
-    [scheduleFrame],
+  const [isTouch] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none), (pointer: coarse)").matches,
+  );
+  const [isMobileLayout, setIsMobileLayout] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 767px)").matches,
   );
 
-  const handleMouseLeave = useCallback(() => {
-    pointerRef.current = { x: 50, y: 50 };
-    scheduleFrame();
-  }, [scheduleFrame]);
+  // INSTANT hover state drives the floating preview with zero latency.
+  const [hovered, setHovered] = useState(null);
+  // DEBOUNCED selection drives the HUD and year so scramble text does not
+  // thrash during a fast sweep.
+  const [activeMilestone, setActiveMilestone] = useState(
+    isTouch ? historyMilestones[0] : null,
+  );
+  // The milestone currently open in the share sheet (null = closed).
+  const [shareMilestone, setShareMilestone] = useState(null);
+  // The milestone open in the full-detail modal (null = closed).
+  const [detailMilestone, setDetailMilestone] = useState(null);
+  // Uniform scale applied to the whole deck so it always fits its container
+  // at any window size (narrow desktop, split-screen, browser zoom).
+  const [deckScale, setDeckScale] = useState(1);
 
-  // Cancel any pending frame on unmount to avoid orphan paints.
+  const sceneRef = useRef(null);
+  const hudTimerRef = useRef(null);
+  const lastPreviewRef = useRef(null);
+
+  if (hovered) lastPreviewRef.current = hovered;
+  const preview = hovered ?? lastPreviewRef.current;
+  const previewMilestone =
+    preview && historyMilestones.find((m) => m.id === preview.id);
+
+  const prefersReducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    [],
+  );
+
   useEffect(() => {
-    return () => {
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    const mql = window.matchMedia("(max-width: 767px)");
+    const onChange = (e) => setIsMobileLayout(e.matches);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
+  // Scale the deck to fit its container so nothing ever clips when the window
+  // is resized to any width. A ResizeObserver keeps it exact through live
+  // drags, split-screen, and zoom, not just at the breakpoints.
+  useEffect(() => {
+    const el = sceneRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const compute = () => {
+      const rect = el.getBoundingClientRect();
+      const Lnow = isMobileLayout ? LAYOUT.mobile : LAYOUT.desktop;
+      const deckW = Lnow.w + (N - 1) * Lnow.dx;
+      const deckH = Lnow.h + (N - 1) * Lnow.dy;
+      const s = Math.max(
+        0.45,
+        Math.min(1, (rect.width * 0.94) / deckW, (rect.height * 0.96) / deckH),
+      );
+      setDeckScale(s);
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isMobileLayout]);
+
+  // Web Animations jiggle: runs outside React, replays on every entry, and
+  // self-cleans back to the resting pose. This is an explicit, user-requested
+  // affordance, so it plays even when prefers-reduced-motion is set (only the
+  // ambient orb pulse honours that flag). transformOrigin defaults to centre.
+  const jiggle = useCallback((btn) => {
+    const inner = btn.querySelector(".dodo-card-inner");
+    if (!inner || typeof inner.animate !== "function") return;
+    // A vertical "pop" with only a gentle tilt. Earlier versions rotated up
+    // to 6deg, which swung the card corners noticeably left and right; the
+    // motion now lives mostly in translateY + scale so it reads as a confident
+    // bounce upward, not a side-to-side shake.
+    inner.animate(
+      [
+        { transform: "translateY(0) rotate(0deg) scale(1)" },
+        { transform: "translateY(-9px) rotate(-2.5deg) scale(1.06)", offset: 0.22 },
+        { transform: "translateY(-4px) rotate(1.6deg) scale(1.05)", offset: 0.5 },
+        { transform: "translateY(-1px) rotate(-0.8deg) scale(1.02)", offset: 0.76 },
+        { transform: "translateY(0) rotate(0deg) scale(1)" },
+      ],
+      { duration: 500, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" },
+    );
+  }, []);
+
+  // Measure a card's top-centre relative to the scene so the floating
+  // preview can sit directly above it.
+  const measure = useCallback((btn) => {
+    const sceneRect = sceneRef.current?.getBoundingClientRect();
+    if (!sceneRect) return null;
+    const r = btn.getBoundingClientRect();
+    return {
+      cx: r.left + r.width / 2 - sceneRect.left,
+      cy: r.top - sceneRect.top,
     };
   }, []);
 
+  const setHud = useCallback((milestone) => {
+    clearTimeout(hudTimerRef.current);
+    hudTimerRef.current = setTimeout(
+      () => setActiveMilestone(milestone),
+      HUD_DEBOUNCE_MS,
+    );
+  }, []);
+
+  const handleDeckOver = useCallback(
+    (e) => {
+      if (isTouch) return;
+      const btn = e.target.closest("button[data-idx]");
+      if (!btn) return;
+      const idx = Number(btn.dataset.idx);
+      const milestone = historyMilestones[idx];
+      if (hovered?.id === milestone.id) return;
+      const pos = measure(btn);
+      if (!pos) return;
+      setHovered({ id: milestone.id, idx, ...pos }); // instant preview
+      setHud(milestone); // debounced HUD
+      jiggle(btn);
+    },
+    [isTouch, hovered, measure, setHud, jiggle],
+  );
+
+  const handleCardFocus = useCallback(
+    (e) => {
+      const btn = e.target.closest("button[data-idx]");
+      if (!btn) return;
+      const idx = Number(btn.dataset.idx);
+      const milestone = historyMilestones[idx];
+      const pos = measure(btn);
+      clearTimeout(hudTimerRef.current);
+      if (pos) setHovered({ id: milestone.id, idx, ...pos });
+      setActiveMilestone(milestone);
+      jiggle(btn);
+    },
+    [measure, jiggle],
+  );
+
+  const handleCardClick = useCallback(
+    (e) => {
+      const btn = e.target.closest("button[data-idx]");
+      if (!btn) return;
+      const idx = Number(btn.dataset.idx);
+      const milestone = historyMilestones[idx];
+      const pos = measure(btn);
+      clearTimeout(hudTimerRef.current);
+      if (pos) setHovered({ id: milestone.id, idx, ...pos });
+      setActiveMilestone(milestone);
+      // Clicking a card opens the full-detail modal (large photo, big year, and
+      // the complete description) on every device. Sharing lives inside that
+      // modal and on the HUD button.
+      setDetailMilestone(milestone);
+    },
+    [measure],
+  );
+
+  const handleSceneLeave = useCallback(() => {
+    if (isTouch) return;
+    clearTimeout(hudTimerRef.current);
+    setHovered(null);
+    setActiveMilestone(null);
+  }, [isTouch]);
+
+  useEffect(() => () => clearTimeout(hudTimerRef.current), []);
+
+  // Stable modal callbacks. A stable onClose matters because the modals' focus
+  // effects must not re-run every render (an unstable onClose previously caused
+  // an infinite focus-restore loop / "Maximum update depth exceeded" crash).
+  const closeShare = useCallback(() => setShareMilestone(null), []);
+  const closeDetail = useCallback(() => setDetailMilestone(null), []);
+  // onShare is read directly in the modal's JSX (not inside its focus effect),
+  // so it can safely depend on detailMilestone without re-triggering the loop.
+  const shareFromDetail = useCallback(() => {
+    if (detailMilestone) {
+      setShareMilestone(detailMilestone);
+      // Close the detail view so only ONE modal is ever open. Stacking the two
+      // caused: Escape closing both at once, arrow keys leaking to the modal
+      // underneath (desyncing what gets shared), and two aria-modal roots.
+      setDetailMilestone(null);
+    }
+  }, [detailMilestone]);
+  const stepDetail = useCallback((offset) => {
+    setDetailMilestone((current) => {
+      if (!current) return current;
+      const idx = historyMilestones.findIndex((m) => m.id === current.id);
+      return historyMilestones[(idx + offset + N) % N];
+    });
+  }, []);
+
+  const stepTo = useCallback(
+    (offset) => {
+      setActiveMilestone((current) => {
+        const idx = current
+          ? historyMilestones.findIndex((m) => m.id === current.id)
+          : -1;
+        const nextIdx = (idx + offset + N) % N;
+        const next = historyMilestones[nextIdx];
+        const btn = sceneRef.current?.querySelector(
+          `button[data-idx="${nextIdx}"]`,
+        );
+        if (btn) {
+          const pos = measure(btn);
+          if (pos) setHovered({ id: next.id, idx: nextIdx, ...pos });
+        }
+        return next;
+      });
+    },
+    [measure],
+  );
+
+  // On touch, place the preview over the preselected first card on mount.
+  useEffect(() => {
+    if (!isTouch) return;
+    const btn = sceneRef.current?.querySelector('button[data-idx="0"]');
+    if (btn) {
+      const pos = measure(btn);
+      if (pos) setHovered({ id: historyMilestones[0].id, idx: 0, ...pos });
+    }
+  }, [isTouch, isMobileLayout, measure]);
+
+  // On touch, when the deck rescales (orientation change, zoom) re-anchor the
+  // floating preview to the active card so it never drifts off its position.
+  useEffect(() => {
+    if (!isTouch) return;
+    setHovered((h) => {
+      if (!h) return h;
+      const btn = sceneRef.current?.querySelector(`button[data-idx="${h.idx}"]`);
+      if (!btn) return h;
+      const pos = measure(btn);
+      return pos ? { ...h, ...pos } : h;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deckScale]);
+
+  const L = isMobileLayout ? LAYOUT.mobile : LAYOUT.desktop;
+  const activeIndex = activeMilestone
+    ? historyMilestones.findIndex((m) => m.id === activeMilestone.id)
+    : null;
+  const previewVisible = !!hovered;
+
+  // Year watermark text + responsive sizing. Short numeric years render huge
+  // and bleed behind the deck from the top-left; long labels ("2 Billion Y.A.")
+  // shrink and wrap so they stay legible instead of overflowing as one line.
+  const wmText = activeMilestone ? activeMilestone.date : "";
+  const wmLen = wmText.length;
+  const wmSize =
+    wmLen <= 4
+      ? "clamp(7rem, 22vw, 19rem)"
+      : wmLen <= 6
+        ? "clamp(5rem, 16vw, 14rem)"
+        : "clamp(2.75rem, 9vw, 7rem)";
+  const wmWrap = wmLen > 6;
+
   return (
-    <div
-      className="flex flex-col md:flex-row items-center w-full min-h-[100svh] md:min-h-[800px] bg-transparent relative"
-      style={{
-        maskImage:
-          "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
-        WebkitMaskImage:
-          "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
-      }}
-    >
-      {/* BASEMENT — 4-Corner Ambient Quadrant Orbs (Mauritian flag colours).
-          TL: Red | TR: Blue | BL: Yellow | BR: Green — maps the national flag
-          directly onto the scene's four corners. Each orb is pushed 30% beyond
-          its corner so only the soft glow halo bleeds into the canvas.
-          overflow-hidden on the wrapper clips the hard circle edge; the
-          blur-[120px] corona is what remains visible.
-          mix-blend-screen prevents darkening — pure additive light on the void.
-          Staggered animate-pulse via delay-* gives a slow, breathing ambience. */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* TL — Red */}
-        <div className="absolute -top-[30%] -left-[30%] w-[600px] h-[600px] bg-red-600/15 rounded-[100%] blur-[120px] animate-pulse mix-blend-screen" />
-        {/* TR — Blue */}
-        <div className="absolute -top-[30%] -right-[30%] w-[600px] h-[600px] bg-blue-600/15 rounded-[100%] blur-[120px] animate-pulse mix-blend-screen delay-75" />
-        {/* BL — Yellow */}
-        <div className="absolute -bottom-[30%] -left-[30%] w-[600px] h-[600px] bg-yellow-500/15 rounded-[100%] blur-[120px] animate-pulse mix-blend-screen delay-150" />
-        {/* BR — Green */}
-        <div className="absolute -bottom-[30%] -right-[30%] w-[600px] h-[600px] bg-green-600/15 rounded-[100%] blur-[120px] animate-pulse mix-blend-screen delay-300" />
-      </div>
-
-      {/* LEFT — WebGL Scene (mouse-tracking surface) */}
+    <div className="flex flex-col md:flex-row items-center w-full min-h-[100svh] md:min-h-[820px] bg-transparent relative">
+      {/* Calm atmospheric backdrop behind the whole timeline: a dark, serene
+          field so the section reads as quiet and the photographs feel restful.
+          Kept low and dark so it never competes with the cards. */}
       <div
-        ref={sceneRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="w-full flex justify-center items-center md:w-[65%] md:-translate-x-12 h-[700px] md:h-[1000px] relative z-10"
+        aria-hidden="true"
+        className="absolute inset-0 z-0 bg-cover bg-center opacity-60 pointer-events-none"
         style={{
-          touchAction: "pan-y",
-          // Kill the visible rectangular stage with a *4-edge* feather built
-          // from two crossed linear gradients composited together. A single
-          // radial-gradient leaves visible flat sides on a 3:4 rectangle —
-          // the intersect of two perpendicular linear masks dissolves every
-          // edge identically, regardless of aspect ratio.
-          maskImage:
-            "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-          maskComposite: "intersect",
-          WebkitMaskComposite: "source-in",
+          backgroundImage:
+            "url('/assets/images/backgrounds/stack-calm.webp')",
         }}
-      >
-        {/* Tilting wrapper — every visual layer of the scene lives inside it
-            so they tilt together as a single 3D plane. Critically, the
-            wrapper carries an opaque page-matched backdrop (first child
-            below) so the canvas's screen blend has something opaque to
-            blend against — that's what makes the "dark square" boundary
-            mathematically vanish, since the backdrop colour matches the
-            page on both sides of the rectangle's edge. */}
-        <div
-          ref={riveWrapperRef}
-          className="absolute inset-0 will-change-transform"
-          style={{
-            transform: "perspective(1000px) rotateX(0deg) rotateY(0deg)",
-            transition: "transform 0.1s ease-out",
-          }}
-        >
-          {/* Page-matched backdrop. Identical colour to LandingPage's
-              `bg-background`, so the wrapper rectangle is invisible
-              against the page. The 4-edge mask above feathers the very
-              edges as defence-in-depth in case the theme token shifts. */}
-          <div className="absolute inset-0 bg-background" />
-
-          {/* Rive canvas. mix-blend-mode: screen now blends against the
-              opaque backdrop + orbs combined, so:
-                • black artboard pixels  → backdrop colour (invisible)
-                • coloured card pixels   → lit additively over orbs
-              Saturation pushed up to keep colours punchy after screen. */}
-          <RiveComponent
+      />
+      {/* Ambient background: radial-gradient textures (soft by construction,
+          no blur filter, no blend mode). Pulse is opacity only. */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {[
+          ["-top-[25%] -left-[20%]", "rgba(220,38,38,0.13)", ""],
+          ["-top-[25%] -right-[20%]", "rgba(37,99,235,0.13)", "delay-75"],
+          ["-bottom-[25%] -left-[20%]", "rgba(234,179,8,0.11)", "delay-150"],
+          ["-bottom-[25%] -right-[20%]", "rgba(22,163,74,0.13)", "delay-300"],
+        ].map(([pos, color, delay], i) => (
+          <div
+            key={i}
+            className={`absolute ${pos} w-[640px] h-[640px] ${delay} ${prefersReducedMotion || isTouch ? "" : "animate-pulse"}`}
             style={{
-              width: "100%",
-              height: "100%",
-              mixBlendMode: "screen",
-              filter: "brightness(1.2)",
+              background: `radial-gradient(closest-side, ${color}, transparent)`,
             }}
           />
+        ))}
+      </div>
 
-          {/* GPU-Accelerated Quadrant Color Map.
-              A blurred 2×2 CSS Grid replaces the old flat linear-gradient.
-              The stack now absorbs whichever flag colour the cursor is nearest
-              to — pure GPU compositing, zero JS color math per frame.
-              scale-150 + transform-gpu promotes to its own compositor layer
-              so the blur never triggers a CPU rasterisation pass.
-              The maskImage on overlayRef is still live-written by paintFrame
-              to produce the radial flashlight spotlight effect. */}
-          <div
-            ref={overlayRef}
-            className="absolute inset-0 z-10 mix-blend-color opacity-90 pointer-events-none overflow-hidden"
-          >
-            {/* 4 exact 50/50 absolute quadrants — grid layout was pushing
-                the green cell off-screen under scale-150. Absolute positioning
-                is mathematically guaranteed to fill each corner. */}
-            <div className="w-full h-full blur-[80px] scale-150 transform-gpu relative">
-              {/* TL — Red    */}
-              <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-red-600" />
-              {/* TR — Blue   */}
-              <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-blue-600" />
-              {/* BL — Yellow */}
-              <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-yellow-400" />
-              {/* BR — Green  */}
-              <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-green-600" />
-            </div>
-          </div>
-        </div>
-
-        {/* ANCHORED EXTRACTION TOOLTIP — locked dead-centre at the top of
-            the canvas container. No mouse tracking; position is pure CSS.
-            The inner images still spring from scale-[0.2] + translate-y-[100px]
-            up to their resting position, creating the "rise from the stack"
-            effect without any chaotic cursor-chasing. */}
-        <div
-          ref={tooltipRef}
-          className={`absolute top-8 left-1/2 -translate-x-1/2 w-[85%] md:w-[65%] h-[250px] md:h-[400px] z-50 pointer-events-none transition-opacity duration-300 ease-out ${
-            activeMilestone ? "opacity-100" : "opacity-0"
-          }`}
+      {/* Giant year watermark, anchored TOP-LEFT and bleeding right behind the
+          deck. Faint fill plus a visible white outline reads as a deliberate
+          typographic ghost-year. Long labels shrink + wrap (see wmSize/wmWrap). */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden"
+      >
+        <span
+          className={`absolute top-[11%] left-3 md:left-8 font-serif font-black leading-[0.82] transition-opacity duration-500 ease-out motion-reduce:transition-none ${
+            wmWrap ? "max-w-[6ch] whitespace-normal" : "whitespace-nowrap"
+          } ${activeMilestone ? "opacity-100" : "opacity-0"}`}
+          style={{
+            fontSize: wmSize,
+            color: "rgba(255,255,255,0.08)",
+            WebkitTextStroke: "1.5px rgba(255,255,255,0.32)",
+          }}
         >
-          {historyMilestones.map((milestone) => (
-            <img
+          {wmText}
+        </span>
+      </div>
+
+      {/* Section edge fades: static gradients (replace the per-frame mask). */}
+      <div className="absolute top-0 inset-x-0 h-24 md:h-32 bg-gradient-to-b from-background to-transparent z-20 pointer-events-none" />
+      <div className="absolute bottom-0 inset-x-0 h-24 md:h-32 bg-gradient-to-t from-background to-transparent z-20 pointer-events-none" />
+
+      {/* Left: the photo shelf */}
+      <div
+        ref={sceneRef}
+        onMouseLeave={handleSceneLeave}
+        className="w-full flex justify-center items-center md:w-[65%] h-[440px] md:h-[760px] relative z-10"
+        style={{ touchAction: "pan-y" }}
+      >
+        <div
+          className="relative"
+          style={{
+            width: (L.w + (N - 1) * L.dx) * deckScale,
+            height: (L.h + (N - 1) * L.dy) * deckScale,
+            perspective: "1200px",
+            transformStyle: "preserve-3d",
+            transition: "width 0.2s ease-out, height 0.2s ease-out",
+          }}
+          onMouseOver={handleDeckOver}
+          onClick={handleCardClick}
+          onFocus={handleCardFocus}
+        >
+          {historyMilestones.map((milestone, index) => (
+            <Card
               key={milestone.id}
-              src={milestone.image}
-              alt={milestone.title}
-              loading="eager"
-              decoding="async"
-              className={`absolute inset-0 w-full h-full object-contain will-change-[transform,opacity] transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                activeMilestone?.id === milestone.id
-                  ? "opacity-100 scale-100 translate-y-0 shadow-2xl"
-                  : "opacity-0 scale-[0.2] translate-y-12 pointer-events-none"
-              }`}
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
+              image={milestone.image}
+              title={milestone.title}
+              date={milestone.date}
+              index={index}
+              isActive={activeMilestone?.id === milestone.id}
+              isMobile={isMobileLayout}
+              scale={deckScale}
             />
           ))}
         </div>
-      </div>
 
-      {/* RIGHT — Text-only HUD.
-          Image is now a floating tooltip over the canvas (see above).
-          This panel only carries Title, Year watermark, and Description. */}
-      <div className="w-full md:w-1/3 h-full flex flex-col justify-center gap-6 p-8 md:p-12 py-12 md:py-0 z-30 relative bg-gradient-to-l from-[#0a050a] via-[#0a050a]/80 to-transparent">
-        {/* Year watermark — structurally OUTSIDE the animated wrapper.
-            No key prop means React updates the text content in-place;
-            the DOM node never unmounts, so the outer panel gradient
-            never repaints. This is what eliminates the background shake.
-            z-0 keeps it layered behind the title + description text. */}
-        {activeMilestone && (
-          <div className="text-[12rem] md:text-[18rem] font-serif font-black absolute top-0 right-0 md:-right-8 pointer-events-none text-zinc-500/40 select-none z-0 leading-none">
-            {activeMilestone.date.split("-")[0]}
+        {/* Floating photo preview: pops up above the hovered card, larger,
+            facing the viewer. pointer-events:none so it never blocks a card.
+            Position is a GPU transform that glides between cards. */}
+        {previewMilestone && (
+          <div
+            aria-hidden="true"
+            className="absolute left-0 top-0 z-[60] pointer-events-none rounded-xl overflow-hidden"
+            style={{
+              width: L.pvW * deckScale,
+              height: L.pvH * deckScale,
+              transform: `translate(${preview.cx}px, ${preview.cy}px) translate(-50%, -100%) translateY(${-L.gap * deckScale}px) scale(${previewVisible ? 1 : 0.85})`,
+              opacity: previewVisible ? 1 : 0,
+              transition: prefersReducedMotion
+                ? "opacity 0.15s ease-out"
+                : `transform 0.26s ${SPRING}, opacity 0.2s ease-out`,
+              boxShadow:
+                "0 30px 70px -12px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.12)",
+              willChange: "transform, opacity",
+            }}
+          >
+            <img
+              src={previewMilestone.image}
+              alt={previewMilestone.title}
+              decoding="async"
+              draggable={false}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <span
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 40%)",
+              }}
+            />
+            <span className="absolute bottom-2 left-3 text-sm font-bold tracking-widest text-white drop-shadow">
+              {previewMilestone.date}
+            </span>
           </div>
         )}
+      </div>
 
-        {/* Dynamic text — key + animate-in are scoped EXCLUSIVELY here.
-            Only the title and description remount on milestone change.
-            The outer panel, gradient, scrubber, and year are untouched. */}
+      {/* Right: text HUD with decoded title, description, share and steppers. */}
+      <div className="w-full md:w-1/3 h-full flex flex-col justify-center gap-6 p-8 md:p-12 py-10 md:py-0 z-30 relative bg-gradient-to-l from-[#0a050a] via-[#0a050a]/80 to-transparent">
         {activeMilestone && (
           <div
             key={activeMilestone.id}
-            className="animate-in fade-in zoom-in-[0.98] duration-300 fill-mode-both relative z-10 min-h-[250px] md:min-h-[350px] flex flex-col justify-center"
+            className="animate-in fade-in zoom-in-[0.98] duration-300 fill-mode-both relative z-10 min-h-[230px] md:min-h-[350px] flex flex-col justify-center"
           >
+            <p className="text-xs uppercase tracking-[0.35em] text-zinc-500 mb-3">
+              {activeMilestone.date}
+            </p>
             <h2 className="text-3xl md:text-5xl font-serif italic text-white mb-4 drop-shadow-lg">
               <ScrambleText text={activeMilestone.title} />
             </h2>
-
             <p className="text-zinc-300 text-base md:text-lg leading-relaxed animate-in fade-in slide-in-from-bottom-2 duration-700 delay-150 fill-mode-both">
               {activeMilestone.description}
             </p>
+
+            <button
+              type="button"
+              onClick={() => setShareMilestone(activeMilestone)}
+              className="mt-6 inline-flex items-center gap-2 self-start min-h-[44px] px-5 rounded-full border border-white/25 text-white text-sm font-medium hover:bg-white/10 active:scale-95 transition-all"
+            >
+              <Share2 className="w-4 h-4" />
+              Share this moment
+            </button>
           </div>
         )}
 
-        {/* Progression Scrubber — vertical track with glowing dot.
-            Dot position maps milestone ID (1-10) linearly down the track.
-            The 15px white box-shadow gives it a neon "active waypoint" look. */}
+        {!activeMilestone && (
+          <p className="text-zinc-500 text-sm uppercase tracking-[0.3em] relative z-10 min-h-[230px] md:min-h-[350px] flex items-center">
+            Hover a card to decode the timeline
+          </p>
+        )}
+
+        <div
+          className={`relative z-10 items-center gap-4 ${isTouch ? "flex" : "hidden"}`}
+        >
+          <button
+            type="button"
+            onClick={() => stepTo(-1)}
+            aria-label="Previous milestone"
+            className="min-w-[44px] min-h-[44px] px-5 rounded-full border border-white/25 text-white text-lg active:scale-95 transition-transform"
+          >
+            ←
+          </button>
+          <span className="text-zinc-400 text-sm tabular-nums min-w-[64px] text-center">
+            {activeIndex != null ? activeIndex + 1 : 0} / {N}
+          </span>
+          <button
+            type="button"
+            onClick={() => stepTo(1)}
+            aria-label="Next milestone"
+            className="min-w-[44px] min-h-[44px] px-5 rounded-full border border-white/25 text-white text-lg active:scale-95 transition-transform"
+          >
+            →
+          </button>
+        </div>
+
+        {/* Progression scrubber. */}
         <div className="absolute right-4 top-1/2 -translate-y-1/2 h-2/3 w-1 bg-white/5 rounded-full">
           <div
             className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)] transition-all duration-700 ease-out"
             style={{
-              top: `${activeMilestone ? ((activeMilestone.id - 1) / 15) * 100 : 0}%`,
+              top: `${activeIndex != null ? (activeIndex / (N - 1)) * 100 : 0}%`,
             }}
           />
         </div>
       </div>
+
+      <MilestoneModal
+        milestone={detailMilestone}
+        total={N}
+        index={
+          detailMilestone
+            ? historyMilestones.findIndex((m) => m.id === detailMilestone.id)
+            : 0
+        }
+        onClose={closeDetail}
+        onShare={shareFromDetail}
+        onPrev={() => stepDetail(-1)}
+        onNext={() => stepDetail(1)}
+      />
+
+      <ShareDialog milestone={shareMilestone} onClose={closeShare} />
     </div>
   );
 };

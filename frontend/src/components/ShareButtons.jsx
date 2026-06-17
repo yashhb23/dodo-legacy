@@ -54,7 +54,7 @@ export default function ShareButtons({ title, description, url }) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary"
+          className="h-11 w-11 sm:h-8 sm:w-8 rounded-full hover:bg-primary/10 hover:text-primary"
           onClick={handleNativeShare}
         >
           <Share2 className="w-4 h-4" />
@@ -65,7 +65,7 @@ export default function ShareButtons({ title, description, url }) {
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 rounded-full hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2]"
+        className="h-11 w-11 sm:h-8 sm:w-8 rounded-full hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2]"
         onClick={handleTwitterShare}
       >
         <Twitter className="w-4 h-4" />
@@ -75,7 +75,7 @@ export default function ShareButtons({ title, description, url }) {
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 rounded-full hover:bg-[#4267B2]/10 hover:text-[#4267B2]"
+        className="h-11 w-11 sm:h-8 sm:w-8 rounded-full hover:bg-[#4267B2]/10 hover:text-[#4267B2]"
         onClick={handleFacebookShare}
       >
         <Facebook className="w-4 h-4" />
@@ -85,7 +85,7 @@ export default function ShareButtons({ title, description, url }) {
       <Button
         variant="ghost"
         size="icon"
-        className={`h-8 w-8 rounded-full transition-colors ${copied ? 'bg-green-500/10 text-green-500' : 'hover:bg-primary/10 hover:text-primary'}`}
+        className={`h-11 w-11 sm:h-8 sm:w-8 rounded-full transition-colors ${copied ? 'bg-green-500/10 text-green-500' : 'hover:bg-primary/10 hover:text-primary'}`}
         onClick={handleCopyLink}
       >
         {copied ? <Check className="w-4 h-4" /> : <Link className="w-4 h-4" />}

@@ -5,7 +5,7 @@ export const historyFactsExpanded = {
     content: [
       'Mauritius was discovered uninhabited by Portuguese sailors around 1507, likely by Diogo Fernandes Pereira. They named it Ilha do Cirne (Swan Island) but did not settle. The island served only as a provisioning stop for ships traveling between Europe and the East Indies.',
       'The Dutch formally claimed Mauritius in 1598 when Admiral Wybrand van Warwyck landed and named it after Prince Maurice of Nassau, stadtholder of the Dutch Republic. The first Dutch settlement attempt (1638-1658) under Governor Cornelius Gooyer struggled with cyclones, droughts, and isolation.',
-      'The Dutch made two colonization attempts (1638-1658 and 1664-1710), introducing sugarcane, deer, and inadvertently rats—which devastated native species. The dodo bird was discovered and documented during this period but went extinct by approximately 1662-1690. The Dutch permanently abandoned Mauritius in 1710.',
+      'The Dutch made two colonization attempts (1638-1658 and 1664-1710), introducing sugarcane, deer, and inadvertently rats, which devastated native species. The dodo bird was discovered and documented during this period but went extinct by approximately 1662-1690. The Dutch permanently abandoned Mauritius in 1710.',
     ],
     source: 'Dutch East India Company Records, Mauritius National Archives',
   },
@@ -15,7 +15,7 @@ export const historyFactsExpanded = {
     content: [
       'Mauritius is one of the world\'s most successful multicultural societies. The population descends from Indian (approximately 68%), African Creole (27%), Chinese (3%), and European (2%) ancestry. Unlike many multi-ethnic nations, Mauritius has avoided major ethnic conflicts.',
       'Indian indentured laborers, arriving after slavery abolition (1835), form the largest demographic group. Nearly 450,000 Indian workers came between 1834-1920, bringing Hinduism, Islam, languages (Bhojpuri, Hindi, Tamil, Urdu), and culinary traditions. Their descendants now form the majority population.',
-      'African heritage stems from enslaved people brought by the French (1715-1835). They created Mauritian Creole language and sega music—both central to national identity. Chinese traders arrived in the 19th century, establishing commerce. European (primarily Franco-Mauritian) influence remains in architecture, cuisine, and French language prevalence.',
+      'African heritage stems from enslaved people brought by the French (1715-1835). They created Mauritian Creole language and sega music, both central to national identity. Chinese traders arrived in the 19th century, establishing commerce. European (primarily Franco-Mauritian) influence remains in architecture, cuisine, and French language prevalence.',
     ],
     source: 'UNESCO Cultural Diversity Report, Mauritius Museums Council, Statistics Mauritius',
   },

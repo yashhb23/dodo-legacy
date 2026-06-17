@@ -85,7 +85,7 @@ function GallerySection() {
                 variant={activeCategory === category ? "default" : "outline"}
                 size="sm"
                 onClick={() => setActiveCategory(category)}
-                className={`transition-all duration-300 ${activeCategory === category
+                className={`min-h-[44px] sm:min-h-0 min-w-[44px] transition-all duration-300 ${activeCategory === category
                   ? 'bg-secondary text-white hover:bg-secondary/90'
                   : 'hover:bg-secondary/10'
                   }`}

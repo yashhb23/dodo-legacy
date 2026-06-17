@@ -24,6 +24,16 @@ export default function TimelineModal({ isOpen, onClose }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl bg-card border-border/50 text-foreground p-0 overflow-hidden max-h-[90vh]">
+        {/* Calm atmospheric backdrop so the timeline reads as serene and stays
+            on-brand with the rest of the site without distracting from content. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-40 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('/assets/images/backgrounds/timeline-modal-calm.webp')",
+          }}
+        />
         {/* Accessibility: required title/description for Radix DialogContent */}
         <DialogHeader className="sr-only">
           <DialogTitle>Island Story: Timeline of Mauritius</DialogTitle>
@@ -32,7 +42,7 @@ export default function TimelineModal({ isOpen, onClose }) {
           </DialogDescription>
         </DialogHeader>
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm border-b border-border/50 p-6">
+        <div className="sticky top-0 z-20 bg-card/90 backdrop-blur-sm border-b border-border/50 p-6">
             <div>
               <h2
                 className="text-3xl uppercase tracking-wide mb-2"
@@ -45,7 +55,7 @@ export default function TimelineModal({ isOpen, onClose }) {
         </div>
 
         {/* Timeline Content - Scrollable */}
-        <div className="p-8 overflow-y-auto max-h-[calc(90vh-100px)]">
+        <div className="relative z-10 p-8 overflow-y-auto max-h-[calc(90vh-100px)]">
           {/* Desktop: Horizontal Timeline */}
           <div className="hidden md:block">
             <div className="relative">
@@ -55,11 +65,14 @@ export default function TimelineModal({ isOpen, onClose }) {
               {/* Events */}
               <div className="grid grid-cols-5 gap-4">
                 {events.map((event, index) => (
-                  <div key={index} className="relative">
+                  <div
+                    key={index}
+                    className="relative group transition-transform duration-300 hover:-translate-y-1.5"
+                  >
                     {/* Dot */}
                     <div className="flex justify-center mb-4">
                       <div
-                        className={`w-6 h-6 rounded-full bg-${getEventColor(event.period)} relative z-10`}
+                        className={`w-6 h-6 rounded-full bg-${getEventColor(event.period)} relative z-10 group-hover:scale-125 transition-transform duration-300`}
                         style={{
                           boxShadow: `0 0 20px hsl(var(--${getEventColor(event.period)}) / 0.5)`,
                         }}
@@ -90,7 +103,10 @@ export default function TimelineModal({ isOpen, onClose }) {
           {/* Mobile: Vertical Timeline */}
           <div className="md:hidden space-y-6">
             {events.map((event, index) => (
-              <div key={index} className="flex gap-4">
+              <div
+                key={index}
+                className="flex gap-4 transition-transform duration-300 hover:translate-x-1"
+              >
                 {/* Dot & Line */}
                 <div className="flex flex-col items-center">
                   <div

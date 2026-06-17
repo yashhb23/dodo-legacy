@@ -50,8 +50,19 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="relative bg-gradient-to-b from-muted/20 to-background border-t border-border/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <footer className="relative bg-gradient-to-b from-muted/20 to-background border-t border-border/50 overflow-hidden">
+        {/* Atmospheric backdrop: a faint topographic contour texture of the
+            island as a quiet closing motif. Purpose: leave the visitor with a
+            sense of place. Kept very low opacity so the footer text stays clear. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-[0.12] pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('/assets/images/backgrounds/footer-topographic.webp')",
+          }}
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             {/* Brand Section */}
             <div className="lg:col-span-2">
@@ -62,16 +73,16 @@ export default function Footer() {
                 </span>
               </div>
               <p className="text-sm text-muted-foreground mb-6 max-w-sm">
-                Preserving and celebrating the rich heritage of Mauritius and its iconic dodo bird—a symbol of our unique island story.
+                Preserving and celebrating the rich heritage of Mauritius and its iconic dodo bird, a symbol of our unique island story.
               </p>
               <div className="flex gap-3">
                 <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="icon" className="rounded-full hover:bg-primary hover:text-white transition-colors">
+                  <Button variant="outline" size="icon" className="h-11 w-11 sm:h-9 sm:w-9 rounded-full hover:bg-primary hover:text-white transition-colors">
                     <Instagram className="w-4 h-4" />
                   </Button>
                 </a>
                 <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="icon" className="rounded-full hover:bg-primary hover:text-white transition-colors">
+                  <Button variant="outline" size="icon" className="h-11 w-11 sm:h-9 sm:w-9 rounded-full hover:bg-primary hover:text-white transition-colors">
                     <Twitter className="w-4 h-4" />
                   </Button>
                 </a>
@@ -90,7 +101,7 @@ export default function Footer() {
                       <a
                         href={link.href}
                         onClick={(e) => handleNavClick(link.href, e)}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                        className="inline-flex items-center min-h-[44px] sm:min-h-0 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         target={link.href.startsWith('http') ? '_blank' : undefined}
                         rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                       >

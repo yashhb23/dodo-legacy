@@ -14,7 +14,7 @@ export default function TopBanner() {
         <div className="flex-1 flex justify-end">
           <button
             onClick={() => setIsVisible(false)}
-            className="hover:opacity-70 transition-opacity"
+            className="min-w-[44px] min-h-[36px] flex items-center justify-center hover:opacity-70 transition-opacity"
             aria-label="Close banner"
           >
             <X className="w-4 h-4" />

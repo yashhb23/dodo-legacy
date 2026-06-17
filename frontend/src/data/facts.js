@@ -28,10 +28,10 @@ export const didYouKnowFacts = [
   { fact: 'The island has no single official language. Mauritian Creole, French, and English coexist in daily use.', category: 'language' },
   { fact: 'Grand Bassin (Ganga Talao) is a sacred crater lake considered the holiest Hindu site in Mauritius.', category: 'religion' },
   { fact: 'Black River Gorges National Park protects the last 2% of Mauritius\' endemic forests.', category: 'nature' },
-  { fact: 'The Mauritius kestrel was saved from extinction—only 4 birds existed in 1974, now over 400.', category: 'conservation' },
+  { fact: 'The Mauritius kestrel was saved from extinction: only 4 birds existed in 1974, now over 400.', category: 'conservation' },
   { fact: 'Dutch, French, and British all ruled Mauritius. Each left lasting cultural and linguistic legacies.', category: 'history' },
   { fact: 'Père Jacques-Désiré Laval, a Catholic missionary, is venerated across all Mauritian communities regardless of faith.', category: 'religion' },
-  { fact: 'Mauritius celebrates public holidays for Hindu, Christian, Muslim, and Chinese festivals—a model of pluralism.', category: 'culture' },
+  { fact: 'Mauritius celebrates public holidays for Hindu, Christian, Muslim, and Chinese festivals, a model of pluralism.', category: 'culture' },
   { fact: 'Dholl puri, a street food of yellow split peas in flatbread, is considered the unofficial national dish.', category: 'food' },
   { fact: 'The pink pigeon, once down to 10 individuals, has recovered to over 500 thanks to conservation efforts.', category: 'conservation' },
 ];
@@ -89,7 +89,7 @@ export const districtFacts = {
 export const cultureFacts = {
   languages: [
     'Mauritian Creole emerged as a unifying language because no single ethnic group formed a majority.',
-    'French remains dominant in media despite 200+ years of British rule—a unique postcolonial outcome.',
+    'French remains dominant in media despite 200+ years of British rule, a unique postcolonial outcome.',
     'Bhojpuri, brought by indentured laborers from Bihar, is still spoken by older Indo-Mauritian generations.',
   ],
   food: [
@@ -99,13 +99,13 @@ export const cultureFacts = {
   ],
   religion: [
     'Religious harmony is enshrined in law: Mauritius recognizes holidays for all major faiths.',
-    'Grand Bassin pilgrimage sees Hindus walking up to 50km carrying kanwars—a test of devotion.',
+    'Grand Bassin pilgrimage sees Hindus walking up to 50km carrying kanwars, a test of devotion.',
     'Père Laval\'s tomb attracts pilgrims of all religions, symbolizing Mauritius\' interfaith respect.',
   ],
   festivals: [
     'Maha Shivaratri pilgrimage is uniquely massive in Mauritius due to the sacred Grand Bassin crater lake.',
     'Cavadee participants pierce their bodies as offerings to Lord Muruga, demonstrating extreme devotion.',
-    'Divali in Mauritius is celebrated publicly by all communities, not just Hindus—unique to the island.',
+    'Divali in Mauritius is celebrated publicly by all communities, not just Hindus, unique to the island.',
   ],
   music: [
     'Sega was performed secretly during slavery because colonial authorities saw it as subversive.',

@@ -35,7 +35,7 @@ export default function DodoCircleRing() {
   const icons = Array.from({ length: iconCount }, (_, i) => i);
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] max-w-[1800px] aspect-square pointer-events-none z-0">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-[140%] max-w-[1800px] aspect-square pointer-events-none z-0">
       <div
         className="relative w-full h-full animate-rotate opacity-20 md:opacity-40 lg:opacity-60"
         style={{ animationDuration: '120s' }}

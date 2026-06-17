@@ -8,8 +8,10 @@ import HistorySection from "@/components/HistorySection";
 import CultureSection from "@/components/CultureSection";
 import GallerySection from "@/components/GallerySection";
 import VoicesSection from "@/components/VoicesSection";
+import CommunitySection from "@/components/CommunitySection";
 import Footer from "@/components/Footer";
 import DiscoveryWidget from "@/components/DiscoveryWidget";
+import FestivalNotice from "@/components/FestivalNotice";
 import Newsletter from "@/components/Newsletter";
 import { districtsData } from "@/data/districts";
 
@@ -201,23 +203,15 @@ export default function LandingPage() {
         onBadgeClick={handleBadgeClick}
         onWatchStory={() => setIsTimelineOpen(true)}
       />
-      {/* History Stack - 3D Interactive Timeline
-           The section feathers in from transparent at the very top so the
-           page dissolves into the cinematic void — no hard lines, no boxes.
-           mask-image is applied here (not inside HistoryStack) so the heading
-           and the Rive canvas share a single, coherent fade-in envelope.
-           The HistoryStack component adds its own 4-edge inner feather on top
-           of this, giving the Rive canvas a double-dissolve at its boundary. */}
+      {/* History Stack - 3D Interactive Timeline.
+           The old mask-image fade was an offscreen-texture tax on every
+           scroll frame; HistoryStack now carries its own static gradient
+           edge fades, which composite for free. */}
       <div
         id="history-stack"
         role="region"
         aria-label="Interactive Mauritius Historical Timeline"
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12"
-        style={{
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 15%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, transparent 0%, black 15%)",
-        }}
       >
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">
@@ -233,6 +227,7 @@ export default function LandingPage() {
       <CultureSection />
       <GallerySection />
       <VoicesSection />
+      <CommunitySection />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <Newsletter />
       </div>
@@ -243,6 +238,9 @@ export default function LandingPage() {
         onRandomDiscover={handleRandomDiscover}
         onQuizOpen={() => setIsQuizOpen(true)}
       />
+
+      {/* Next-festival notice - floating bottom-left, dismissible */}
+      <FestivalNotice />
 
       {/* Global Modals - Lazy loaded for performance */}
       <Suspense fallback={null}>

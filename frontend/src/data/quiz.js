@@ -66,7 +66,7 @@ export const mauritiusQuiz = {
         { id: 'c', text: 'Dholl Puri', correct: true },
         { id: 'd', text: 'Burgers', correct: false },
       ],
-      explanation: 'Dholl puri is a beloved street food—yellow split pea flatbread served with butter bean curry, chutney, and rougaille. You can find vendors at nearly every street corner!',
+      explanation: 'Dholl puri is a beloved street food: yellow split pea flatbread served with butter bean curry, chutney, and rougaille. You can find vendors at nearly every street corner!',
       difficulty: 'easy',
       category: 'food',
     },

@@ -27,7 +27,7 @@ export default function GalleryViewer({ image, isOpen, onClose }) {
   useEffect(() => {
     if (image?.id && isOpen) {
       apiJson(`/api/gallery/${image.id}/likes`)
-        .then(data => setLikes(data.count))
+        .then(data => setLikes(data.count || 0))
         .catch(console.error);
 
       // Reset local like state when opening new image

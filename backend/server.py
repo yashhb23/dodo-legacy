@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, APIRouter, HTTPException, Query, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Query, Request, Header, Depends
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -159,9 +159,53 @@ class GalleryLikeCount(BaseModel):
 
 VALID_NAME_RE = re.compile(r"^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' \-]{0,38}[A-Za-zÀ-ÖØ-öø-ÿ]$")
 
+# Common leet-speak substitutions, used to catch obfuscations that are not
+# already enumerated in PROHIBITED_WORDS (e.g. "sh1t", "a$$", "f4ggot").
+_LEET_MAP = str.maketrans(
+    {"0": "o", "1": "i", "3": "e", "4": "a", "5": "s", "7": "t", "$": "s", "@": "a", "!": "i"}
+)
+
+
+def _build_profanity_matchers(words):
+    """Split the list into plain words (matched on word boundaries so "ass"
+    no longer trips on "class") and symbol/phrase entries (matched literally,
+    since strings like "a$$" or "buy now" cannot appear inside ordinary words)."""
+    plain, special = [], []
+    for w in words:
+        (plain if re.fullmatch(r"[a-z0-9]+", w) else special).append(w)
+    plain.sort(key=len, reverse=True)
+    special.sort(key=len, reverse=True)
+    plain_re = (
+        re.compile(r"\b(?:" + "|".join(re.escape(w) for w in plain) + r")\b", re.IGNORECASE)
+        if plain
+        else None
+    )
+    special_re = (
+        re.compile("|".join(re.escape(w) for w in special), re.IGNORECASE) if special else None
+    )
+    return plain_re, special_re
+
+
+_PLAIN_PROFANITY_RE, _SPECIAL_PROFANITY_RE = _build_profanity_matchers(PROHIBITED_WORDS)
+
+
 def contains_prohibited_words(text: str) -> bool:
-    content = text.lower()
-    return any(word in content for word in PROHIBITED_WORDS)
+    if not text:
+        return False
+    lowered = text.lower()
+    # Symbol/phrase variants first (safe as plain substrings).
+    if _SPECIAL_PROFANITY_RE and _SPECIAL_PROFANITY_RE.search(lowered):
+        return True
+    # Plain words on word boundaries, checked against the raw text AND a
+    # de-leeted copy so "sh1t"/"a$$" style bypasses are caught without
+    # flagging innocent words like "class", "assist", or "Scunthorpe".
+    if _PLAIN_PROFANITY_RE:
+        if _PLAIN_PROFANITY_RE.search(lowered):
+            return True
+        deleet = lowered.translate(_LEET_MAP)
+        if deleet != lowered and _PLAIN_PROFANITY_RE.search(deleet):
+            return True
+    return False
 
 def is_valid_name(name: str) -> bool:
     """Require at least 2 letter characters and a real-name pattern."""
@@ -284,7 +328,7 @@ async def create_gallery_comment(request: Request, image_id: str, input: Gallery
             f"Image ID: {image_id}\n"
             f"From: {name}\n"
             f"Message: {message}\n\n"
-            f"Moderate at: https://dodolegacy.com/admin/comments?secret={os.environ.get('ADMIN_SECRET', 'MISSING')}"
+            f"Moderate at: https://dodolegacy.com/admin/comments (sign in with your admin secret)"
         )
     )
 
@@ -314,30 +358,32 @@ async def like_image(request: Request, image_id: str):
         body=(
             f"Someone liked image ID: {image_id}\n"
             f"Time: {datetime.now(timezone.utc).isoformat()}\n\n"
-            f"View all likes at: https://dodolegacy.com/admin/comments?secret={os.environ.get('ADMIN_SECRET', 'MISSING')}"
+            f"View all likes at: https://dodolegacy.com/admin/comments (sign in with your admin secret)"
         )
     )
 
     return {"message": "Liked"}
 
+# Admin authentication: the shared secret is sent in the X-Admin-Secret
+# header (never in the URL), so it cannot leak through browser history,
+# server access logs, or the Referer header to analytics/ad networks.
+def verify_admin(x_admin_secret: str = Header(default="", alias="X-Admin-Secret")):
+    expected = os.environ.get("ADMIN_SECRET")
+    if not expected or x_admin_secret != expected:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    return True
+
+
 # Admin endpoint extensions
 @api_router.get("/admin/likes")
-async def get_all_likes(secret: str = Query(...)):
-    if secret != os.environ.get("ADMIN_SECRET"):
-        raise HTTPException(status_code=403, detail="Unauthorized")
-    
-    # Return all likes, grouped by image? Or just raw list?
-    # User wants "see which people liked". We only have timestamps.
+async def get_all_likes(_: bool = Depends(verify_admin)):
     likes = await db.gallery_likes.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
     return likes
 
 
 # Admin Endpoints (Simple Secret Key Auth)
 @api_router.get("/admin/comments", response_model=List[GalleryComment])
-async def get_all_comments_for_moderation(secret: str = Query(...)):
-    if secret != os.environ.get("ADMIN_SECRET"):
-        raise HTTPException(status_code=403, detail="Unauthorized")
-    
+async def get_all_comments_for_moderation(_: bool = Depends(verify_admin)):
     comments = await (
         db.gallery_comments.find({}, {"_id": 0})
         .sort("created_at", -1)
@@ -346,10 +392,7 @@ async def get_all_comments_for_moderation(secret: str = Query(...)):
     return comments
 
 @api_router.put("/admin/comments/{comment_id}/approve")
-async def approve_comment(comment_id: str, secret: str = Query(...)):
-    if secret != os.environ.get("ADMIN_SECRET"):
-        raise HTTPException(status_code=403, detail="Unauthorized")
-    
+async def approve_comment(comment_id: str, _: bool = Depends(verify_admin)):
     result = await db.gallery_comments.update_one(
         {"id": comment_id},
         {"$set": {"is_approved": True}}
@@ -361,10 +404,7 @@ async def approve_comment(comment_id: str, secret: str = Query(...)):
     return {"message": "Comment approved"}
 
 @api_router.delete("/admin/comments/{comment_id}")
-async def delete_comment(comment_id: str, secret: str = Query(...)):
-    if secret != os.environ.get("ADMIN_SECRET"):
-        raise HTTPException(status_code=403, detail="Unauthorized")
-    
+async def delete_comment(comment_id: str, _: bool = Depends(verify_admin)):
     result = await db.gallery_comments.delete_one({"id": comment_id})
     
     if result.deleted_count == 0:

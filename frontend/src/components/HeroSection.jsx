@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { ArrowRight, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,13 +26,74 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
     }
   };
 
+  const ringRef = useRef(null);
+  const dodoRef = useRef(null);
+
+  // Subtle scroll parallax: the orbit ring and the dodo drift downward at
+  // different speeds as the hero scrolls away, adding depth and inviting the
+  // user onward. rAF-batched, transform-only (GPU), and skipped for
+  // reduced-motion. Never drives React state, so it costs zero re-renders.
+  useEffect(() => {
+    if (
+      typeof window === 'undefined' ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return undefined;
+    }
+    let raf = null;
+    const onScroll = () => {
+      if (raf != null) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        const y = window.scrollY;
+        if (ringRef.current) {
+          ringRef.current.style.transform = `translate3d(0, ${y * 0.18}px, 0)`;
+        }
+        if (dodoRef.current) {
+          dodoRef.current.style.transform = `translate3d(0, ${y * 0.36}px, 0)`;
+        }
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf != null) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 sm:pt-32 pb-16 sm:pb-20">
-      {/* Background gradient spotlight */}
+      {/* Atmospheric backdrop: the island's volcanic-ocean origin. Heavily
+          darkened (low opacity + the gradient on top) so the hero content
+          stays legible. Purpose: ground the first screen in Mauritius's
+          geological birth rather than a generic gradient. */}
       <div
-        className="absolute inset-0 opacity-50"
+        className="absolute inset-0 z-0 bg-cover bg-center opacity-70"
+        style={{
+          backgroundImage:
+            "url('/assets/images/backgrounds/hero-volcanic.webp')",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Background gradient spotlight (lightened so the volcanic image below
+          stays clearly visible while keeping the brand tint + text contrast). */}
+      <div
+        className="absolute inset-0 opacity-30"
         style={{
           background: 'var(--gradient-hero)',
+        }}
+      />
+
+      {/* Centre vignette: darkens the middle so the DODO title and the bird sit
+          on a calm, uncrowded field while the volcanic colour still glows at the
+          edges. This is what stops the hero feeling busy/cramped. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 72% 62% at 50% 44%, rgba(8,4,8,0.78) 0%, rgba(8,4,8,0.35) 52%, transparent 78%)',
         }}
       />
       
@@ -43,8 +105,11 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
         }}
       />
 
-      {/* Animated circle ring - pushed behind with blur on mobile */}
-      <div className="blur-sm md:blur-none">
+      {/* Animated circle ring. It is kept faint (low opacity inside
+          DodoCircleRing) rather than blurred: a CSS blur over this perpetually
+          rotating subtree forced the browser to re-rasterise a large area every
+          frame on mobile, which was a real battery/jank cost. */}
+      <div ref={ringRef} className="will-change-transform">
         <DodoCircleRing />
       </div>
 
@@ -54,22 +119,28 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 animate-fade-in">
             <Badge
               onClick={() => onBadgeClick('heritage')}
+              role="button"
+              tabIndex={0}
               variant="secondary"
-              className="px-3 sm:px-4 py-1 sm:py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50 cursor-pointer hover:bg-primary/20 hover:border-primary/50 transition-all"
+              className="min-h-[44px] sm:min-h-0 inline-flex items-center justify-center px-4 py-2.5 sm:px-4 sm:py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50 cursor-pointer hover:bg-primary/20 hover:border-primary/50 transition-all"
             >
               Heritage
             </Badge>
             <Badge
               onClick={() => onBadgeClick('island-story')}
+              role="button"
+              tabIndex={0}
               variant="secondary"
-              className="px-3 sm:px-4 py-1 sm:py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50 cursor-pointer hover:bg-secondary/20 hover:border-secondary/50 transition-all"
+              className="min-h-[44px] sm:min-h-0 inline-flex items-center justify-center px-4 py-2.5 sm:px-4 sm:py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50 cursor-pointer hover:bg-secondary/20 hover:border-secondary/50 transition-all"
             >
               Island Story
             </Badge>
             <Badge
               onClick={() => onBadgeClick('extinct-icon')}
+              role="button"
+              tabIndex={0}
               variant="secondary"
-              className="px-3 sm:px-4 py-1 sm:py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50 cursor-pointer hover:bg-primary/20 hover:border-primary/50 transition-all"
+              className="min-h-[44px] sm:min-h-0 inline-flex items-center justify-center px-4 py-2.5 sm:px-4 sm:py-1.5 text-xs uppercase tracking-wider bg-muted/50 backdrop-blur-sm border border-border/50 cursor-pointer hover:bg-primary/20 hover:border-primary/50 transition-all"
             >
               Extinct Icon
             </Badge>
@@ -90,26 +161,35 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
             {/* Main Title - with better mobile text shadow */}
             <div className="bg-black/20 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none rounded-lg p-4 sm:p-0 mx-auto max-w-fit">
               <h1
-                className="hero-title text-white mb-4 sm:mb-8 animate-fade-in-up"
+                className="hero-title text-white mb-4 sm:mb-6"
                 style={{
                   textShadow: '0 4px 30px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.8)',
                 }}
               >
                 <span className="inline-block">
-                  <span className="text-white">D</span>
-                  <span className="text-primary">O</span>
-                  <span className="text-white">D</span>
-                  <span className="text-primary">O</span>
+                  <span className="hero-letter text-white" style={{ animationDelay: '0.05s' }}>D</span>
+                  <span className="hero-letter text-primary" style={{ animationDelay: '0.12s' }}>O</span>
+                  <span className="hero-letter text-white" style={{ animationDelay: '0.19s' }}>D</span>
+                  <span className="hero-letter text-primary" style={{ animationDelay: '0.26s' }}>O</span>
                 </span>
                 <br />
                 <span className="inline-block mt-1 sm:mt-2">
-                  <span className="text-secondary">B</span>
-                  <span className="text-white">I</span>
-                  <span className="text-secondary">R</span>
-                  <span className="text-white">D</span>
+                  <span className="hero-letter text-secondary" style={{ animationDelay: '0.36s' }}>B</span>
+                  <span className="hero-letter text-white" style={{ animationDelay: '0.43s' }}>I</span>
+                  <span className="hero-letter text-secondary" style={{ animationDelay: '0.50s' }}>R</span>
+                  <span className="hero-letter text-white" style={{ animationDelay: '0.57s' }}>D</span>
                 </span>
               </h1>
             </div>
+
+            {/* Purpose tagline: reveals after the title, frames the site as the
+                island's whole story (not just the bird), and invites scrolling. */}
+            <p
+              className="animate-fade-in-up text-xs sm:text-sm md:text-base uppercase tracking-[0.3em] text-muted-foreground mb-2"
+              style={{ animationDelay: '0.85s', animationFillMode: 'both' }}
+            >
+              The story of Mauritius, beyond the beach
+            </p>
 
             {/* Bottom districts - Desktop only */}
             <div className="hidden lg:flex absolute -bottom-20 left-0 right-0 justify-between px-12 text-lg font-semibold uppercase tracking-widest opacity-70">
@@ -123,7 +203,7 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
           </div>
 
           {/* Dodo Bird Image - Smaller on mobile */}
-          <div className="relative flex items-center justify-center my-8 sm:my-16 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div ref={dodoRef} className="relative flex items-center justify-center my-8 sm:my-16 animate-fade-in will-change-transform" style={{ animationDelay: '0.3s' }}>
             <div className="relative w-full max-w-sm sm:max-w-lg md:max-w-2xl aspect-square flex items-center justify-center">
               {/* Glowing background */}
               <div
@@ -147,10 +227,10 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
                   filter: 'drop-shadow(0 0 30px hsl(var(--primary) / 0.5))',
                 }}
                 loading="eager"
-                  fetchpriority="high"
-                  decoding="async"
-                  width="800"
-                  height="800"
+                fetchPriority="high"
+                decoding="async"
+                width="800"
+                height="800"
               />
               </picture>
             </div>
@@ -162,7 +242,7 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
               The Iconic Symbol of Mauritius
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed" style={{ maxWidth: '65ch', margin: '0 auto' }}>
-              The dodo (Raphus cucullatus), a flightless bird endemic to Mauritius, became extinct circa 1662-1690—less 
+              The dodo (Raphus cucullatus), a flightless bird endemic to Mauritius, became extinct circa 1662-1690, less
               than a century after human arrival. Habitat destruction, hunting, and invasive species (rats, pigs, monkeys) 
               introduced by Dutch settlers caused its demise. Today, the dodo symbolizes human-caused extinction and 
               remains Mauritius' most recognizable icon, appearing on the national coat of arms.

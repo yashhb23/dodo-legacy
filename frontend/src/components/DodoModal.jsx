@@ -47,7 +47,7 @@ export default function DodoModal({ isOpen, onClose }) {
                 The dodo (Raphus cucullatus) was a flightless bird endemic only to Mauritius. Standing approximately 
                 1 meter (3 feet) tall and weighing 10-18 kg (22-40 lbs), it evolved in isolation for millions of years 
                 without natural predators. This lack of threat caused it to lose the ability to fly and develop fearlessness 
-                toward humans—traits that would prove fatal. The dodo had a large hooked beak, small vestigial wings, 
+                toward humans, traits that would prove fatal. The dodo had a large hooked beak, small vestigial wings, 
                 a plump body, and grayish-brown plumage.
               </p>
             </div>
@@ -61,7 +61,7 @@ export default function DodoModal({ isOpen, onClose }) {
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 The dodo became extinct within approximately 60-80 years of human arrival (Dutch settlement 1638; extinction 
-                circa 1662-1690). No complete specimens exist today—only sub-fossil bones and contemporary descriptions/drawings. 
+                circa 1662-1690). No complete specimens exist today, only sub-fossil bones and contemporary descriptions/drawings.
                 Multiple factors caused its rapid extinction:
               </p>
               <ul className="space-y-2 text-muted-foreground">

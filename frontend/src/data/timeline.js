@@ -51,7 +51,7 @@ export const timelineEvents = [
   {
     year: '1810',
     title: 'British Conquest',
-    description: 'Britain captured the island during Napoleonic Wars. Battle of Grand Port (August 1810) was the only French naval victory over Britain—inscribed on Paris Arc de Triomphe. British took full control December 1810, reverting name to Mauritius.',
+    description: 'Britain captured the island during Napoleonic Wars. Battle of Grand Port (August 1810) was the only French naval victory over Britain, inscribed on Paris Arc de Triomphe. British took full control December 1810, reverting name to Mauritius.',
     period: 'British Era',
     color: 'secondary',
   },

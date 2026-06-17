@@ -74,7 +74,7 @@ function HistorySection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* History Title */}
           <div className="text-center mb-16">
-            <Badge className="mb-4 px-4 py-1.5 bg-primary/10 text-primary border-primary/20">
+            <Badge className="mb-4 px-4 py-1.5 bg-primary/15 text-red-200 border-primary/30 hover:bg-primary/25 hover:text-white">
               Our Heritage
             </Badge>
             <h2 className="section-title mb-6">
