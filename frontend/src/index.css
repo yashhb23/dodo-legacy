@@ -234,12 +234,13 @@ html {
     animation: heroLetterIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-/* Hero title: the word reads WHITE by default, with a normal arrow cursor.
-   While the cursor is over it, the four Mauritian flag colours fade in across
-   the whole word (red on MAU, then blue, then yellow, then green), the green
-   trailing off at low opacity. Built as two stacked layers clipped to the same
-   text: a white base, and a flag-coloured overlay that fades in on hover. Plus
-   a smooth blur-scale entrance. */
+/* Hero title: a white word with a normal arrow cursor and a faint hint of the
+   Mauritian flag colours in its CENTRE at rest. While the cursor is over it,
+   those four colours grow to full strength and spread out to cover the whole
+   word (red on MAU, then blue, then yellow, then green, the green trailing off
+   at low opacity). Built as two layers clipped to the same text: a white base,
+   and a flag-coloured overlay masked from the centre outward. Plus a smooth
+   blur-scale entrance. */
 @keyframes heroReveal {
     from { opacity: 0; transform: translateY(28px) scale(0.94); filter: blur(10px); }
     to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -272,13 +273,26 @@ html {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    opacity: 0;                 /* hidden until the cursor is over the word */
-    transition: opacity 0.4s ease;
+    /* A faint hint sits in the CENTRE of the word at rest; on hover the mask
+       band scales up (centre outward) and opacity rises, so the colours reach
+       full strength and cover the whole word. The white base shows through
+       wherever the overlay is masked or faint. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: 45% 100%;
+    mask-size: 45% 100%;
+    opacity: 0.22;              /* faint at rest */
+    transition: opacity 0.45s ease, -webkit-mask-size 0.5s ease, mask-size 0.5s ease;
     pointer-events: none;
-    filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.6));
 }
 .hero-title-wrap:hover .hero-title-flag {
-    opacity: 1;
+    opacity: 1;                 /* full strength on hover */
+    -webkit-mask-size: 320% 100%;
+    mask-size: 320% 100%;       /* band grows to cover the entire word */
 }
 
 /* Respect prefers-reduced-motion for ambient/looping decorative animations.
