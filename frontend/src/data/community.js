@@ -60,9 +60,9 @@ export const mauritianProverbs = [
     theme: 'Wisdom',
   },
   {
-    id: 'sak-koson',
-    kreol: 'Sak koson gagn so samdi.',
-    english: 'Every pig gets its Saturday.',
+    id: 'sime-rekolte',
+    kreol: 'Seki to simé, to pou rekolté.',
+    english: 'What you sow, you will reap.',
     theme: 'Justice',
   },
 ];

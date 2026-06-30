@@ -2,7 +2,6 @@ import { useRef, useEffect } from 'react';
 import { ArrowRight, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import DodoCircleRing from '@/components/DodoCircleRing';
 
 const districts = [
   { name: 'PORT LOUIS', position: 'top-left' },
@@ -14,7 +13,7 @@ const districts = [
 export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStory }) {
   const handleDiscoverMore = () => {
     // Scroll to heritage section
-    document.getElementById('heritage')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('history-stack')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleWatchStory = () => {
@@ -22,17 +21,15 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
     if (onWatchStory) {
       onWatchStory();
     } else {
-      document.getElementById('heritage')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('history-stack')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
-  const ringRef = useRef(null);
   const dodoRef = useRef(null);
 
-  // Subtle scroll parallax: the orbit ring and the dodo drift downward at
-  // different speeds as the hero scrolls away, adding depth and inviting the
-  // user onward. rAF-batched, transform-only (GPU), and skipped for
-  // reduced-motion. Never drives React state, so it costs zero re-renders.
+  // Subtle scroll parallax: the dodo drifts downward as the hero scrolls away,
+  // adding depth and inviting the user onward. rAF-batched, transform-only
+  // (GPU), and skipped for reduced-motion. Never drives React state.
   useEffect(() => {
     if (
       typeof window === 'undefined' ||
@@ -46,9 +43,6 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
       raf = requestAnimationFrame(() => {
         raf = null;
         const y = window.scrollY;
-        if (ringRef.current) {
-          ringRef.current.style.transform = `translate3d(0, ${y * 0.18}px, 0)`;
-        }
         if (dodoRef.current) {
           dodoRef.current.style.transform = `translate3d(0, ${y * 0.36}px, 0)`;
         }
@@ -105,14 +99,6 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
         }}
       />
 
-      {/* Animated circle ring. It is kept faint (low opacity inside
-          DodoCircleRing) rather than blurred: a CSS blur over this perpetually
-          rotating subtree forced the browser to re-rasterise a large area every
-          frame on mobile, which was a real battery/jank cost. */}
-      <div ref={ringRef} className="will-change-transform">
-        <DodoCircleRing />
-      </div>
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="text-center space-y-6 sm:space-y-8">
           {/* Badges - Now Clickable */}
@@ -160,24 +146,10 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
 
             {/* Main Title - with better mobile text shadow */}
             <div className="bg-black/20 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none rounded-lg p-4 sm:p-0 mx-auto max-w-fit">
-              <h1
-                className="hero-title text-white mb-4 sm:mb-6"
-                style={{
-                  textShadow: '0 4px 30px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.8)',
-                }}
-              >
-                <span className="inline-block">
-                  <span className="hero-letter text-white" style={{ animationDelay: '0.05s' }}>D</span>
-                  <span className="hero-letter text-primary" style={{ animationDelay: '0.12s' }}>O</span>
-                  <span className="hero-letter text-white" style={{ animationDelay: '0.19s' }}>D</span>
-                  <span className="hero-letter text-primary" style={{ animationDelay: '0.26s' }}>O</span>
-                </span>
-                <br />
-                <span className="inline-block mt-1 sm:mt-2">
-                  <span className="hero-letter text-secondary" style={{ animationDelay: '0.36s' }}>B</span>
-                  <span className="hero-letter text-white" style={{ animationDelay: '0.43s' }}>I</span>
-                  <span className="hero-letter text-secondary" style={{ animationDelay: '0.50s' }}>R</span>
-                  <span className="hero-letter text-white" style={{ animationDelay: '0.57s' }}>D</span>
+              <h1 className="hero-title mb-4 sm:mb-6">
+                <span className="hero-reveal hero-title-wrap">
+                  <span className="hero-title-base">MAURITIUS</span>
+                  <span className="hero-title-flag" aria-hidden="true">MAURITIUS</span>
                 </span>
               </h1>
             </div>
@@ -188,7 +160,7 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
               className="animate-fade-in-up text-xs sm:text-sm md:text-base uppercase tracking-[0.3em] text-muted-foreground mb-2"
               style={{ animationDelay: '0.85s', animationFillMode: 'both' }}
             >
-              The story of Mauritius, beyond the beach
+              One island · Every origin · One people
             </p>
 
             {/* Bottom districts - Desktop only */}

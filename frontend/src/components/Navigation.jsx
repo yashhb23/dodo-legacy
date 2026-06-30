@@ -3,7 +3,7 @@ import { Menu, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
-  { name: 'Heritage', href: '#heritage' },
+  { name: 'Heritage', href: '#history-stack' },
   { name: 'Districts', href: '#districts' },
   { name: 'Culture', href: '#culture' },
   { name: 'Gallery', href: '#gallery' },
@@ -16,6 +16,7 @@ export default function Navigation({
   scrolled,
   onSearchClick = () => {},
   onExploreClick = () => {},
+  bannerVisible = false,
 }) {
   const menuRef = useRef(null);
   // Work standalone when menu props are omitted (e.g. the admin page renders
@@ -62,7 +63,7 @@ export default function Navigation({
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
         }`}
-      style={{ marginTop: scrolled ? '0' : '32px' }}
+      style={{ marginTop: bannerVisible && !scrolled ? '40px' : '0' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -91,7 +92,7 @@ export default function Navigation({
 
           {/* Right side buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="rounded-full" onClick={onSearchClick}>
+            <Button variant="ghost" size="icon" className="rounded-full" onClick={onSearchClick} aria-label="Search">
               <Search className="w-5 h-5" />
             </Button>
             <Button
@@ -138,6 +139,18 @@ export default function Navigation({
                 {item.name}
               </button>
             ))}
+            {/* Search is otherwise desktop-only; surface it here so touch users
+                can reach the search modal too. */}
+            <button
+              onClick={() => {
+                onSearchClick();
+                setIsMenuOpen(false);
+              }}
+              className="flex items-center gap-2 w-full text-left text-foreground hover:text-primary transition-colors duration-200 text-base font-medium uppercase tracking-wide py-3 px-2 rounded-md hover:bg-primary/10 min-h-[44px]"
+            >
+              <Search className="w-5 h-5" />
+              Search
+            </button>
             <Button
               onClick={() => {
                 onExploreClick();

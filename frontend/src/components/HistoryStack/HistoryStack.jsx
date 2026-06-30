@@ -416,7 +416,7 @@ export const HistoryStack = () => {
   const wmWrap = wmLen > 6;
 
   return (
-    <div className="flex flex-col md:flex-row items-center w-full min-h-[100svh] md:min-h-[820px] bg-transparent relative">
+    <div className="flex flex-col md:flex-row items-center w-full min-h-0 md:min-h-[820px] bg-transparent relative">
       {/* Calm atmospheric backdrop behind the whole timeline: a dark, serene
           field so the section reads as quiet and the photographs feel restful.
           Kept low and dark so it never competes with the cards. */}
@@ -476,7 +476,7 @@ export const HistoryStack = () => {
       <div
         ref={sceneRef}
         onMouseLeave={handleSceneLeave}
-        className="w-full flex justify-center items-center md:w-[65%] h-[440px] md:h-[760px] relative z-10"
+        className="w-full flex justify-center items-center md:w-[65%] h-[34svh] min-h-[260px] md:h-[760px] md:min-h-0 relative z-10"
         style={{ touchAction: "pan-y" }}
       >
         <div
@@ -508,8 +508,12 @@ export const HistoryStack = () => {
 
         {/* Floating photo preview: pops up above the hovered card, larger,
             facing the viewer. pointer-events:none so it never blocks a card.
-            Position is a GPU transform that glides between cards. */}
-        {previewMilestone && (
+            Position is a GPU transform that glides between cards.
+            Desktop/hover only: on touch the preview would float above card 0
+            into the section heading (no room above a short mobile deck) and is
+            redundant with the tap-to-open full-image modal, so it is gated to
+            pointer-fine devices. */}
+        {previewMilestone && !isTouch && (
           <div
             aria-hidden="true"
             className="absolute left-0 top-0 z-[60] pointer-events-none rounded-xl overflow-hidden"
@@ -548,11 +552,11 @@ export const HistoryStack = () => {
       </div>
 
       {/* Right: text HUD with decoded title, description, share and steppers. */}
-      <div className="w-full md:w-1/3 h-full flex flex-col justify-center gap-6 p-8 md:p-12 py-10 md:py-0 z-30 relative bg-gradient-to-l from-[#0a050a] via-[#0a050a]/80 to-transparent">
+      <div className="w-full md:w-1/3 h-full flex flex-col justify-center gap-4 md:gap-6 p-6 md:p-12 py-6 md:py-0 z-30 relative bg-gradient-to-l from-[#0a050a] via-[#0a050a]/80 to-transparent">
         {activeMilestone && (
           <div
             key={activeMilestone.id}
-            className="animate-in fade-in zoom-in-[0.98] duration-300 fill-mode-both relative z-10 min-h-[230px] md:min-h-[350px] flex flex-col justify-center"
+            className="animate-in fade-in zoom-in-[0.98] duration-300 fill-mode-both relative z-10 min-h-0 md:min-h-[350px] flex flex-col justify-center"
           >
             <p className="text-xs uppercase tracking-[0.35em] text-zinc-500 mb-3">
               {activeMilestone.date}
@@ -560,7 +564,7 @@ export const HistoryStack = () => {
             <h2 className="text-3xl md:text-5xl font-serif italic text-white mb-4 drop-shadow-lg">
               <ScrambleText text={activeMilestone.title} />
             </h2>
-            <p className="text-zinc-300 text-base md:text-lg leading-relaxed animate-in fade-in slide-in-from-bottom-2 duration-700 delay-150 fill-mode-both">
+            <p className="text-zinc-300 text-sm md:text-lg leading-relaxed line-clamp-4 md:line-clamp-none animate-in fade-in slide-in-from-bottom-2 duration-700 delay-150 fill-mode-both">
               {activeMilestone.description}
             </p>
 
@@ -576,8 +580,10 @@ export const HistoryStack = () => {
         )}
 
         {!activeMilestone && (
-          <p className="text-zinc-500 text-sm uppercase tracking-[0.3em] relative z-10 min-h-[230px] md:min-h-[350px] flex items-center">
-            Hover a card to decode the timeline
+          <p className="text-zinc-500 text-sm uppercase tracking-[0.3em] relative z-10 min-h-0 md:min-h-[350px] flex items-center">
+            {isTouch
+              ? "Tap a card or use the arrows to explore"
+              : "Hover a card to decode the timeline"}
           </p>
         )}
 
@@ -605,8 +611,10 @@ export const HistoryStack = () => {
           </button>
         </div>
 
-        {/* Progression scrubber. */}
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 h-2/3 w-1 bg-white/5 rounded-full">
+        {/* Progression scrubber (desktop only; the steppers show "n / N" on
+            touch, and a thin right-edge bar would overlap the text and the
+            floating discovery button on a narrow phone). */}
+        <div className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 h-2/3 w-1 bg-white/5 rounded-full">
           <div
             className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)] transition-all duration-700 ease-out"
             style={{

@@ -1,5 +1,3 @@
-import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import CreditsModal from '@/components/CreditsModal';
 
@@ -7,7 +5,7 @@ const footerLinks = [
   {
     title: 'Sections',
     links: [
-      { name: 'Heritage', href: '#heritage' },
+      { name: 'Heritage', href: '#history-stack' },
       { name: 'Districts', href: '#districts' },
       { name: 'Culture', href: '#culture' },
       { name: 'Gallery', href: '#gallery' },
@@ -18,8 +16,6 @@ const footerLinks = [
     title: 'Connect',
     links: [
       { name: 'Contact Us', href: 'mailto:dodolegacy1@gmail.com' },
-      { name: 'Instagram', href: 'https://instagram.com' }, // Placeholder as requested
-      { name: 'Twitter', href: 'https://twitter.com' },     // Placeholder as requested
     ],
   },
 ];
@@ -72,21 +68,9 @@ export default function Footer() {
                   DODO LEGACY
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground mb-6 max-w-sm">
+              <p className="text-sm text-muted-foreground max-w-sm">
                 Preserving and celebrating the rich heritage of Mauritius and its iconic dodo bird, a symbol of our unique island story.
               </p>
-              <div className="flex gap-3">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="icon" className="h-11 w-11 sm:h-9 sm:w-9 rounded-full hover:bg-primary hover:text-white transition-colors">
-                    <Instagram className="w-4 h-4" />
-                  </Button>
-                </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="icon" className="h-11 w-11 sm:h-9 sm:w-9 rounded-full hover:bg-primary hover:text-white transition-colors">
-                    <Twitter className="w-4 h-4" />
-                  </Button>
-                </a>
-              </div>
             </div>
 
             {/* Links Sections */}

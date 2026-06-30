@@ -4,7 +4,7 @@ import TopBanner from "@/components/TopBanner";
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import { HistoryStack } from "@/components/HistoryStack/HistoryStack";
-import HistorySection from "@/components/HistorySection";
+import DistrictsSection from "@/components/DistrictsSection";
 import CultureSection from "@/components/CultureSection";
 import GallerySection from "@/components/GallerySection";
 import VoicesSection from "@/components/VoicesSection";
@@ -12,7 +12,6 @@ import CommunitySection from "@/components/CommunitySection";
 import Footer from "@/components/Footer";
 import DiscoveryWidget from "@/components/DiscoveryWidget";
 import FestivalNotice from "@/components/FestivalNotice";
-import Newsletter from "@/components/Newsletter";
 import { districtsData } from "@/data/districts";
 
 // Lazy load modal components for better performance
@@ -27,6 +26,7 @@ const QuizModal = lazy(() => import("@/components/QuizModal"));
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [bannerVisible, setBannerVisible] = useState(true);
 
   // Modal states
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -60,8 +60,8 @@ export default function LandingPage() {
   const handleBadgeClick = (badge) => {
     if (badge === "heritage") {
       document
-        .getElementById("heritage")
-        .scrollIntoView({ behavior: "smooth", block: "start" });
+        .getElementById("history-stack")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     } else if (badge === "island-story") {
       setIsTimelineOpen(true);
     } else if (badge === "extinct-icon") {
@@ -86,7 +86,7 @@ export default function LandingPage() {
   // Guided explore - auto scroll through sections
   const handleExploreClick = () => {
     const sections = [
-      "#heritage",
+      "#history-stack",
       "#districts",
       "#culture",
       "#voices",
@@ -191,13 +191,17 @@ export default function LandingPage() {
         </script>
       </Helmet>
 
-      <TopBanner />
+      <TopBanner
+        isVisible={bannerVisible}
+        onClose={() => setBannerVisible(false)}
+      />
       <Navigation
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
         scrolled={scrolled}
         onSearchClick={() => setIsSearchOpen(true)}
         onExploreClick={handleExploreClick}
+        bannerVisible={bannerVisible}
       />
       <HeroSection
         onBadgeClick={handleBadgeClick}
@@ -211,26 +215,23 @@ export default function LandingPage() {
         id="history-stack"
         role="region"
         aria-label="Interactive Mauritius Historical Timeline"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-16 pb-8 md:pb-12"
       >
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 md:mb-8">
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">
             Mauritius Historical Timeline
           </h2>
           <p className="text-gray-400">
-            Hover over the 3D stack to explore key moments in history
+            Explore the key moments that shaped Mauritius
           </p>
         </div>
         <HistoryStack />
       </div>
-      <HistorySection />
+      <DistrictsSection />
       <CultureSection />
       <GallerySection />
       <VoicesSection />
       <CommunitySection />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        <Newsletter />
-      </div>
       <Footer />
 
       {/* Discovery Widget - floating */}

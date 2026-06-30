@@ -5,7 +5,15 @@ import { didYouKnowFacts, onThisDayEvents } from '@/data/facts';
 
 export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
   const [currentFact, setCurrentFact] = useState(null);
-  const [isMinimized, setIsMinimized] = useState(false);
+  // Start collapsed on touch / coarse-pointer devices. Expanded, this card is a
+  // 320px panel pinned bottom-right; on a phone it sat on top of the History
+  // stack's steppers and intercepted taps on the front cards. The 🦤 button
+  // keeps the feature one tap away without ever covering content.
+  const [isMinimized, setIsMinimized] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(hover: none), (pointer: coarse)').matches,
+  );
   const factTypeRef = useRef('did-you-know');
   const initializedRef = useRef(false);
 
@@ -56,6 +64,7 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
       <div className="fixed bottom-4 right-4 z-40 md:bottom-6 md:right-6">
         <Button
           onClick={() => setIsMinimized(false)}
+          aria-label="Open discoveries and quiz"
           className="rounded-full w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-lg"
           size="icon"
         >
@@ -82,6 +91,7 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
           <Button
             variant="ghost"
             size="icon"
+            aria-label="Minimize"
             className="h-11 w-11 md:h-6 md:w-6 rounded-full flex-shrink-0"
             onClick={() => setIsMinimized(true)}
           >
@@ -109,8 +119,7 @@ export default function DiscoveryWidget({ onRandomDiscover, onQuizOpen }) {
             className="flex-1 text-[10px] md:text-xs py-1 md:py-2 h-11 md:h-auto border-secondary/50 hover:bg-secondary/10"
           >
             <Shuffle className="w-3 h-3 mr-1" />
-            <span className="hidden xs:inline">Discover</span>
-            <span className="inline xs:hidden">Find</span>
+            <span>Discover</span>
           </Button>
           <Button
             onClick={onQuizOpen}

@@ -234,6 +234,53 @@ html {
     animation: heroLetterIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
+/* Hero title: the word reads WHITE by default, with a normal arrow cursor.
+   While the cursor is over it, the four Mauritian flag colours fade in across
+   the whole word (red on MAU, then blue, then yellow, then green), the green
+   trailing off at low opacity. Built as two stacked layers clipped to the same
+   text: a white base, and a flag-coloured overlay that fades in on hover. Plus
+   a smooth blur-scale entrance. */
+@keyframes heroReveal {
+    from { opacity: 0; transform: translateY(28px) scale(0.94); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+.hero-reveal {
+    display: inline-block;
+    animation: heroReveal 0.95s cubic-bezier(0.2, 0.85, 0.2, 1) both;
+}
+.hero-title-wrap {
+    position: relative;
+    display: inline-block;
+    cursor: default;            /* normal arrow over the title, not the text I-beam */
+    white-space: nowrap;
+}
+.hero-title-base {
+    display: block;            /* defines the box both layers share */
+    color: #f4f7fd;            /* the word reads clean white at rest */
+    filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.6));
+}
+.hero-title-flag {
+    position: absolute;
+    inset: 0;                  /* exact same box as the base, so text overlaps 1:1 */
+    /* red (MAU) | blue | yellow | green, the green fading to low opacity */
+    background-image: linear-gradient(90deg,
+        #ef3e3e 0%, #ef3e3e 24%,
+        #2f74ff 30%, #2f74ff 48%,
+        #ffd60a 54%, #ffd60a 72%,
+        rgba(24, 179, 100, 0.6) 82%, rgba(24, 179, 100, 0.4) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    opacity: 0;                 /* hidden until the cursor is over the word */
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.6));
+}
+.hero-title-wrap:hover .hero-title-flag {
+    opacity: 1;
+}
+
 /* Respect prefers-reduced-motion for ambient/looping decorative animations.
    The HistoryStack card jiggle is intentionally exempt (explicitly requested)
    and lives in JS via the Web Animations API, so it is unaffected here. */
@@ -248,6 +295,12 @@ html {
     .hero-letter {
         animation: none !important;
         opacity: 1 !important;
+    }
+    .hero-reveal {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
     }
 }
 
