@@ -6,7 +6,7 @@ export const cultureData = [
     summary: 'Mauritius is a multilingual nation where Mauritian Creole, French, English, and Asian languages coexist, creating a unique linguistic landscape shaped by centuries of colonization and immigration.',
     microStory: 'Why Creole Became the Unifying Language',
     microStoryContent: 'When enslaved Africans, Malagasy workers, Indian laborers, Chinese traders, and European colonizers lived side by side, no single group held linguistic majority. Mauritian Creole emerged organically as the language of survival and solidarity, a French-based pidgin enriched by African grammar, Malagasy words, and Indian expressions. Today, 90% speak Creole regardless of ethnic origin, making it the true language of national unity.',
-    image: 'https://images.unsplash.com/photo-1453928582365-b6ad33cbcf64?q=80&w=2000',
+    image: '/images/banners/port-louis.jpg',
     content: [
       'Mauritian Creole (Morisyen or Kreol Morisien) is the lingua franca, spoken by approximately 90% of the population in daily life. It evolved from 18th-century French with significant influences from Malagasy, African Bantu languages, and Indian languages. Kreol became a symbol of national identity and cultural unity across ethnic groups.',
       'English is the official language of parliament, judiciary, and government administration. However, it\'s primarily a written and formal language; few Mauritians speak it as a mother tongue. French dominates print media, private education, business, and arts, a legacy of French colonial rule (1715-1810) that persists over 200 years after British conquest.',
@@ -51,12 +51,12 @@ export const cultureData = [
     microStoryContent: 'After independence, Mauritius faced the risk of ethnic and religious conflict like many postcolonial nations. Instead, founding leaders enshrined religious tolerance in law: all major faiths receive equal public holidays, government funding for religious sites, and protection from discrimination. Grand Bassin (Hindu), Père Laval shrine (Catholic), and mosques receive equal reverence. This wasn\'t accidental; it was deliberate nation-building through pluralism.',
     image: '/images/banners/religion.png',
     content: [
-      'Hinduism is practiced by approximately 48-52% of the population, brought by Indian indentured laborers (1834-1920). Temples (kovils) are found throughout the island. Grand Bassin (Ganga Talao), a crater lake in the mountains, is the holiest Hindu site: pilgrims walk there annually during Maha Shivaratri, making it the largest religious gathering outside India.',
+      'Hinduism is practiced by approximately 48% of the population, brought by Indian indentured laborers (1834-1920). Temples (kovils) are found throughout the island. Grand Bassin (Ganga Talao), a crater lake in the mountains, is the holiest Hindu site: pilgrims walk there annually during Maha Shivaratri, making it the largest religious gathering outside India.',
       'Christianity comprises about 32% of the population, predominantly Roman Catholic (26%), reflecting French colonial heritage. Protestant denominations include Anglicans, Seventh-day Adventists, and Pentecostals. Historic Catholic churches built under French rule remain architectural landmarks. Père Jacques-Désiré Laval, a Catholic missionary (1841-1864), is venerated across all communities.',
-      'Islam is practiced by approximately 17% of Mauritians, primarily Sunni Muslims descended from Indian traders and laborers. Mosques (majids) are integrated into the multicultural landscape. Jummah Mosque in Port Louis (1850s) is among the oldest. Islamic festivals (Eid-ul-Fitr and Eid-ul-Adha) are national public holidays. Buddhism, practiced by a small Chinese-Mauritian community, has several temples and celebrates Vesak.',
+      'Islam is practiced by approximately 17% of Mauritians, primarily Sunni Muslims descended from Indian traders and laborers. Mosques (masjids) are integrated into the multicultural landscape. Jummah Mosque in Port Louis (1850s) is among the oldest. Islamic festivals (Eid-ul-Fitr and Eid-ul-Adha) are national public holidays. Buddhism, practiced by a small Chinese-Mauritian community, has several temples and celebrates Vesak.',
     ],
     highlights: [
-      'Hinduism: 48-52% of population; Grand Bassin pilgrimage site',
+      'Hinduism: around 48% of population; Grand Bassin pilgrimage site',
       'Christianity: 32% (predominantly Catholic); Père Laval shrine',
       'Islam: 17%; Jummah Mosque Port Louis landmark',
       'Buddhism: Small Chinese-Mauritian community; Vesak celebrations',

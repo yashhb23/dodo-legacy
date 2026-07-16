@@ -37,14 +37,14 @@ export const timelineEvents = [
   {
     year: '1715',
     title: 'French Colonization',
-    description: 'France claimed the abandoned island, renaming it Île de France. Governor Mahé de La Bourdonnais (1735-1746) transformed it into a strategic Indian Ocean base. Port Louis developed as capital and military harbor.',
+    description: 'France claimed the abandoned island, renaming it Isle de France. Governor Mahé de La Bourdonnais (1735-1746) transformed it into a strategic Indian Ocean base. Port Louis developed as capital and military harbor.',
     period: 'French Era',
     color: 'primary',
   },
   {
     year: '1735-1810',
     title: 'French Development',
-    description: 'Establishment of Port Louis as capital (1735). Plantation economy based on sugar and enslaved African labor flourished. Infrastructure, roads, and buildings constructed. Île de France became prosperous French colony with distinct Creole culture emerging.',
+    description: 'Establishment of Port Louis as capital (1735). Plantation economy based on sugar and enslaved African labor flourished. Infrastructure, roads, and buildings constructed. Isle de France became prosperous French colony with distinct Creole culture emerging.',
     period: 'French Era',
     color: 'primary',
   },

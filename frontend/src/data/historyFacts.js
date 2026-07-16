@@ -11,10 +11,10 @@ export const historyFactsExpanded = {
   },
   'multicultural': {
     title: 'Multicultural Heritage',
-    image: 'https://images.unsplash.com/photo-1533158326339-7f3cf2404354?w=800',
+    image: '/gallery/religious-diversity.jpg',
     content: [
       'Mauritius is one of the world\'s most successful multicultural societies. The population descends from Indian (approximately 68%), African Creole (27%), Chinese (3%), and European (2%) ancestry. Unlike many multi-ethnic nations, Mauritius has avoided major ethnic conflicts.',
-      'Indian indentured laborers, arriving after slavery abolition (1835), form the largest demographic group. Nearly 450,000 Indian workers came between 1834-1920, bringing Hinduism, Islam, languages (Bhojpuri, Hindi, Tamil, Urdu), and culinary traditions. Their descendants now form the majority population.',
+      'Indian indentured laborers, arriving from 1834 as slavery was ending, form the largest demographic group. Nearly 450,000 Indian workers came between 1834 and 1920, bringing Hinduism, Islam, languages (Bhojpuri, Hindi, Tamil, Urdu), and culinary traditions. Their descendants now form the majority population.',
       'African heritage stems from enslaved people brought by the French (1715-1835). They created Mauritian Creole language and sega music, both central to national identity. Chinese traders arrived in the 19th century, establishing commerce. European (primarily Franco-Mauritian) influence remains in architecture, cuisine, and French language prevalence.',
     ],
     source: 'UNESCO Cultural Diversity Report, Mauritius Museums Council, Statistics Mauritius',
@@ -35,7 +35,7 @@ export const historyFactsExpanded = {
     content: [
       'Mauritius achieved independence from Britain on March 12, 1968, after 158 years of British rule. Sir Seewoosagur Ramgoolam, leader of the Labour Party and "Father of the Nation," became the first Prime Minister. The path to independence involved negotiations between different ethnic and political groups.',
       'At independence, Mauritius faced significant challenges: economic dependence on sugar (93% of export earnings), high unemployment, rapid population growth, and potential ethnic tensions. The government pursued economic diversification, developing the Export Processing Zone (EPZ) for textiles, promoting tourism, and later establishing offshore financial services.',
-      'In 1992, Mauritius became a republic within the Commonwealth, with Cassam Uteem as first President. The country transformed from a "mono-crop" sugar economy into a diversified upper-middle-income nation. Today, Mauritius is considered one of Africa\'s most stable democracies and has the highest GDP per capita on the continent.',
+      'In 1992, Mauritius became a republic within the Commonwealth, with Cassam Uteem as first President. The country transformed from a "mono-crop" sugar economy into a diversified upper-middle-income nation. Today, Mauritius is considered one of Africa\'s most stable democracies and has one of the highest GDP per capita figures on the continent.',
     ],
     source: 'National Archives of Mauritius, Statistics Mauritius, World Bank Development Indicators',
   },

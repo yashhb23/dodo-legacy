@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, APIRouter, HTTPException, Query, Request, Header, Depends
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+from starlette.responses import JSONResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -20,6 +22,7 @@ import uuid
 from datetime import datetime, timezone
 from prohibited_words import PROHIBITED_WORDS
 import time
+import hmac
 
 
 ROOT_DIR = Path(__file__).parent
@@ -79,6 +82,29 @@ async def send_notification_email(subject: str, body: str) -> None:
     loop.run_in_executor(None, _send)
 
 
+# Debounced notifier. Every like/comment used to trigger a fresh Gmail SMTP
+# login+send, so an attacker could flood the owner's inbox and exhaust the
+# account's daily send quota (a real DoS). We now cap volume: at most one email
+# globally per _EMAIL_GLOBAL_MIN_INTERVAL seconds, and at most one per dedupe key
+# (image + event type) per _EMAIL_KEY_COOLDOWN seconds. This keeps the owner
+# informed of activity while making the endpoints useless as an amplifier.
+_EMAIL_GLOBAL_MIN_INTERVAL = 180   # <= ~480 emails/day worst case, under Gmail's limit
+_EMAIL_KEY_COOLDOWN = 600
+_email_last_global = 0.0
+_email_last_by_key: dict[str, float] = {}
+
+async def notify_owner(dedupe_key: str, subject: str, body: str) -> None:
+    global _email_last_global
+    now = time.time()
+    if now - _email_last_global < _EMAIL_GLOBAL_MIN_INTERVAL:
+        return
+    if now - _email_last_by_key.get(dedupe_key, 0.0) < _EMAIL_KEY_COOLDOWN:
+        return
+    _email_last_global = now
+    _email_last_by_key[dedupe_key] = now
+    await send_notification_email(subject, body)
+
+
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     """Modern lifecycle handler replacing deprecated on_event."""
@@ -98,20 +124,68 @@ async def lifespan(application: FastAPI):
 # Rate limiter keyed by client IP
 limiter = Limiter(key_func=get_remote_address)
 
+# Interactive API docs publish the full route inventory (including the admin
+# endpoints and the X-Admin-Secret auth scheme), so they are OFF unless
+# ENABLE_DOCS=true is set (development only).
+_docs_enabled = os.environ.get("ENABLE_DOCS", "false").lower() == "true"
+
 # Create the main app with lifespan
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    docs_url="/docs" if _docs_enabled else None,
+    redoc_url="/redoc" if _docs_enabled else None,
+    openapi_url="/openapi.json" if _docs_enabled else None,
+)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# CORS — allow_origin_regex is the bulletproof matcher; allow_origins is a fallback
+# Optional Host-header allowlist. Only enabled when ALLOWED_HOSTS is set, because
+# the API is served on a platform host (e.g. *.up.railway.app) that must be in
+# the list or every request would be rejected. Set ALLOWED_HOSTS to a
+# comma-separated list (e.g. "dodolegacy.com,www.dodolegacy.com,<railway-host>").
+_allowed_hosts = [h.strip() for h in os.environ.get("ALLOWED_HOSTS", "").split(",") if h.strip()]
+if _allowed_hosts:
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=_allowed_hosts)
+
+# CORS. This API authenticates with the X-Admin-Secret request header, never
+# cookies, so credentials are disabled: a wildcard origin reflected WITH
+# credentials would let any site issue credentialed cross-origin requests.
+# Origins are an explicit allowlist ("*" is refused); the regex is END-ANCHORED
+# so look-alikes such as dodolegacy.com.evil.com cannot match.
+_cors_origins = [o.strip() for o in os.environ.get('CORS_ORIGINS', '').split(',')
+                 if o.strip() and o.strip() != '*']
+if not _cors_origins:
+    _cors_origins = ["https://dodolegacy.com", "https://www.dodolegacy.com"]
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=[o.strip() for o in os.environ.get('CORS_ORIGINS', '*').split(',') if o.strip()],
-    allow_origin_regex=r"https://(www\.)?dodolegacy\.com",
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=False,
+    allow_origins=_cors_origins,
+    allow_origin_regex=r"https://(www\.)?dodolegacy\.com$",
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "X-Admin-Secret"],
 )
+
+# Reject oversized request bodies early, and stamp defensive response headers on
+# every reply (admin responses are additionally marked no-store so intermediary
+# caches never retain moderation data).
+MAX_BODY_BYTES = 16 * 1024  # 16 KB is ample for a first name + 500-char message
+
+@app.middleware("http")
+async def security_and_limits(request: Request, call_next):
+    content_length = request.headers.get("content-length")
+    if content_length is not None:
+        try:
+            if int(content_length) > MAX_BODY_BYTES:
+                return JSONResponse(status_code=413, content={"detail": "Request body too large."})
+        except ValueError:
+            return JSONResponse(status_code=400, content={"detail": "Invalid Content-Length."})
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "no-referrer")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    if request.url.path.startswith("/api/admin"):
+        response.headers["Cache-Control"] = "no-store"
+    return response
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -215,6 +289,17 @@ def is_valid_name(name: str) -> bool:
     return letter_count >= 2
 
 
+# image_id is a free-form path segment written into MongoDB and echoed into
+# notification emails. Constrain it so an attacker cannot store megabyte-long
+# values (storage exhaustion) or smuggle text into the owner's inbox. Real ids
+# are numeric gallery ids ("1", "12") and slugs ("community-guestbook").
+IMAGE_ID_RE = re.compile(r"^[A-Za-z0-9_\-]{1,64}$")
+
+def require_valid_image_id(image_id: str) -> None:
+    if not IMAGE_ID_RE.match(image_id):
+        raise HTTPException(status_code=400, detail="Invalid image identifier.")
+
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
@@ -228,11 +313,16 @@ async def health_check():
         db_status = "connected"
     except Exception:
         db_status = "disconnected"
-    return {
-        "status": "ok",
+    payload = {
+        "status": "ok" if db_status == "connected" else "degraded",
         "database": db_status,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
+    if db_status != "connected":
+        # Return 503 so uptime monitors and load balancers see the degraded
+        # state instead of a green 200 while every data endpoint is failing.
+        return JSONResponse(status_code=503, content=payload)
+    return payload
 
 
 # ---------------------------------------------------------------------------
@@ -283,6 +373,7 @@ async def get_gallery_comments(
     image_id: str,
     limit: int = Query(default=50, ge=1, le=100),
 ):
+    require_valid_image_id(image_id)
     comments = await (
         db.gallery_comments.find({"image_id": image_id, "is_approved": True}, {"_id": 0})
         .sort("created_at", -1)
@@ -294,6 +385,7 @@ async def get_gallery_comments(
 @api_router.post("/gallery/{image_id}/comments", response_model=GalleryComment)
 @limiter.limit("10/minute")
 async def create_gallery_comment(request: Request, image_id: str, input: GalleryCommentCreate):
+    require_valid_image_id(image_id)
     name = (input.name or "").strip()
     message = (input.message or "").strip()
 
@@ -320,8 +412,9 @@ async def create_gallery_comment(request: Request, image_id: str, input: Gallery
     comment = GalleryComment(image_id=image_id, name=name, message=message, is_approved=False)
     await db.gallery_comments.insert_one(comment.model_dump())
 
-    # 📬 Notify owner of new comment (non-blocking)
-    await send_notification_email(
+    # 📬 Notify owner of new comment (non-blocking, debounced against flooding)
+    await notify_owner(
+        f"comment:{image_id}",
         subject=f"[Dodo Legacy] New comment from {name}",
         body=(
             f"You have a new comment awaiting moderation.\n\n"
@@ -338,6 +431,7 @@ async def create_gallery_comment(request: Request, image_id: str, input: Gallery
 @api_router.get("/gallery/{image_id}/likes", response_model=GalleryLikeCount)
 async def get_image_likes(image_id: str):
     """Return like count for an image, cached for 60 seconds."""
+    require_valid_image_id(image_id)
     cached = _get_cached_likes(image_id)
     if cached is not None:
         return {"count": cached}
@@ -348,12 +442,14 @@ async def get_image_likes(image_id: str):
 @api_router.post("/gallery/{image_id}/like")
 @limiter.limit("30/minute")
 async def like_image(request: Request, image_id: str):
+    require_valid_image_id(image_id)
     like = GalleryLike(image_id=image_id)
     await db.gallery_likes.insert_one(like.model_dump())
     _invalidate_likes_cache(image_id)  # bust the cache so next GET is fresh
 
-    # 📬 Notify owner of new like (non-blocking, but keep it brief to avoid email spam)
-    await send_notification_email(
+    # 📬 Notify owner of new like (non-blocking, debounced against flooding)
+    await notify_owner(
+        f"like:{image_id}",
         subject=f"[Dodo Legacy] New like on image {image_id}",
         body=(
             f"Someone liked image ID: {image_id}\n"
@@ -367,9 +463,16 @@ async def like_image(request: Request, image_id: str):
 # Admin authentication: the shared secret is sent in the X-Admin-Secret
 # header (never in the URL), so it cannot leak through browser history,
 # server access logs, or the Referer header to analytics/ad networks.
-def verify_admin(x_admin_secret: str = Header(default="", alias="X-Admin-Secret")):
+def verify_admin(request: Request, x_admin_secret: str = Header(default="", alias="X-Admin-Secret")):
     expected = os.environ.get("ADMIN_SECRET")
-    if not expected or x_admin_secret != expected:
+    # Constant-time comparison avoids a timing side-channel for secret recovery;
+    # the `not expected` short-circuit keeps the check fail-closed when
+    # ADMIN_SECRET is unset or empty.
+    if not expected or not hmac.compare_digest(x_admin_secret, expected):
+        # Security-event log (OWASP A09) so repeated admin brute-force is visible.
+        # The submitted secret is deliberately never logged.
+        client = request.client.host if request.client else "unknown"
+        logger.warning("Failed admin auth attempt from %s on %s", client, request.url.path)
         raise HTTPException(status_code=403, detail="Unauthorized")
     return True
 

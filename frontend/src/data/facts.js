@@ -1,21 +1,21 @@
 // Curated "On This Day" historical events for Mauritius
 export const onThisDayEvents = [
   { month: 1, day: 1, event: '1968: Mauritius prepares for independence, just months away from March 12 sovereignty.', source: 'National Archives' },
-  { month: 2, day: 1, event: '1835: Abolition of Slavery across British Empire takes effect. This day is now celebrated annually in Mauritius as Abolition of Slavery Day.', source: 'National Archives of Mauritius' },
+  { month: 2, day: 1, event: '1835: Slavery is abolished in Mauritius, now commemorated annually as Abolition of Slavery Day.', source: 'National Archives of Mauritius' },
   { month: 3, day: 12, event: '1968: Mauritius gains independence from Britain. Sir Seewoosagur Ramgoolam becomes first Prime Minister.', source: 'Independence Documentation' },
   { month: 3, day: 12, event: '1992: Mauritius becomes a republic within the Commonwealth, 24 years after independence.', source: 'Government Archives' },
-  { month: 5, day: 9, event: '1502: Portuguese navigator Vasco da Gama charts islands in the region during his second voyage to India.', source: 'Maritime History Records' },
-  { month: 6, day: 7, event: '1810: Battle of Vieux Grand Port begins. The only Napoleonic naval victory inscribed on Paris Arc de Triomphe.', source: 'Naval Battle Documentation' },
-  { month: 8, day: 23, event: '1810: Battle of Cap Malheureux. British forces land in the north, beginning the conquest that ends French rule.', source: 'British Colonial Records' },
+  { month: 5, day: 9, event: '1502: The Cantino Planisphere, one of the earliest maps to show these islands, is produced in Portugal.', source: 'Maritime History Records' },
+  { month: 8, day: 22, event: '1810: The Battle of Grand Port begins, the only French naval victory later inscribed on the Arc de Triomphe in Paris.', source: 'Naval Battle Documentation' },
+  { month: 11, day: 29, event: '1810: British forces land at Cap Malheureux in the north, opening the final campaign that ends French rule.', source: 'British Colonial Records' },
   { month: 9, day: 20, event: '1638: Dutch establish first settlement under Governor Cornelius Gooyer, marking permanent human habitation.', source: 'Dutch East India Company' },
   { month: 11, day: 2, event: '1834: First Indian indentured laborers arrive aboard the ship Atlas, beginning a migration that brings 450,000 over 86 years.', source: 'Aapravasi Ghat Documentation' },
-  { month: 12, day: 3, event: '1810: Treaty of Paris confirmed. Mauritius officially ceded to Britain but retains French laws, language, and customs.', source: 'Colonial Office Records' },
+  { month: 12, day: 3, event: '1810: Isle de France capitulates to Britain at Port Louis, ending French rule. The island is renamed Mauritius.', source: 'British Colonial Records' },
 ];
 
 // General "Did You Know?" facts
 export const didYouKnowFacts = [
   { fact: 'Mauritius had no native land mammals before human arrival. All mammals were introduced by colonizers.', category: 'natural history' },
-  { fact: 'The dodo went extinct approximately 60-80 years after Dutch arrival, between 1662-1690.', category: 'dodo' },
+  { fact: 'The dodo went extinct roughly 65 to 90 years after Dutch arrival, between about 1662 and 1690.', category: 'dodo' },
   { fact: 'Nearly 450,000 Indian indentured laborers arrived in Mauritius between 1834-1920, fundamentally shaping the nation.', category: 'history' },
   { fact: 'Maha Shivaratri in Mauritius is the largest Hindu pilgrimage outside India, with up to 500,000 participants.', category: 'culture' },
   { fact: 'Mauritian Creole evolved from 18th-century French, blending African, Malagasy, and Indian influences.', category: 'language' },
@@ -44,7 +44,7 @@ export const districtFacts = {
     'Chinatown, the Muslim Quarter, Hindu temples, and Catholic churches exist within walking distance.',
   ],
   'Black River': [
-    'Black River is the largest district by area but least populated, preserving wilderness character.',
+    'Black River is among the most mountainous and sparsely populated districts, preserving its wilderness character.',
     'Le Morne mountain held spiritual significance for maroons who used it as a final refuge.',
     'Black River Gorges is home to all 9 endemic bird species of Mauritius.',
   ],
@@ -79,7 +79,7 @@ export const districtFacts = {
     'Offshore islands like Coin de Mire are visible from the northern coast.',
   ],
   'Savanne': [
-    'Savanne remains the least developed district, preserving traditional rural Mauritian life.',
+    'Savanne is the island\'s most rural district, preserving a traditional way of life close to the land.',
     'Gris Gris beach has no protective reef, creating dramatic ocean cliffs and waves.',
     'The south coast\'s rugged beauty contrasts sharply with the tranquil northern lagoons.',
   ],

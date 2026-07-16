@@ -1,6 +1,9 @@
 # robots.txt for dodolegacy.com
+# Note: admin access is enforced server-side (the admin API rejects any request
+# without the correct X-Admin-Secret header). We deliberately do NOT list
+# /admin here, because a Disallow line cannot protect a path, it only advertises
+# that the path exists. The admin page itself also sends a noindex meta tag.
 User-agent: *
 Allow: /
-Disallow: /admin/
 
 Sitemap: https://dodolegacy.com/sitemap.xml

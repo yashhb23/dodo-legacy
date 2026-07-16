@@ -100,6 +100,7 @@ const Card = React.memo(function Card({ image, title, date, index, isActive, isM
       data-idx={index}
       aria-label={`${title}, ${date}`}
       aria-pressed={isActive}
+      onContextMenu={(e) => e.preventDefault()}
       className="dodo-card absolute left-1/2 top-1/2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white rounded-lg md:rounded-xl"
       style={{
         width: L.w * scale,
@@ -118,13 +119,28 @@ const Card = React.memo(function Card({ image, title, date, index, isActive, isM
             boxShadow: `inset 0 0 0 1px hsl(${hue} 75% 72% / 0.45), 0 12px 26px -12px rgba(0,0,0,0.6)`,
           }}
         >
+          {/* Eager, not lazy: the 16 cards live inside a 3D-transformed,
+              overlapping stack, and browsers compute lazy-load visibility
+              unreliably for such elements (only some images would appear on
+              refresh). Eager loading fetches every card image on mount so the
+              full deck always renders. */}
           <img
             src={image}
             alt={title}
-            loading="lazy"
+            loading="eager"
             decoding="async"
             draggable={false}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover select-none"
+            style={{
+              // Disable the iOS long-press "Save Image" callout and any
+              // selection/drag: the deck is for browsing, not downloading. With
+              // pointer-events off, the touch target is the card button, so taps
+              // and swipes still work.
+              WebkitTouchCallout: "none",
+              WebkitUserSelect: "none",
+              userSelect: "none",
+              pointerEvents: "none",
+            }}
             onError={(e) => {
               e.currentTarget.style.display = "none";
             }}
@@ -141,7 +157,7 @@ const Card = React.memo(function Card({ image, title, date, index, isActive, isM
           <span
             aria-hidden="true"
             className="dodo-card-dim absolute inset-0 bg-black pointer-events-none"
-            style={{ opacity: 0.28, transition: "opacity 0.3s ease-out" }}
+            style={{ opacity: isActive ? 0 : 0.28, transition: "opacity 0.3s ease-out" }}
           />
           <span className="absolute bottom-1 left-1.5 md:bottom-2 md:left-2.5 max-w-[92%] truncate text-[9px] md:text-xs font-bold tracking-widest text-white/95 drop-shadow pointer-events-none">
             {date}
@@ -182,6 +198,9 @@ export const HistoryStack = () => {
   const sceneRef = useRef(null);
   const hudTimerRef = useRef(null);
   const lastPreviewRef = useRef(null);
+  // Touch swipe bookkeeping: horizontal drags step through the deck.
+  const touchStartRef = useRef(null);
+  const swipedRef = useRef(false);
 
   if (hovered) lastPreviewRef.current = hovered;
   const preview = hovered ?? lastPreviewRef.current;
@@ -302,6 +321,11 @@ export const HistoryStack = () => {
 
   const handleCardClick = useCallback(
     (e) => {
+      // A swipe just stepped the deck; swallow the tap-to-open it would trigger.
+      if (swipedRef.current) {
+        swipedRef.current = false;
+        return;
+      }
       const btn = e.target.closest("button[data-idx]");
       if (!btn) return;
       const idx = Number(btn.dataset.idx);
@@ -365,12 +389,36 @@ export const HistoryStack = () => {
         if (btn) {
           const pos = measure(btn);
           if (pos) setHovered({ id: next.id, idx: nextIdx, ...pos });
+          jiggle(btn); // pop the newly-active card so stepping reads as animated
         }
         return next;
       });
     },
-    [measure],
+    [measure, jiggle],
   );
+
+  // Touch swipe across the deck steps through the milestones. Vertical drags are
+  // left to the browser so the page still scrolls; only a clearly horizontal
+  // swipe advances the stack. Each step calls stepTo, which jiggles the new
+  // card, so dragging a finger across the deck animates through the timeline.
+  const onDeckTouchStart = useCallback((e) => {
+    if (!isTouch) return;
+    const t = e.touches[0];
+    touchStartRef.current = { x: t.clientX, y: t.clientY };
+    swipedRef.current = false;
+  }, [isTouch]);
+
+  const onDeckTouchEnd = useCallback((e) => {
+    if (!isTouch || !touchStartRef.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStartRef.current.x;
+    const dy = t.clientY - touchStartRef.current.y;
+    touchStartRef.current = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      swipedRef.current = true; // suppress the tap-to-open that follows a swipe
+      stepTo(dx < 0 ? 1 : -1);
+    }
+  }, [isTouch, stepTo]);
 
   // On touch, place the preview over the preselected first card on mount.
   useEffect(() => {
@@ -476,6 +524,8 @@ export const HistoryStack = () => {
       <div
         ref={sceneRef}
         onMouseLeave={handleSceneLeave}
+        onTouchStart={onDeckTouchStart}
+        onTouchEnd={onDeckTouchEnd}
         className="w-full flex justify-center items-center md:w-[65%] h-[34svh] min-h-[260px] md:h-[760px] md:min-h-0 relative z-10"
         style={{ touchAction: "pan-y" }}
       >

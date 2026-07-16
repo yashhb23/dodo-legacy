@@ -99,6 +99,14 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
         }}
       />
 
+      {/* Bottom fade: dissolve the volcanic hero into the page background so the
+          seam into the dark timeline section below reads as seamless, with no
+          hard horizontal line where the hero ends. */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 inset-x-0 h-32 sm:h-48 z-[1] pointer-events-none bg-gradient-to-b from-transparent to-background"
+      />
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="text-center space-y-6 sm:space-y-8">
           {/* Badges - Now Clickable */}
@@ -185,14 +193,11 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
                 }}
               />
               
-              {/* Dodo Bird Image - Optimized with blur placeholder */}
-              <picture>
-                <source
-                  type="image/webp"
-                  srcSet="https://www.pictureboxblue.com/wp-content/uploads/2021/02/Edwards_Dodo-s.jpg"
-                />
+              {/* Dodo Bird Image. Self-hosted (was hotlinked from a third-party
+                  blog, which risked breaking if they moved or blocked the file);
+                  the historic Edwards dodo illustration is public domain. */}
               <img
-                src="https://www.pictureboxblue.com/wp-content/uploads/2021/02/Edwards_Dodo-s.jpg"
+                src="/images/dodo-hero.jpg"
                 alt="Historic illustration of the Dodo Bird - Mauritius national symbol"
                 className="relative z-10 w-full h-full object-contain drop-shadow-2xl animate-float"
                 style={{
@@ -202,9 +207,8 @@ export default function HeroSection({ onBadgeClick, onDiscoverClick, onWatchStor
                 fetchPriority="high"
                 decoding="async"
                 width="800"
-                height="800"
+                height="642"
               />
-              </picture>
             </div>
           </div>
 

@@ -31,8 +31,7 @@
     <link rel="preload"
         href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap"
         as="style" />
-    <link rel="preload" href="https://www.pictureboxblue.com/wp-content/uploads/2021/02/Edwards_Dodo-s.jpg" as="image"
-        fetchpriority="high" />
+    <link rel="preload" href="%PUBLIC_URL%/images/dodo-hero.jpg" as="image" fetchpriority="high" />
 
     <!-- DNS prefetch for external resources -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
@@ -199,6 +198,11 @@
         posthog.init("phc_yJW1VjHGGwmCbbrtczfqqNxgBDbhlhOWcdzcIJEOTFE", {
             api_host: "https://us.i.posthog.com",
             person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well
+            // Privacy: never record what visitors type (the comment box, etc.)
+            // in session replays. All input values are masked in the recording.
+            session_recording: {
+                maskAllInputs: true,
+            },
         });
     </script>
 </body>

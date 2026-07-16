@@ -92,10 +92,12 @@ export default function MilestoneModal({
             key={milestone.id}
             src={milestone.image}
             alt={milestone.title}
-            className="absolute inset-0 w-full h-full object-cover animate-in fade-in zoom-in-105 duration-700 ease-out"
+            className="absolute inset-0 w-full h-full object-cover animate-in fade-in zoom-in-105 duration-700 ease-out select-none"
             draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
+            style={{ WebkitTouchCallout: "none", WebkitUserSelect: "none", userSelect: "none" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0c0710] via-transparent to-transparent md:bg-gradient-to-r" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0c0710] via-transparent to-transparent md:bg-gradient-to-l" />
           <span className="absolute bottom-3 left-4 text-sm font-bold tracking-widest text-white/90 drop-shadow">
             {year}
           </span>
@@ -134,12 +136,15 @@ export default function MilestoneModal({
           </div>
         </div>
 
-        {/* Prev / next */}
+        {/* Prev / next. On mobile these sit at the vertical centre of the photo
+            (top band) rather than at the modal's bottom edge, where they used to
+            collide with the phone browser's own bottom toolbar. On desktop they
+            stay centred on the tall side image. */}
         <button
           type="button"
           onClick={onPrev}
           aria-label="Previous milestone"
-          className="absolute left-2 bottom-3 md:top-1/2 md:bottom-auto md:-translate-y-1/2 h-11 w-11 flex items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/70 transition-colors"
+          className="absolute left-2 top-28 sm:top-36 md:top-1/2 -translate-y-1/2 h-11 w-11 flex items-center justify-center rounded-full bg-black/60 ring-1 ring-white/30 backdrop-blur-sm text-white hover:bg-black/80 shadow-lg transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -147,7 +152,7 @@ export default function MilestoneModal({
           type="button"
           onClick={onNext}
           aria-label="Next milestone"
-          className="absolute right-2 bottom-3 md:top-1/2 md:bottom-auto md:-translate-y-1/2 h-11 w-11 flex items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/70 transition-colors"
+          className="absolute right-2 top-28 sm:top-36 md:top-1/2 -translate-y-1/2 h-11 w-11 flex items-center justify-center rounded-full bg-black/60 ring-1 ring-white/30 backdrop-blur-sm text-white hover:bg-black/80 shadow-lg transition-colors"
         >
           <ChevronRight className="w-5 h-5" />
         </button>

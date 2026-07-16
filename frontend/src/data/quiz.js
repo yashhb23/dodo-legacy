@@ -111,14 +111,14 @@ export const mauritiusQuiz = {
     },
     {
       id: 9,
-      question: 'What UNESCO World Heritage mountain in Mauritius was a refuge for escaped slaves?',
+      question: 'What UNESCO World Heritage mountain in Mauritius was a refuge for people who escaped slavery?',
       options: [
         { id: 'a', text: 'Mount Everest', correct: false },
         { id: 'b', text: 'Le Morne Brabant', correct: true },
         { id: 'c', text: 'Black Mountain', correct: false },
         { id: 'd', text: 'Signal Mountain', correct: false },
       ],
-      explanation: 'Le Morne Brabant served as a hideout for escaped slaves (maroons) during the 18th and 19th centuries. It symbolizes resistance to slavery and is now a UNESCO World Heritage Site.',
+      explanation: 'Le Morne Brabant was a refuge for maroons, people who escaped slavery, during the 18th and 19th centuries. It stands as a symbol of resistance to slavery and is now a UNESCO World Heritage Site.',
       difficulty: 'medium',
       category: 'heritage',
     },

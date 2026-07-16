@@ -24,6 +24,19 @@ export default function AdminComments() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    // Keep the admin panel out of search indexes (defence in depth; the real
+    // gate is the server-side secret check). Injects a noindex meta tag for as
+    // long as this page is mounted, then removes it on navigation away.
+    useEffect(() => {
+        const meta = document.createElement('meta');
+        meta.name = 'robots';
+        meta.content = 'noindex, nofollow';
+        document.head.appendChild(meta);
+        return () => {
+            document.head.removeChild(meta);
+        };
+    }, []);
+
     const authHeaders = (s) => ({ 'X-Admin-Secret': s });
 
     const fetchData = useCallback(async (s) => {
@@ -92,12 +105,12 @@ export default function AdminComments() {
                 prev.map((c) => (c.id === id ? { ...c, is_approved: true } : c)),
             );
         } catch (err) {
-            alert('Failed to approve: ' + err.message);
+            window.alert('Failed to approve: ' + err.message);
         }
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this comment?')) return;
+        if (!window.confirm('Are you sure you want to delete this comment?')) return;
         try {
             await apiJson(`/api/admin/comments/${id}`, {
                 method: 'DELETE',
@@ -105,7 +118,7 @@ export default function AdminComments() {
             });
             setComments((prev) => prev.filter((c) => c.id !== id));
         } catch (err) {
-            alert('Failed to delete: ' + err.message);
+            window.alert('Failed to delete: ' + err.message);
         }
     };
 

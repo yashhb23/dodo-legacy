@@ -31,7 +31,7 @@ def test_moderation_flow():
 
     # 3. Approve the comment
     print("Approving comment...")
-    res = requests.put(f"{BASE_URL}/admin/comments/{comment_id}/approve?secret={SECRET}")
+    res = requests.put(f"{BASE_URL}/admin/comments/{comment_id}/approve", headers={"X-Admin-Secret": SECRET})
     print(res.json()["message"])
 
     # 4. Check if visible publicly (should BE now)
@@ -57,7 +57,7 @@ def test_moderation_flow():
 
     # 6. Delete comment
     print("Deleting comment...")
-    res = requests.delete(f"{BASE_URL}/admin/comments/{comment_id}?secret={SECRET}")
+    res = requests.delete(f"{BASE_URL}/admin/comments/{comment_id}", headers={"X-Admin-Secret": SECRET})
     print(res.json()["message"])
 
 if __name__ == "__main__":

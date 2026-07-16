@@ -234,13 +234,13 @@ html {
     animation: heroLetterIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-/* Hero title: a white word with a normal arrow cursor and a faint hint of the
-   Mauritian flag colours in its CENTRE at rest. While the cursor is over it,
-   those four colours grow to full strength and spread out to cover the whole
-   word (red on MAU, then blue, then yellow, then green, the green trailing off
-   at low opacity). Built as two layers clipped to the same text: a white base,
-   and a flag-coloured overlay masked from the centre outward. Plus a smooth
-   blur-scale entrance. */
+/* Hero title: a clean WHITE word with a normal arrow cursor at rest. While the
+   cursor is over it, the four Mauritian flag colours grow from the centre out
+   to cover the whole word (red on MAU, then blue, then yellow, then green, the
+   green trailing off at low opacity), then fade back to white when the cursor
+   leaves. Built as two layers clipped to the same text: a white base, and a
+   flag-coloured overlay that is invisible at rest and masked from the centre
+   outward on hover. Plus a smooth blur-scale entrance. */
 @keyframes heroReveal {
     from { opacity: 0; transform: translateY(28px) scale(0.94); filter: blur(10px); }
     to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -273,10 +273,10 @@ html {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    /* A faint hint sits in the CENTRE of the word at rest; on hover the mask
-       band scales up (centre outward) and opacity rises, so the colours reach
-       full strength and cover the whole word. The white base shows through
-       wherever the overlay is masked or faint. */
+    /* Invisible at rest (the word is pure white); on hover the mask band scales
+       up from the centre outward and opacity rises to full, so the colours
+       sweep out to cover the whole word. The white base shows through wherever
+       the overlay is masked or hidden. */
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
     mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
     -webkit-mask-repeat: no-repeat;
@@ -285,7 +285,7 @@ html {
     mask-position: center;
     -webkit-mask-size: 45% 100%;
     mask-size: 45% 100%;
-    opacity: 0.22;              /* faint at rest */
+    opacity: 0;                 /* pure white at rest; colours appear only on hover */
     transition: opacity 0.45s ease, -webkit-mask-size 0.5s ease, mask-size 0.5s ease;
     pointer-events: none;
 }
