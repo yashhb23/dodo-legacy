@@ -99,3 +99,125 @@ Do **not** promote any product that breaks Sony's terms, such as "shared account
 | By 12 Nov | Pre-load reminder spots live for every partner. |
 | 19 Nov | Launch-night content, in-stock spots, round-up post. |
 | After launch | Convert partners to Christmas and PS Plus content. Your first results become your case study. |
+
+---
+
+## 6. First three pitches, researched and ready
+
+Each message follows your outreach playbook: research first, one offer, one question, no price, no tool names, attached video in WhatsApp, one link in email. Each passed the word-count and banned-word checks, then a cold-reader review by someone who hadn't seen the research, and was revised after it.
+
+**Make the sample first.** Every message assumes a finished 15-second sample made from that business's own product photos. Don't send without it.
+
+**Confirm one line is true before sending:** "free and yours to keep while I build my launch portfolio". Only keep it if you really are giving these first samples away for free.
+
+### 6.1 MediaSpace (game shop, Rose Hill, Port Louis, Flacq)
+- **Fit score 9/10.** Gaming is their biggest category, three shops, WhatsApp replies within minutes.
+- **Gap:** their GTA 6 page re-uses a third-party upload of Rockstar's trailer, and their only GTA 6 product is a "shared account" listing. They have no launch video of their own for stock they can legally sell.
+- **Warning:** never promote their GTA 6 "Shared Account" listing or the 11 shared-account games. Sharing PSN accounts breaks Sony's terms. Feature only the PS5 Pro and Slim, new sealed games, controllers and racing gear.
+- **Vibe:** young and promotional, English, ALL-CAPS hooks, heavy emoji. Message kept to zero emoji after review.
+- **Channel:** WhatsApp 5743 0420. Send Monday 26 October, about 10:00.
+
+**Message**
+```
+Hi MediaSpace team! I made a 15-second Reel for your PS5 Pro, timed for GTA 6 on 19 November. It's cut from your own product shots and names your three shops. No game logos or trailer clips, so it won't get taken down. [video attached]
+
+Picture it pinned when GTA 6 pre-load opens on 12 November. It's free and yours to keep while I build my launch portfolio. Want one for your new games too?
+Yash
+Motion Designer
+```
+**Follow-up 1** (4–5 working days later, only if no reply)
+```
+Hi again! Here's a 6-second Story cut of the same PS5 Pro Reel, ending on a "GTA 6 pre-load 12 Nov" countdown frame. [video attached] Also free to use. Want the full-quality files?
+Yash
+Motion Designer
+```
+
+### 6.2 Cyber Room (gaming café, Rose Hill and Port Louis Victoria Urban Terminal)
+- **Fit score 9/10.** Posts reels every week, budget prices, sells private "day or night" hire, WhatsApp on every button.
+- **Gap:** no GTA 6 launch-night offer or video anywhere, 26 days out. Their best-liked post (194 likes) was an event recap; everyday promo reels get 11–71.
+- **Check first:** a 6 October Legends Park post about its GTA 6 game room opening (18–19 November) may list Cyber Room as a partner. Look at that post before sending, so the pitch doesn't clash with a plan they already have.
+- **Vibe:** young and casual, English, first-person lines like "Count me in!", light emoji.
+- **Channel:** WhatsApp +230 5726 6821. Send Tuesday 27 October, about 10:00.
+
+**Message**
+```
+Hi Cyber Room team! I made a 15-second Reel for your Rose Hill private night hire, built around GTA 6 launch night on 19 November. It shows your PS5 setups and ends on "book the whole room" with your WhatsApp. No game logos or trailer clips. [video attached]
+
+It's free and yours to keep while I build my launch portfolio. Want a Port Louis version too?
+Yash
+Motion Designer
+```
+**Follow-up 1**
+```
+Hi again! I added a 6-second Story version with a countdown to launch night. [video attached] Free to use as well. Would a recap Reel of the night afterwards help?
+Yash
+Motion Designer
+```
+
+### 6.3 361 (electronics chain, about 30 showrooms)
+- **Fit score 9/10.** 105,600 TikTok followers, regular offer videos, credit plans, but no gaming content found and the PS5 Pro page currently returns an error.
+- **Gap:** strong video habit with nothing about gaming 26 days before the biggest game launch ever.
+- **Vibe:** mass-market retail, English, emoji-heavy promos. A cold email to a general inbox gets the corporate register.
+- **Channel:** email info@lewarehouse.mu (no WhatsApp published). Send Wednesday 28 October, about 10:00. Use an unlisted YouTube link for the video.
+
+**Message**
+```
+Subject: 15-sec PS5 TikTok for 361: GTA 6 week, 19 Nov
+
+Dear 361 team,
+
+I have prepared a 15-second TikTok spot for the PS5 in your showrooms, timed for GTA 6 on 19 November. Your TikTok has over 105,000 followers and strong offer videos, and gaming could join them for launch week.
+
+The spot uses your own PS5 photo and your line "available in all 361 showrooms". It has no game logos or trailer clips, so it will not get taken down.
+
+You can view it here: [watch link]. Picture it live the week GTA 6 pre-load opens on 12 November.
+
+Could you pass this to your marketing team? If this isn't of interest, just let me know and I won't follow up.
+
+Kind regards,
+Yash
+Motion Designer
+WhatsApp +230 5949 3529
+```
+**Follow-up 1**
+```
+Subject: Re: 15-sec PS5 TikTok for 361: GTA 6 week, 19 Nov
+
+Dear 361 team,
+
+A short follow-up: I have added a 6-second Facebook Story cut of the same PS5 spot, with a countdown to 19 November. [watch link] Could you share both with your marketing team?
+
+Kind regards,
+Yash
+Motion Designer
+```
+
+### 6.4 Quality-gate results
+| Message | Words | Avg sentence | Questions | Links | Banned words |
+|---|---|---|---|---|---|
+| MediaSpace (WhatsApp) | 75 | 10.7 | 1 | 0, video attached | none |
+| Cyber Room (WhatsApp) | 66 | 11.0 | 1 | 0, video attached | none |
+| 361 (email) | 113 | 14.1 | 1 | 1 | none |
+
+### 6.5 When they reply
+1. Thank them for one line, send the full-quality files, then ask what they want to sell most in launch week.
+2. Only now bring in prices (section 3) and the hub page (section 2). Offer model C to your first two partners: free first spot, tracked code, then the paid Launch Pack if it brings messages.
+3. Set up the tracked WhatsApp link and code the same day. Send the first weekly screenshot report on Friday.
+
+### 6.6 Next seven to research (one per day, research before writing)
+- **Legends Park** (Cascavelle mall): launching a game room on 18–19 November tied to GTA 6, already uses video. Pitch a launch teaser and recap.
+- **PriceGuru:** PS5 Pro 2TB at Rs 54,990, posts gaming promo videos on TikTok. Pitch launch-week cuts.
+- **Courts Mammouth:** lists PS5 Pro 2TB, no gaming video found.
+- **Galaxy** and **JKalachand:** PS5 retailers, not yet researched.
+- **eSports Faction:** event organiser, natural partner for a launch night.
+- **One non-gaming brand** riding the neon-sunset look: a car dealer, burger place or nightclub.
+
+TechMoris (website currently offline) and Gate2Enter (no social video found) are lower priority for now.
+
+---
+
+## 7. Your course folder
+
+The folder `D:\AIC-Course-=------` is on your own computer. This session runs in a cloud container and cannot reach it, and it is not in your Google Drive. To fold its principles into this playbook, do one of these:
+- Open this work from the Claude Desktop app on that computer, or run `claude remote-control` in a terminal inside that folder.
+- Or upload the folder to Google Drive, then ask again.
